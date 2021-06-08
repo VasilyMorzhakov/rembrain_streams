@@ -11,12 +11,12 @@ yarn add git+https://github.com/VasilyMorzhakov/rembrain_streams.git
 ## Usage
 
 ```jsx
-import RgbStreamCanvas from 'rgb-stream-canvas'
+import { ReactRgbStream } from 'rembrains_streams'
 
-const ExampleComponent = () => {
+const UsageExampleComponent = () => {
   return (
     <div>
-      <RgbStreamCanvas
+      <ReactRgbStream
         posX={0}
         posY={0}
         width={640}
