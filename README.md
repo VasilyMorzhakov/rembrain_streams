@@ -5,7 +5,9 @@
 # Install
 
 ```bash
-yarn add git+https://github.com/VasilyMorzhakov/rembrain_streams.git
+yarn add rembrain_streams
+or
+npm install rembrain_streams
 ```
 
 ## Usage
