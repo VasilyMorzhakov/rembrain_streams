@@ -1,30 +1,34 @@
 # rembrain_streams
 
-> Reusable rgb stream canvas component
+# React RGB stream canvas
 
-[![NPM](https://img.shields.io/npm/v/rembrain_streams.svg)](https://www.npmjs.com/package/rembrain_streams) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
-
-## Install
+# Install
 
 ```bash
-npm install --save rembrain_streams
+yarn add git+https://github.com/VasilyMorzhakov/rembrain_streams.git
 ```
 
 ## Usage
 
 ```jsx
-import React, { Component } from 'react'
+import RgbStreamCanvas from 'rgb-stream-canvas'
 
-import MyComponent from 'rembrain_streams'
-import 'rembrain_streams/dist/index.css'
-
-class Example extends Component {
-  render() {
-    return <MyComponent />
-  }
+const ExampleComponent = () => {
+  return (
+    <div>
+      <RgbStreamCanvas
+        posX={0}
+        posY={0}
+        width={640}
+        height={360}
+        token={'acces token goes here'}
+        websocketURL={'websocket url here'}
+        robotName={'your robot name'}
+        handleError={(ev) => {
+          console.log('Oh, no! Websocket error occured ', ev.message)
+        }}
+      />
+    </div>
+  )
 }
 ```
-
-## License
-
- © [](https://github.com/)
