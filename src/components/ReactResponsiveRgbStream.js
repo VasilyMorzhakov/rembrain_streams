@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Segment } from 'semantic-ui-react'
 import fit from 'canvas-fit'
 
-const ReactResponsiveRgbStream = ({
+export const ReactResponsiveRgbStream = ({
   token,
   websocketURL,
   robotName,
