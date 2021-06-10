@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Segment } from 'semantic-ui-react'
 import fit from 'canvas-fit'
 
 export const ReactResponsiveRgbStream = ({
@@ -98,17 +97,17 @@ export const ReactResponsiveRgbStream = ({
   }, [image])
 
   return (
-    <Segment
-      basic
+    <div
       style={{
         aspectRatio: aspectRatio.toString(),
         maxWidth,
         minWidth,
         padding: 0,
-        margin: 0
+        margin: 0,
+        position: 'relative'
       }}
     >
       <canvas style={drawing ? {} : { display: 'none' }} ref={canvasRef} />
-    </Segment>
+    </div>
   )
 }
