@@ -1,4 +1,2 @@
-import { ReactRgbStream } from './components/ReactRgbStream'
-import { ReactResponsiveRgbStream } from './components/ReactResponsiveRgbStream'
-
-export { ReactResponsiveRgbStream, ReactRgbStream }
+export { ReactRgbStream } from './components/ReactRgbStream'
+export { ReactResponsiveRgbStream } from './components/ReactResponsiveRgbStream'
