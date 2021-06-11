@@ -15,7 +15,7 @@ npm install rembrain_streams
 ## Fixed size canvas
 
 ```jsx
-import { ReactRgbStream } from 'rembrains_streams'
+import { ReactRgbStream } from 'rembrain_streams'
 
 const UsageExampleComponent = () => {
   return (
@@ -40,7 +40,7 @@ const UsageExampleComponent = () => {
 ## Or if you want responsive canvas
 
 ```jsx
-import { ReactResponsiveRgbStream } from 'rembrains_streams'
+import { ReactResponsiveRgbStream } from 'rembrain_streams'
 
 const UsageExampleComponent = () => {
   return (
