@@ -64,6 +64,7 @@ export const ReactRgbStream = ({
   }, [websocket])
   useEffect(() => {
     websocket && websocket.close()
+    draw()
   }, [robotName])
 
   useEffect(() => {
