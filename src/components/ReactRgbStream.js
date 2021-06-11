@@ -94,10 +94,17 @@ export const ReactRgbStream = ({
   }, [robotName])
 
   useEffect(() => {
-    isOn && setWebsocket(new WebSocket(websocketURL))
-    !isOn && setImage(new Image())
+    if (!isOn) {
+      setImage(new Image())
+      if (websocket) {
+        websocket.onclose = () => {}
+        websocket.close()
+      }
+    } else {
+      setWebsocket(new WebSocket(websocketURL))
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [isOn])
 
   useEffect(() => {
     canvasDraw()
