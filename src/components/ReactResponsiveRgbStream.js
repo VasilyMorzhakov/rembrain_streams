@@ -20,7 +20,6 @@ export const ReactResponsiveRgbStream = ({
 
   const draw = () => {
     const canvas = canvasRef.current
-    console.log(image)
     const ctx = canvas.getContext('2d')
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height)
   }
@@ -90,6 +89,10 @@ export const ReactResponsiveRgbStream = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    connectWebsocket()
+  }, [robotName])
 
   useEffect(() => {
     draw()
