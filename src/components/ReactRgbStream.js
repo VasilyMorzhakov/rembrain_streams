@@ -64,16 +64,12 @@ export const ReactRgbStream = ({
     websocket.onclose = () => {}
     websocket.close()
     connectWebsocket()
-  }, [robotName])
-
-  useEffect(() => {
-    connectWebsocket()
     return () => {
       websocket.onclose = () => {}
       websocket.close()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [robotName])
 
   useEffect(() => {
     canvasDraw()
