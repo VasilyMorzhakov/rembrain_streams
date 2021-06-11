@@ -74,13 +74,18 @@ export const ReactResponsiveRgbStream = ({
 
   useEffect(() => {
     websocket && connectWebsocket()
+    return () => {
+      if (websocket) {
+        websocket.onclose = () => {}
+        websocket.close()
+      }
+    }
   }, [websocket])
 
   useEffect(() => {
     websocket && websocket.close()
-    setTimeout(() => {
-      draw()
-    }, 500)
+    const context = canvasRef.current.getContext('2d')
+    context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
   }, [robotName])
 
   useEffect(() => {
