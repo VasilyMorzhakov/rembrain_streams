@@ -8,7 +8,9 @@ export const ReactResponsiveRgbStream = ({
   handleError,
   maxWidth,
   minWidth,
-  aspectRatio
+  aspectRatio,
+  isOn,
+  placeholderText
 }) => {
   let resizeTimeout
   const [image, setImage] = useState(new Image())
@@ -69,6 +71,9 @@ export const ReactResponsiveRgbStream = ({
     resizeTimeout = setTimeout(() => {
       fit(canvasRef.current)
       setDrawing(true)
+      if (!image.src) {
+        drawPlaceholder()
+      }
     }, 500)
   }
 
@@ -80,19 +85,41 @@ export const ReactResponsiveRgbStream = ({
         websocket.close()
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [websocket])
+
+  const drawPlaceholder = () => {
+    const context = canvasRef.current.getContext('2d')
+    context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
+    context.fillStyle = '#d3d3d3'
+    context.textAlign = 'center'
+    context.font = '5em Arial'
+    context.textBaseline = 'center'
+    context.fillText(
+      placeholderText,
+      canvasRef.current.width / 2,
+      canvasRef.current.height / 2
+    )
+  }
 
   useEffect(() => {
     websocket && websocket.close()
-    const context = canvasRef.current.getContext('2d')
-    context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
+    setImage(new Image())
+    drawPlaceholder()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [robotName])
+
+  useEffect(() => {
+    isOn && setWebsocket(new WebSocket(websocketURL))
+    !isOn && setImage(new Image())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOn])
 
   useEffect(() => {
     fit(canvasRef.current)
     draw()
     setDrawing(true)
-    setWebsocket(new WebSocket(websocketURL))
+
     window.addEventListener('resize', handleResize, false)
     return () => {
       window.removeEventListener('resize', handleResize, false)
@@ -102,6 +129,9 @@ export const ReactResponsiveRgbStream = ({
 
   useEffect(() => {
     draw()
+    if (!image.src) {
+      drawPlaceholder()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [image])
 

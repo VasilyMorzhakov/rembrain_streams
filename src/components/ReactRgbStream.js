@@ -8,7 +8,9 @@ export const ReactRgbStream = ({
   token,
   websocketURL,
   robotName,
-  handleError
+  handleError,
+  isOn,
+  placeholderText
 }) => {
   const canvasRef = useRef(null)
   const [image, setImage] = useState(new Image())
@@ -67,20 +69,41 @@ export const ReactRgbStream = ({
         websocket.close()
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [websocket])
-  useEffect(() => {
-    websocket && websocket.close()
+
+  const drawPlaceholder = () => {
     const context = canvasRef.current.getContext('2d')
     context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
+    context.fillStyle = '#d3d3d3'
+    context.textAlign = 'center'
+    context.font = '5em Arial'
+    context.textBaseline = 'center'
+    context.fillText(
+      placeholderText,
+      canvasRef.current.width / 2,
+      canvasRef.current.height / 2
+    )
+  }
+
+  useEffect(() => {
+    websocket && websocket.close()
+    setImage(new Image())
+    drawPlaceholder()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [robotName])
 
   useEffect(() => {
-    setWebsocket(new WebSocket(websocketURL))
+    isOn && setWebsocket(new WebSocket(websocketURL))
+    !isOn && setImage(new Image())
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     canvasDraw()
+    if (!image.src) {
+      drawPlaceholder()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [image])
 

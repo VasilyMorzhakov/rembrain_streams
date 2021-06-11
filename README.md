@@ -12,6 +12,9 @@ npm install rembrain_streams
 
 ## Usage
 
+Please, pay attention to the fact, that all properties shown in this
+examples are required for component to work properly
+
 ## Fixed size canvas
 
 ```jsx
@@ -28,6 +31,8 @@ const UsageExampleComponent = () => {
         token={'acces token goes here'}
         websocketURL={'websocket url here'}
         robotName={'your robot name'}
+        isOn={true}
+        placeholderText='No Image'
         handleError={(ev) => {
           console.log('Oh, no! Websocket error occured ', ev.message)
         }}
@@ -49,6 +54,8 @@ const UsageExampleComponent = () => {
         maxWidth={640}
         minWidth={1024}
         aspectRatio={16 / 9}
+        isOn={true}
+        placeholderText='No Image'
         token={'acces token goes here'}
         websocketURL={'websocket url here'}
         robotName={'your robot name'}
