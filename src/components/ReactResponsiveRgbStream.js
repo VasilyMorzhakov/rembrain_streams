@@ -78,7 +78,9 @@ export const ReactResponsiveRgbStream = ({
 
   useEffect(() => {
     websocket && websocket.close()
-    draw()
+    setTimeout(() => {
+      draw()
+    }, 500)
   }, [robotName])
 
   useEffect(() => {
@@ -89,8 +91,6 @@ export const ReactResponsiveRgbStream = ({
     window.addEventListener('resize', handleResize, false)
     return () => {
       window.removeEventListener('resize', handleResize, false)
-      websocket.onclose = () => {}
-      websocket.close()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

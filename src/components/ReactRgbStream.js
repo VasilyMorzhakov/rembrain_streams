@@ -64,15 +64,13 @@ export const ReactRgbStream = ({
   }, [websocket])
   useEffect(() => {
     websocket && websocket.close()
-    draw()
+    setTimeout(() => {
+      draw()
+    }, 500)
   }, [robotName])
 
   useEffect(() => {
     setWebsocket(new WebSocket(websocketURL))
-    return () => {
-      websocket.onclose = () => {}
-      websocket.close()
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
