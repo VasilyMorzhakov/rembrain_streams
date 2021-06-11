@@ -11,10 +11,9 @@ export const ReactResponsiveRgbStream = ({
   aspectRatio
 }) => {
   let resizeTimeout
-  let websocket
-
   const [image, setImage] = useState(new Image())
   const [drawing, setDrawing] = useState(false)
+  const [websocket, setWebsocket] = useState(undefined)
 
   const canvasRef = useRef(null)
 
@@ -25,8 +24,6 @@ export const ReactResponsiveRgbStream = ({
   }
 
   const connectWebsocket = () => {
-    websocket = new WebSocket(websocketURL)
-
     websocket.onopen = () => {
       let controlPacket = {
         command: 'pull',
@@ -58,6 +55,7 @@ export const ReactResponsiveRgbStream = ({
 
     websocket.onclose = (ev) => {
       console.log('Socket is closed. Reconnect will be attempted.', ev.reason)
+      setWebsocket(new WebSocket(websocketURL))
       connectWebsocket()
     }
     websocket.onerror = (ev) => {
@@ -75,12 +73,18 @@ export const ReactResponsiveRgbStream = ({
   }
 
   useEffect(() => {
+    websocket && connectWebsocket()
+  }, [websocket])
+
+  useEffect(() => {
+    websocket && websocket.close()
+  }, [robotName])
+
+  useEffect(() => {
     fit(canvasRef.current)
     draw()
     setDrawing(true)
-    //
-    connectWebsocket()
-    //
+    setWebsocket(new WebSocket(websocketURL))
     window.addEventListener('resize', handleResize, false)
     return () => {
       window.removeEventListener('resize', handleResize, false)
@@ -89,10 +93,6 @@ export const ReactResponsiveRgbStream = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useEffect(() => {
-    websocket.close()
-  }, [robotName])
 
   useEffect(() => {
     draw()

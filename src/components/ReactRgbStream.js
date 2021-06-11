@@ -10,9 +10,9 @@ export const ReactRgbStream = ({
   robotName,
   handleError
 }) => {
-  let websocket
   const canvasRef = useRef(null)
   const [image, setImage] = useState(new Image())
+  const [websocket, setWebsocket] = useState(undefined)
 
   const canvasDraw = () => {
     const canvas = canvasRef.current
@@ -21,8 +21,6 @@ export const ReactRgbStream = ({
   }
 
   const connectWebsocket = () => {
-    websocket = new WebSocket(websocketURL)
-
     websocket.onopen = () => {
       let controlPacket = {
         command: 'pull',
@@ -54,25 +52,28 @@ export const ReactRgbStream = ({
 
     websocket.onclose = (ev) => {
       console.log('Socket is closed. Reconnect will be attempted.', ev.reason)
+      setWebsocket(new WebSocket(websocketURL))
       connectWebsocket()
     }
     websocket.onerror = (ev) => {
       handleError(ev)
     }
   }
+  useEffect(() => {
+    websocket && connectWebsocket()
+  }, [websocket])
+  useEffect(() => {
+    websocket && websocket.close()
+  }, [robotName])
 
   useEffect(() => {
-    connectWebsocket()
+    setWebsocket(new WebSocket(websocketURL))
     return () => {
       websocket.onclose = () => {}
       websocket.close()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useEffect(() => {
-    websocket.close()
-  }, [robotName])
 
   useEffect(() => {
     canvasDraw()
