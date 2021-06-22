@@ -67,3 +67,21 @@ const UsageExampleComponent = () => {
   )
 }
 ```
+
+## Rembrain image component
+
+# img tag that wrapped in this component have id="rembrainImage" and class name "rembrain-image" (in case you need to do some styling)
+
+```jsx
+const UsageExampleComponent = () => {
+  return (
+    <RembrainImage
+      url='https://monitor.rembrain.ie/logs/get_file/aivero_xarm2/1624003284.632994_original.jpg'
+      token='your access token'
+      width={640}
+      height={360}
+      alt='No image here, sorry'
+    />
+  )
+}
+```
