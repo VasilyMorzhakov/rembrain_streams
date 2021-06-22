@@ -1,4 +1,4 @@
-import { useEffect } from 'react/cjs/react.development'
+import React, { useEffect } from 'react/cjs/react.development'
 
 export const RembrainImage = (token, url) => {
   useEffect(() => {
