@@ -29,7 +29,7 @@ export const ReactResponsiveRgbStream = ({
     websocket.onopen = () => {
       let controlPacket = {
         command: 'pull',
-        exchange: `rgbjpeg`,
+        exchange: `camera0`,
         accessToken: token,
         robot_name: robotName
       }
