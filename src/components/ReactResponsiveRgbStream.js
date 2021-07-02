@@ -36,20 +36,31 @@ export const ReactResponsiveRgbStream = ({
       websocket.send(JSON.stringify(controlPacket))
     }
 
-    websocket.onmessage = (ev) => {
+    websocket.onmessage = async (ev) => {
       try {
-        ev.data.arrayBuffer().then((val) => {
-          var imData = {
-            data: Buffer.from(val),
-            type: 'image/jpg'
-          }
-          const newImg = new Image()
-          const buf = imData.data.toString('base64')
-          newImg.src = `data:${imData.type};base64,` + buf
-          newImg.onload = () => {
-            setImage(newImg)
-          }
-        })
+        const { data } = ev
+        const dataType = new Uint8Array(await data.slice(0, 1).arrayBuffer())[0]
+
+        if (dataType != 2) {
+          console.log('Wrong data type recieved')
+        } else {
+          const L1 = new Uint8Array(await data.slice(1, 4).arrayBuffer())
+          const jpgLength = L1.reduce((a, b) => a.toString() + b.toString(), 0)
+          const jpgBlob = data.slice(9, 9 + jpgLength)
+
+          jpgBlob.arrayBuffer().then((val) => {
+            var imData = {
+              data: Buffer.from(val),
+              type: 'image/jpg'
+            }
+            const newImg = new Image()
+            const buf = imData.data.toString('base64')
+            newImg.src = `data:${imData.type};base64,` + buf
+            newImg.onload = () => {
+              setImage(newImg)
+            }
+          })
+        }
       } catch (err) {
         console.log(`Error occured while decoding websocket message ${err}`)
       }
