@@ -10,7 +10,8 @@ export const ReactResponsiveRgbStream = ({
   minWidth,
   aspectRatio,
   isOn,
-  placeholderText
+  placeholderText,
+  exchange
 }) => {
   let resizeTimeout
   const [image, setImage] = useState(new Image())
@@ -29,7 +30,7 @@ export const ReactResponsiveRgbStream = ({
     websocket.onopen = () => {
       let controlPacket = {
         command: 'pull',
-        exchange: `camera0`,
+        exchange: exchange ? exchange : 'rgbjpeg',
         accessToken: token,
         robot_name: robotName
       }
@@ -41,14 +42,25 @@ export const ReactResponsiveRgbStream = ({
         const { data } = ev
         const dataType = new Uint8Array(await data.slice(0, 1).arrayBuffer())[0]
 
-        if (dataType != 2) {
-          console.log('Wrong data type recieved')
-        } else {
+        if (dataType == 2) {
           const L1 = new Uint8Array(await data.slice(1, 4).arrayBuffer())
           const jpgLength = L1.reduce((a, b) => a.toString() + b.toString(), 0)
           const jpgBlob = data.slice(9, 9 + jpgLength)
 
           jpgBlob.arrayBuffer().then((val) => {
+            var imData = {
+              data: Buffer.from(val),
+              type: 'image/jpg'
+            }
+            const newImg = new Image()
+            const buf = imData.data.toString('base64')
+            newImg.src = `data:${imData.type};base64,` + buf
+            newImg.onload = () => {
+              setImage(newImg)
+            }
+          })
+        } else {
+          data.arrayBuffer().then((val) => {
             var imData = {
               data: Buffer.from(val),
               type: 'image/jpg'

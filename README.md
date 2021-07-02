@@ -36,6 +36,7 @@ const UsageExampleComponent = () => {
         handleError={(ev) => {
           console.log('Oh, no! Websocket error occured ', ev.message)
         }}
+        exchange='camera0' //if exchange prop isn't provided "rgbjpeg" will be used by default
       />
     </div>
   )
@@ -62,6 +63,7 @@ const UsageExampleComponent = () => {
         handleError={(ev) => {
           console.log('Oh, no! Websocket error occured ', ev.message)
         }}
+        exchange='camera0' //if exchange prop isn't provided "rgbjpeg" will be used by default
       />
     </div>
   )
