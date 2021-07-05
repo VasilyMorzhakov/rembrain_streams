@@ -83,6 +83,7 @@ export const ReactRgbStream = ({
     }
     websocket.onerror = (ev) => {
       handleError(ev)
+      websocket.close()
     }
   }
   useEffect(() => {

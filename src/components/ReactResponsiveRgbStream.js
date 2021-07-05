@@ -85,6 +85,7 @@ export const ReactResponsiveRgbStream = ({
     }
     websocket.onerror = (ev) => {
       handleError(ev)
+      websocket.close()
     }
   }
 
