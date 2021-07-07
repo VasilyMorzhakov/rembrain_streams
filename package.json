@@ -26,6 +26,13 @@
   "peerDependencies": {
     "react": "^16.13.1"
   },
+  "dependencies": {
+    "buffer": "^6.0.3",
+    "canvas": "2.7.0",
+    "image-js": "^0.31.4",
+    "rxjs": "^7.1.0",
+    "sass": "^1.35.1"
+  },
   "devDependencies": {
     "@types/canvas-fit": "^1.5.1",
     "@types/jest": "^25.1.4",
