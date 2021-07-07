@@ -1,0 +1,84 @@
+.debug-operator-container {
+    display: flex;
+    flex-direction: row;
+
+    .controls {
+        display: inline-flex;
+        vertical-align: top;
+        flex-direction: column;
+        margin-right: 10px;
+    }
+
+    .operator-buttons {
+        flex-grow: 1;
+    }
+    .input-container {
+        border: 1px solid black;
+        padding: 5px;
+        margin-bottom: 5px;
+        align-items: center;
+        grid-auto-rows: 25px;
+        grid-row-gap: 5px; 
+        grid-column-gap: 5px;
+    }
+
+    .connection {
+        display:grid; 
+        grid-template-columns: 0.7fr 2fr; 
+    }
+    .connection > span {
+        text-align: right;
+    }
+
+    .joint-controls {
+        display: grid;
+        grid-template-columns: 20px repeat(2, 1fr) 100px repeat(2, 1fr);
+        grid-column-gap: 5px;
+        align-items: center;
+
+        .joint-num {
+            text-align: right;
+        }
+
+        .joint-degrees {
+            text-align: center;
+        }
+    }
+
+    .joint-controls + .joint-controls {
+        margin-top: 10px;
+    }
+
+    .vacuum {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .calibration {
+        border: 1px solid black;
+        padding: 5px;
+        margin-bottom: 5px;
+        align-items: center;
+    }
+    .calibration > div + div {
+        margin-top: 10px;
+    }
+    .calibration > .tags {
+        display: grid;
+        grid-auto-rows: 25px;
+        grid-column-gap: 5px;
+    }
+
+    .btn-send-home {
+        width: 100%;
+    }
+
+    .depth-view {
+        width: 320px;
+        height: 180px;
+    }
+
+    .camera-view {
+        width: 1280px;
+        height: 720px;
+    }
+}
