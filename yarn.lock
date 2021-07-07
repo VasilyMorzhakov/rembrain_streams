@@ -1708,6 +1708,11 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+"@types/canvas-fit@^1.5.1":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@types/canvas-fit/-/canvas-fit-1.5.1.tgz#81ad0fe5f354ec75fb6d1caab7fc36464cb2de8a"
+  integrity sha512-CIBFgFSFvhDe2Ins85GxARcQEEAH3Ls+S9rtic7DtI11Sc6YNo/XuINTWg5NVMRRriNsED7QDLTYq4IaUmoE3g==
+
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"

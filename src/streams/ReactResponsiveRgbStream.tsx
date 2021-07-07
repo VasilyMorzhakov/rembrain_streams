@@ -1,29 +1,46 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import fit from 'canvas-fit'
 
-export const ReactRgbStream = ({
-  posX = 0,
-  posY = 0,
-  width,
-  height,
+export const ReactResponsiveRgbStream = ({
   token,
   websocketURL,
   robotName,
   handleError = () => {},
+  maxWidth,
+  minWidth,
+  aspectRatio,
   isOn = true,
   placeholderText = 'No Image',
   exchange = 'rgbjpeg'
+}: {
+  token: string,
+  websocketURL:string,
+  robotName: string,
+  handleError: any,
+  maxWidth: number,
+  minWidth: number,
+  aspectRatio: number,
+  isOn: boolean,
+  placeholderText: string,
+  exchange: string
 }) => {
-  const canvasRef = useRef(null)
+  let resizeTimeout:NodeJS.Timeout
   const [image, setImage] = useState(new Image())
-  const [websocket, setWebsocket] = useState(undefined)
+  const [drawing, setDrawing] = useState(false)
+  const [websocket, setWebsocket] = useState<WebSocket|undefined>(undefined)
 
-  const canvasDraw = () => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  
+  const draw = () => {
     const canvas = canvasRef.current
-    const context = canvas.getContext('2d')
-    context.drawImage(image, posX, posY, width, height)
+    if (canvas) {
+      const ctx = canvas.getContext('2d')
+      ctx && ctx.drawImage(image, 0, 0, canvas.width, canvas.height)
+    }
   }
 
   const connectWebsocket = () => {
+    if(websocket !== undefined) {
     websocket.onopen = () => {
       let controlPacket = {
         command: 'pull',
@@ -41,10 +58,10 @@ export const ReactRgbStream = ({
 
         if (dataType == 2) {
           const L1 = new Uint8Array(await data.slice(1, 4).arrayBuffer())
-          const jpgLength = L1.reduce((a, b) => a.toString() + b.toString(), 0)
+          const jpgLength = L1.reduce((a, b) => parseInt(a.toString() + b.toString()), 0)
           const jpgBlob = data.slice(9, 9 + jpgLength)
 
-          jpgBlob.arrayBuffer().then((val) => {
+          jpgBlob.arrayBuffer().then((val: ArrayBuffer) => {
             var imData = {
               data: Buffer.from(val),
               type: 'image/jpg'
@@ -57,8 +74,7 @@ export const ReactRgbStream = ({
             }
           })
         } else {
-          //
-          data.arrayBuffer().then((val) => {
+          data.arrayBuffer().then((val: ArrayBuffer) => {
             var imData = {
               data: Buffer.from(val),
               type: 'image/jpg'
@@ -86,6 +102,24 @@ export const ReactRgbStream = ({
       websocket.close()
     }
   }
+  }
+
+  const handleResize = () => {
+    clearTimeout(resizeTimeout)
+    setDrawing(false)
+    resizeTimeout = setTimeout(() => {
+      const canvas = canvasRef.current
+      if (canvas) {
+        fit(canvas)
+        setDrawing(true)
+        if (!image.src) {
+          drawPlaceholder()
+        }
+      }
+      
+    }, 500)
+  }
+
   useEffect(() => {
     websocket && connectWebsocket()
     return () => {
@@ -98,17 +132,22 @@ export const ReactRgbStream = ({
   }, [websocket])
 
   const drawPlaceholder = () => {
-    const context = canvasRef.current.getContext('2d')
-    context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
-    context.fillStyle = '#d3d3d3'
-    context.textAlign = 'center'
-    context.font = '5em Arial'
-    context.textBaseline = 'center'
-    context.fillText(
-      placeholderText,
-      canvasRef.current.width / 2,
-      canvasRef.current.height / 2
-    )
+    const canvas = canvasRef.current
+    if (canvas) {
+      const context = canvas.getContext('2d')
+      if (context) {
+        context.clearRect(0, 0, canvas.width, canvas.height)
+        context.fillStyle = '#d3d3d3'
+        context.textAlign = 'center'
+        context.font = '5em Arial'
+        context.textBaseline = 'middle'
+        context.fillText(
+          placeholderText,
+          canvas.width / 2,
+          canvas.height / 2
+        )
+      }
+    }
   }
 
   useEffect(() => {
@@ -132,12 +171,40 @@ export const ReactRgbStream = ({
   }, [isOn])
 
   useEffect(() => {
-    canvasDraw()
+    const canvas = canvasRef.current
+    if (canvas) {
+      fit(canvas)
+      draw()
+      setDrawing(true)
+
+      window.addEventListener('resize', handleResize, false)
+      return () => {
+        window.removeEventListener('resize', handleResize, false)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    draw()
     if (!image.src) {
       drawPlaceholder()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [image])
 
-  return <canvas ref={canvasRef} width={width} height={height} />
+  return (
+    <div
+      style={{
+        aspectRatio: aspectRatio.toString(),
+        maxWidth,
+        minWidth,
+        padding: 0,
+        margin: 0,
+        position: 'relative'
+      }}
+    >
+      <canvas style={drawing ? {} : { display: 'none' }} ref={canvasRef} />
+    </div>
+  )
 }
