@@ -5,13 +5,13 @@ export const ReactResponsiveRgbStream = ({
   token,
   websocketURL,
   robotName,
-  handleError,
+  handleError = () => {},
   maxWidth,
   minWidth,
   aspectRatio,
-  isOn,
-  placeholderText,
-  exchange
+  isOn = true,
+  placeholderText = 'No Image',
+  exchange = 'rgbjpeg'
 }) => {
   let resizeTimeout
   const [image, setImage] = useState(new Image())
@@ -30,7 +30,7 @@ export const ReactResponsiveRgbStream = ({
     websocket.onopen = () => {
       let controlPacket = {
         command: 'pull',
-        exchange: exchange ? exchange : 'rgbjpeg',
+        exchange: exchange,
         accessToken: token,
         robot_name: robotName
       }

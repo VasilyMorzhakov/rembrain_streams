@@ -1,17 +1,17 @@
 import React, { useEffect, useState, useRef } from 'react'
 
 export const ReactRgbStream = ({
-  posX,
-  posY,
+  posX = 0,
+  posY = 0,
   width,
   height,
   token,
   websocketURL,
   robotName,
-  handleError,
-  isOn,
-  placeholderText,
-  exchange
+  handleError = () => {},
+  isOn = true,
+  placeholderText = 'No Image',
+  exchange = 'rgbjpeg'
 }) => {
   const canvasRef = useRef(null)
   const [image, setImage] = useState(new Image())
@@ -27,7 +27,7 @@ export const ReactRgbStream = ({
     websocket.onopen = () => {
       let controlPacket = {
         command: 'pull',
-        exchange: exchange ? exchange : 'rgbjpeg',
+        exchange: exchange,
         accessToken: token,
         robot_name: robotName
       }
