@@ -178,9 +178,9 @@ export const ReactResponsiveRgbStream = ({
       setDrawing(true)
 
       window.addEventListener('resize', handleResize, false)
-      return () => {
-        window.removeEventListener('resize', handleResize, false)
-      }
+    }
+    return () => {
+      window.removeEventListener('resize', handleResize, false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
