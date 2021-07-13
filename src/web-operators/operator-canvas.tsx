@@ -102,6 +102,7 @@ export class OperatorCanvas extends React.Component {
     }
 
     componentWillUnmount() {
+        this._imageReceiver?.shutdown();
         this._networkOperator?.shutdown();
         this.subscriptions.forEach(s => s.unsubscribe());
         this.subscriptions = [];
