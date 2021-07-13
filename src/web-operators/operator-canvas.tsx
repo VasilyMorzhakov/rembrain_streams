@@ -138,84 +138,85 @@ export class OperatorCanvas extends React.Component {
 
     private redraw() {
         const canvas = this.canvasRef.current;
-        const ctx = canvas.getContext("2d");
-
-        if (this.hasImage) {
-            // Base: image from the robot
-            ctx.drawImage(this.img, 0, 0);
+        if (canvas) {        
+            const ctx = canvas.getContext("2d");
             
-            // Compositing depth calculation on top
-            ctx.save();
-            ctx.globalCompositeOperation = "screen";
-            ctx.drawImage(this.depthCanvas, 0, 0);
-            ctx.restore();
-
-            // Selection area
-            if (this.selection) {
-                this.SetCanvasStyle(ctx, StrokeStyle.SelectionRectangle);
-                let rect = this.selection;
-                this.doCanvasRect(ctx, CanvasAction.Stroke, rect);
-            }
-
-            // Median point
-            if (this.medianPoint) {
-                this.SetCanvasStyle(ctx, StrokeStyle.MedianPoint);
-                ctx.beginPath();
-                ctx.arc(this.medianPoint.x, this.medianPoint.y,
-                    10, 0, 2 * Math.PI);
-                ctx.fill();
-                ctx.stroke();
-                ctx.closePath();
-            }
+            if (this.hasImage) {
+                // Base: image from the robot
+                ctx.drawImage(this.img, 0, 0);
+                
+                // Compositing depth calculation on top
+                ctx.save();
+                ctx.globalCompositeOperation = "screen";
+                ctx.drawImage(this.depthCanvas, 0, 0);
+                ctx.restore();
             
-            // Crosshair
-            if (this.mousePos) {
-                this.SetCanvasStyle(ctx, StrokeStyle.Crosshair);
-                // horizontal line
-                ctx.beginPath();
-                ctx.moveTo(0, this.mousePos.y);
-                ctx.lineTo(canvas.width, this.mousePos.y);
-                ctx.stroke()
-                ctx.closePath();
-                // vertical line
-                ctx.beginPath();
-                ctx.moveTo(this.mousePos.x, 0);
-                ctx.lineTo(this.mousePos.x, canvas.height);
-                ctx.stroke()
-                ctx.closePath();
+                // Selection area
+                if (this.selection) {
+                    this.SetCanvasStyle(ctx, StrokeStyle.SelectionRectangle);
+                    let rect = this.selection;
+                    this.doCanvasRect(ctx, CanvasAction.Stroke, rect);
+                }
+            
+                // Median point
+                if (this.medianPoint) {
+                    this.SetCanvasStyle(ctx, StrokeStyle.MedianPoint);
+                    ctx.beginPath();
+                    ctx.arc(this.medianPoint.x, this.medianPoint.y,
+                        10, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.closePath();
+                }
+                
+                // Crosshair
+                if (this.mousePos) {
+                    this.SetCanvasStyle(ctx, StrokeStyle.Crosshair);
+                    // horizontal line
+                    ctx.beginPath();
+                    ctx.moveTo(0, this.mousePos.y);
+                    ctx.lineTo(canvas.width, this.mousePos.y);
+                    ctx.stroke()
+                    ctx.closePath();
+                    // vertical line
+                    ctx.beginPath();
+                    ctx.moveTo(this.mousePos.x, 0);
+                    ctx.lineTo(this.mousePos.x, canvas.height);
+                    ctx.stroke()
+                    ctx.closePath();
+                }
+            } else {
+                this.SetCanvasStyle(ctx, StrokeStyle.NoImage_BG);
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+                const canvasRect = new Rectangle(0, 0, canvas.width, canvas.height);
+                this.SetCanvasStyle(ctx, StrokeStyle.NoImage_Text);
+                ctx.fillText("No Image", canvasRect.Center.x, canvasRect.Center.y);
             }
-        } else {
-            this.SetCanvasStyle(ctx, StrokeStyle.NoImage_BG);
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            const canvasRect = new Rectangle(0, 0, canvas.width, canvas.height);
-            this.SetCanvasStyle(ctx, StrokeStyle.NoImage_Text);
-            ctx.fillText("No Image", canvasRect.Center.x, canvasRect.Center.y);
+        
+            // Plaque with robot's status
+            this.SetCanvasStyle(ctx, StrokeStyle.PlaqueBackground)
+            let plaqueWidth = 500;
+            let plaqueHeight = 60;
+            let plaqueRect = new Rectangle(
+                (canvas.offsetWidth - plaqueWidth) / 2,
+                 canvas.offsetHeight - plaqueHeight,
+                plaqueWidth,
+                plaqueHeight
+            );
+            this.doCanvasRect(ctx, CanvasAction.Fill, plaqueRect);
+            
+            // Text of robot's status
+            if (this.robotState) {
+                const state = this.robotState.state_machine;
+                this.SetCanvasStyle(ctx, StrokeStyle.PlaqueText)
+                ctx.fillText(state, plaqueRect.Center.x, plaqueRect.Center.y);
+            }
+        
+            // Border
+            this.SetCanvasStyle(ctx, StrokeStyle.Border);
+            ctx.strokeRect(0, 0, canvas.width, canvas.height);
         }
-
-        // Plaque with robot's status
-        this.SetCanvasStyle(ctx, StrokeStyle.PlaqueBackground)
-        let plaqueWidth = 500;
-        let plaqueHeight = 60;
-        let plaqueRect = new Rectangle(
-            (canvas.offsetWidth - plaqueWidth) / 2,
-             canvas.offsetHeight - plaqueHeight,
-            plaqueWidth,
-            plaqueHeight
-        );
-        this.doCanvasRect(ctx, CanvasAction.Fill, plaqueRect);
-
-        // Text of robot's status
-        if (this.robotState) {
-            const state = this.robotState.state_machine;
-            this.SetCanvasStyle(ctx, StrokeStyle.PlaqueText)
-            ctx.fillText(state, plaqueRect.Center.x, plaqueRect.Center.y);
-        }
-
-        // Border
-        this.SetCanvasStyle(ctx, StrokeStyle.Border);
-        ctx.strokeRect(0, 0, canvas.width, canvas.height);
-
     }
 
 
