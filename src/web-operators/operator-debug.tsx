@@ -235,6 +235,10 @@ export class OperatorDebug extends React.Component<IOperatorProps, IOperatorStat
     render() {
         return (
             <div className="debug-operator-container">
+                <div className="camera-view">
+                    <img width="1280" height="720"
+                         src={this.state.imageData}/>
+                </div>
                 <div className="controls">
                 <span>Connection</span>
                 <div className="input-container connection">
@@ -309,10 +313,6 @@ export class OperatorDebug extends React.Component<IOperatorProps, IOperatorStat
                     <img width="320" height="180"
                          src={this.state.depthData}/>
                 </div>
-            </div>
-            <div className="camera-view">
-                <img width="1280" height="720"
-                     src={this.state.imageData}/>
             </div>
         </div>
         )
