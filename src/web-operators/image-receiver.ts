@@ -78,51 +78,53 @@ export class WebSocketImageReceiver implements IImageReceiver {
     }
     let dataType = new Uint8Array(await data.slice(0, 1).arrayBuffer())[0]
     if (dataType != 1) {
-      throw new Error(`Data type ${dataType} isn't JPG+PNG(1)`)
-    }
-
-    const HEADER_END = 13
-    // 1st byte is the type of image, for now assuming it's JPG+PNG and skip it
-    let lengths = new Uint32Array(await data.slice(1, HEADER_END).arrayBuffer())
-    // Get blobs for each of the images + text
-    // image is the video feed in JPG
-    let imageBlob = data.slice(HEADER_END, HEADER_END + lengths[0])
-    // depth is in PNG
-    let depthBlob = data.slice(
-      HEADER_END + lengths[0],
-      HEADER_END + lengths[0] + lengths[1]
-    )
-    let statusBlob = data.slice(
-      HEADER_END + lengths[0] + lengths[1],
-      HEADER_END + lengths[0] + lengths[1] + lengths[2]
-    )
-
-    imageBlob.arrayBuffer().then(
-      (val) => {
-        let imData = {
-          data: Buffer.from(val),
-          type: 'image/jpg'
-        }
-        this.imageSubject.next(imData)
-      },
-      (err) => console.log('Error while sending image:', err)
-    )
-
-    depthBlob
-      .arrayBuffer()
-      .then(
-        (val) => Image.load(val),
-        (err) => console.log('Error while loading depth map: ', err)
+      console.log(`Data type ${dataType} isn't JPG+PNG(1)`)
+    } else {
+      const HEADER_END = 13
+      // 1st byte is the type of image, for now assuming it's JPG+PNG and skip it
+      let lengths = new Uint32Array(
+        await data.slice(1, HEADER_END).arrayBuffer()
       )
-      .then((depth) => {
-        if (!depth) return
-        this.depthSubject.next(depth)
-      })
+      // Get blobs for each of the images + text
+      // image is the video feed in JPG
+      let imageBlob = data.slice(HEADER_END, HEADER_END + lengths[0])
+      // depth is in PNG
+      let depthBlob = data.slice(
+        HEADER_END + lengths[0],
+        HEADER_END + lengths[0] + lengths[1]
+      )
+      let statusBlob = data.slice(
+        HEADER_END + lengths[0] + lengths[1],
+        HEADER_END + lengths[0] + lengths[1] + lengths[2]
+      )
 
-    statusBlob.text().then(
-      (val) => this.dataSubject.next(JSON.parse(val)),
-      (err) => console.log('Error while getting status:', err)
-    )
+      imageBlob.arrayBuffer().then(
+        (val) => {
+          let imData = {
+            data: Buffer.from(val),
+            type: 'image/jpg'
+          }
+          this.imageSubject.next(imData)
+        },
+        (err) => console.log('Error while sending image:', err)
+      )
+
+      depthBlob
+        .arrayBuffer()
+        .then(
+          (val) => Image.load(val),
+          (err) => console.log('Error while loading depth map: ', err)
+        )
+        .then((depth) => {
+          if (!depth) return
+          this.depthSubject.next(depth)
+        })
+
+      statusBlob.text().then(
+        (val) => this.dataSubject.next(JSON.parse(val)),
+        (err) => console.log('Error while getting status:', err)
+      )
+    }
   }
 
   stateSubject = new ReplaySubject<RobotState>(1)
