@@ -88,7 +88,7 @@ export const ReactResponsiveRgbStream = ({
           })
         }
       } catch (err) {
-        console.log(`Error occured while decoding websocket message ${err}`)
+        console.log(`Error occured while decoding websocket message. ${ev.data}`)
       }
     }
 
