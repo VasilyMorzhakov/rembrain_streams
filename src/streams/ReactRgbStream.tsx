@@ -53,9 +53,9 @@ export const ReactRgbStream = ({
       websocket.onmessage = async (ev) => {
         try {
           const { data } = ev
-          const dataType = new Uint8Array(await data.slice(0, 1).arrayBuffer())[0]
-          console.log(dataType)
-          if (dataType == 2) {
+          //const dataType = new Uint8Array(await data.slice(0, 1).arrayBuffer())[0]
+          //console.log(dataType)
+          //if (dataType == 2) {
             const L1 = new Uint8Array(await data.slice(1, 4).arrayBuffer())
             const jpgLength = L1.reduce((a, b) => parseInt(a.toString() + b.toString()), 0)
             const jpgBlob = data.slice(9, 9 + jpgLength)
@@ -72,6 +72,7 @@ export const ReactRgbStream = ({
                 setImage(newImg)
               }
             })
+            /*
           } else {
             //
             data.arrayBuffer().then((val: ArrayBuffer) => {
@@ -86,7 +87,7 @@ export const ReactRgbStream = ({
                 setImage(newImg)
               }
             })
-          }
+          }*/
         } catch (e) {
           handleError(ev.data)
         }
