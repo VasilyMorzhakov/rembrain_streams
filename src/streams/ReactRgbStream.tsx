@@ -54,8 +54,8 @@ export const ReactRgbStream = ({
         try {
           const { data } = ev
           const dataType = new Uint8Array(await data.slice(0, 1).arrayBuffer())[0]
-          console.log(dataType)
-          if (exchange === "rgbjpeg") {
+          //console.log(dataType)
+          //if (exchange === "rgbjpeg") {
             
             const L1 = new Uint8Array(await data.slice(1, 4).arrayBuffer())
             const jpgLength = L1.reduce((a, b) => parseInt(a.toString() + b.toString()), 0)
@@ -73,9 +73,8 @@ export const ReactRgbStream = ({
                 setImage(newImg)
               }
             })
-            
-          } else {
-            
+            /*
+          } else {            
             data.arrayBuffer().then((val: ArrayBuffer) => {
               var imData = {
                 data: Buffer.from(val),
@@ -88,7 +87,7 @@ export const ReactRgbStream = ({
                 setImage(newImg)
               }
             })
-          }
+          }*/
         } catch (e) {
           handleError(ev.data)
         }
