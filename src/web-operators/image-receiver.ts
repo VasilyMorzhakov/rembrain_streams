@@ -77,7 +77,7 @@ export class WebSocketImageReceiver implements IImageReceiver {
       return
     }
     let dataType = new Uint8Array(await data.slice(0, 1).arrayBuffer())[0]
-    if (dataType != 1) {
+    if (dataType != 2) {
       console.log(`Data type ${dataType} isn't JPG+PNG(1)`)
     } else {
       const HEADER_END = 13
