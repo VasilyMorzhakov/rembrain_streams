@@ -55,7 +55,7 @@ export const ReactRgbStream = ({
           const { data } = ev
           const dataType = new Uint8Array(await data.slice(0, 1).arrayBuffer())[0]
 
-          if (dataType == 1) {
+          if (dataType == 2) {
             const L1 = new Uint8Array(await data.slice(1, 4).arrayBuffer())
             const jpgLength = L1.reduce((a, b) => parseInt(a.toString() + b.toString()), 0)
             const jpgBlob = data.slice(9, 9 + jpgLength)
