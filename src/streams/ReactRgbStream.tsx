@@ -139,7 +139,7 @@ export const ReactRgbStream = ({
     setImage(new Image())
     drawPlaceholder()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [robotName])
+  }, [robotName, exchange, token])
 
   useEffect(() => {
     if (!isOn) {
