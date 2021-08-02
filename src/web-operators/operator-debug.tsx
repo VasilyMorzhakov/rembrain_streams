@@ -215,8 +215,10 @@ export class OperatorDebug extends React.Component<IOperatorProps, IOperatorStat
     }
 
     moveJoint(jointNum: number, degrees: number) {
-        let joints = this.state.joints;
-        joints[jointNum] += this.degreesToRadian(degrees);
+        // All joint values are sent out in degrees
+        let joints = this.state.joints.map(j => this.radianToDegrees(j));
+        joints[jointNum] += degrees;
+        // joints[jointNum] += this.degreesToRadian(degrees);
         let cmd = new CommandSetJoints(joints, this.robotData);
         this._networkOperator.enqueueCommand(cmd);
         // console.log(joints);
