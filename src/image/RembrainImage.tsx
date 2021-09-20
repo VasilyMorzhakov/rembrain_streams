@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 
-export const RembrainImage = ({ token, url, width, height, alt="Image" }:
+export const RembrainImage = ({ token, url, width, height, alt="Image", onLoad=()=>{}, onError=()=>{} }:
   {
     token: string,
     url: string,
     width: number,
     height: number,
-    alt: string
+    alt: string,
+    onLoad: ()=>any,
+    onError: ()=>any,
   }) => {
   const [src, setSrc] = useState("")
   useEffect(() => {
@@ -23,6 +25,8 @@ export const RembrainImage = ({ token, url, width, height, alt="Image" }:
   }, [url])
   return (
     <img
+      onLoad={onLoad}
+      onError={onError}
       src={src && src}
       id='rembrainImage'
       className='rembrain-image'
