@@ -7,8 +7,8 @@ export const RembrainImage = ({ token, url, width, height, alt="Image", onLoad=(
     width: number,
     height: number,
     alt: string,
-    onLoad: ()=>any,
-    onError: ()=>any,
+    onLoad: any,
+    onError: any,
   }) => {
   const [src, setSrc] = useState("")
   useEffect(() => {
