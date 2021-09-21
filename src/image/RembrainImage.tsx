@@ -20,13 +20,12 @@ export const RembrainImage = ({ token, url, width, height, alt="Image", onLoad=(
           const objectUrl = urlCreator.createObjectURL(data)
           setSrc(objectUrl)
         })
-      })
+      }).catch(onError)
     }
   }, [url])
   return (
     <img
       onLoad={onLoad}
-      onError={onError}
       src={src && src}
       id='rembrainImage'
       className='rembrain-image'
