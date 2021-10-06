@@ -238,7 +238,7 @@ export class OperatorDebug extends React.Component<IOperatorProps, IOperatorStat
         return (
             <div className="debug-operator-container">
                 <div className="camera-view">
-                    <img width="1280" height="720"
+                    <img width="854" height="480"
                          src={this.state.imageData}/>
                 </div>
                 <div className="controls">

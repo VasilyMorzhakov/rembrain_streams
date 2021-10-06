@@ -16,6 +16,6 @@
     "noUnusedParameters": true,
     "allowSyntheticDefaultImports": true,
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist", "example"]
+  "include": ["src", "test"],
+    "exclude": ["node_modules", "rollup.*.js", "dist"]
 }
