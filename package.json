@@ -1,18 +1,17 @@
 {
   "name": "rembrain_streams",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "description": "Rembrain React stream components",
   "author": "",
   "license": "",
   "repository": "",
   "main": "dist/index.js",
-  "module": "dist/index.modern.js",
-  "source": "src/index.tsx",
   "engines": {
     "node": ">=10"
   },
   "scripts": {
-    "build": "rollup -c && rollup -c 'rollup.config.standalone.js'",
+    "build": "rollup -c",
+    "build2": "npm run build",
     "start": "rollup -c 'rollup.config.dev.js' -w & serve serve",
     "serve": "serve"
   },
