@@ -14,6 +14,10 @@ interface IOperatorState {
         [tag: string]: boolean;
     };
     joints: number[];
+    commandList: any[];
+    commandNameInput: string;
+    commandOpInput: string;
+    state_machine: string;
 }
 export declare class OperatorDebug extends React.Component<IOperatorProps, IOperatorState> {
     private _imageReceiver;
@@ -25,6 +29,9 @@ export declare class OperatorDebug extends React.Component<IOperatorProps, IOper
     constructor(props: IOperatorProps);
     connectionSettingChanged(e: React.ChangeEvent<HTMLInputElement>): void;
     componentWillUnmount(): void;
+    componentDidMount(): void;
+    addCommand(): void;
+    removeCommand(name: any): void;
     connect(): void;
     disconnect(): void;
     gotCameraData(cameraData: RobotImageData): void;

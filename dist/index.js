@@ -142,6 +142,15 @@ function __generator(thisArg, body) {
     }
 }
 
+/** @deprecated */
+function __spreadArrays() {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+}
+
 var ReactRgbStream = function (_a) {
     var _b = _a.posX, posX = _b === void 0 ? 0 : _b, _c = _a.posY, posY = _c === void 0 ? 0 : _c, width = _a.width, height = _a.height, token = _a.token, websocketURL = _a.websocketURL, robotName = _a.robotName, _d = _a.handleError, handleError = _d === void 0 ? function () { } : _d, _e = _a.isOn, isOn = _e === void 0 ? true : _e, _f = _a.placeholderText, placeholderText = _f === void 0 ? 'No Image' : _f, _g = _a.exchange, exchange = _g === void 0 ? 'rgbjpeg' : _g;
     var canvasRef = React.useRef(null);
@@ -1189,7 +1198,7 @@ var StrokeStyle;
     StrokeStyle[StrokeStyle["NoImage_Text"] = 7] = "NoImage_Text";
 })(StrokeStyle || (StrokeStyle = {}));
 
-___$insertStyle(".debug-operator-container {\n  display: flex;\n  flex-direction: row;\n}\n.debug-operator-container .controls {\n  display: inline-flex;\n  vertical-align: top;\n  flex-direction: column-reverse;\n  margin-right: 10px;\n  margin-left: 10px;\n}\n.debug-operator-container .operator-buttons {\n  flex-grow: 1;\n}\n.debug-operator-container .input-container {\n  border: 1px solid black;\n  padding: 5px;\n  margin-bottom: 5px;\n  align-items: center;\n  grid-auto-rows: 25px;\n  grid-row-gap: 5px;\n  grid-column-gap: 5px;\n  color: black !important;\n}\n.debug-operator-container .connection {\n  display: grid;\n  grid-template-columns: 0.7fr 2fr;\n}\n.debug-operator-container .connection > span {\n  text-align: right;\n}\n.debug-operator-container .joint-controls {\n  display: grid;\n  grid-template-columns: 20px repeat(2, 1fr) 100px repeat(2, 1fr);\n  grid-column-gap: 5px;\n  align-items: center;\n}\n.debug-operator-container .joint-controls .joint-num {\n  text-align: right;\n}\n.debug-operator-container .joint-controls .joint-degrees {\n  text-align: center;\n}\n.debug-operator-container .joint-controls + .joint-controls {\n  margin-top: 10px;\n}\n.debug-operator-container .vacuum {\n  display: grid;\n  grid-template-columns: repeat(2, 1fr);\n}\n.debug-operator-container .calibration {\n  border: 1px solid black;\n  padding: 5px;\n  margin-bottom: 5px;\n  align-items: center;\n}\n.debug-operator-container .calibration > div + div {\n  margin-top: 10px;\n}\n.debug-operator-container .calibration > .tags {\n  display: grid;\n  grid-auto-rows: 25px;\n  grid-column-gap: 5px;\n}\n.debug-operator-container .btn-send-home {\n  width: 100%;\n  margin-top: 5px;\n}\n.debug-operator-container .depth-view {\n  width: 320px;\n  height: 180px;\n}\n.debug-operator-container .camera-view {\n  width: 854px;\n  height: 480px;\n}");
+___$insertStyle(".debug-operator-container {\n  display: flex;\n  flex-direction: row;\n}\n.debug-operator-container .controls {\n  display: inline-flex;\n  vertical-align: top;\n  flex-direction: column-reverse;\n  margin-right: 10px;\n  margin-left: 10px;\n}\n.debug-operator-container .operator-buttons {\n  flex-grow: 1;\n}\n.debug-operator-container .input-container {\n  border: 1px solid black;\n  border-radius: 5px;\n  padding: 5px;\n  margin-bottom: 5px;\n  align-items: center;\n  grid-auto-rows: 25px;\n  grid-row-gap: 5px;\n  grid-column-gap: 5px;\n  color: black !important;\n}\n.debug-operator-container .connection {\n  display: grid;\n  grid-template-columns: 0.7fr 2fr;\n}\n.debug-operator-container .connection > span {\n  text-align: right;\n}\n.debug-operator-container .joint-controls {\n  display: grid;\n  grid-template-columns: 20px repeat(2, 1fr) 100px repeat(2, 1fr);\n  grid-column-gap: 5px;\n  align-items: center;\n}\n.debug-operator-container .joint-controls .joint-num {\n  text-align: right;\n}\n.debug-operator-container .joint-controls .joint-degrees {\n  text-align: center;\n}\n.debug-operator-container .joint-controls + .joint-controls {\n  margin-top: 10px;\n}\n.debug-operator-container .vacuum {\n  display: grid;\n  grid-template-columns: repeat(2, 1fr);\n}\n.debug-operator-container .calibration {\n  border: 1px solid black;\n  border-radius: 5px;\n  padding: 5px;\n  margin-bottom: 5px;\n  align-items: center;\n}\n.debug-operator-container .calibration > div + div {\n  margin-top: 10px;\n}\n.debug-operator-container .calibration > .tags {\n  display: grid;\n  grid-auto-rows: 25px;\n  grid-column-gap: 5px;\n}\n.debug-operator-container .btn-send-home {\n  width: 100%;\n  margin-top: 5px;\n}\n.debug-operator-container .depth-view {\n  width: 320px;\n  height: 180px;\n}\n.debug-operator-container .camera-view {\n  width: 854px;\n  height: 480px;\n}\n.debug-operator-container .debug-command-container {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n}\n.debug-operator-container .command-item-container {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  height: max-content !important;\n}\n.debug-operator-container .command-item {\n  margin: 5px;\n  font-size: 1.1em;\n  padding: 6px;\n  min-width: 100px;\n  flex-grow: 1;\n  text-align: center;\n  border: 1px solid black;\n  border-radius: 5px;\n  color: black !important;\n  height: max-content !important;\n  -webkit-user-select: none;\n  -khtml-user-select: none;\n  -moz-user-select: none;\n  -o-user-select: none;\n  user-select: none;\n  cursor: pointer;\n}\n.debug-operator-container .command-input {\n  width: max-content;\n  padding: 6px;\n  border: 1px solid black;\n  border-radius: 5px;\n  color: black !important;\n  height: max-content !important;\n}\n.debug-operator-container .command-input-item {\n  display: flex;\n  flex-direction: column;\n}\n.debug-operator-container .command-input-item > span {\n  margin-top: 5px;\n  margin-bottom: 5px;\n}\n.debug-operator-container .command-item:hover {\n  background-color: lightgray;\n}\n.debug-operator-container .debug-operator-info-container {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around;\n}");
 
 var OperatorDebug = /** @class */ (function (_super) {
     __extends(OperatorDebug, _super);
@@ -1215,6 +1224,10 @@ var OperatorDebug = /** @class */ (function (_super) {
             isCalibrating: false,
             tagsCalibrated: tagSets,
             joints: [],
+            commandList: [],
+            commandNameInput: "",
+            commandOpInput: "",
+            state_machine: ""
         };
         return _this;
     }
@@ -1224,6 +1237,27 @@ var OperatorDebug = /** @class */ (function (_super) {
     };
     OperatorDebug.prototype.componentWillUnmount = function () {
         this.disconnect();
+    };
+    OperatorDebug.prototype.componentDidMount = function () {
+        this.connect();
+        var commands = JSON.parse(localStorage.getItem("rembrain_debug_operator_commands"));
+        commands && this.setState({ commandList: commands });
+    };
+    OperatorDebug.prototype.addCommand = function () {
+        var _a = this.state, name = _a.commandNameInput, op = _a.commandOpInput;
+        if (name && op) {
+            var newList = __spreadArrays(this.state.commandList, [{ name: name, op: op }]);
+            this.setState({ commandList: newList });
+            localStorage.setItem("rembrain_debug_operator_commands", JSON.stringify(newList));
+            this.setState({ commandNameInput: "", commandOpInput: "" });
+        }
+    };
+    OperatorDebug.prototype.removeCommand = function (name) {
+        var idx = this.state.commandList.findIndex(function (el) { return el.name === name; });
+        var commandList = this.state.commandList;
+        var newList = __spreadArrays(commandList.slice(0, idx), commandList.slice(idx + 1));
+        this.setState({ commandList: newList });
+        localStorage.setItem("rembrain_debug_operator_commands", JSON.stringify(newList));
     };
     OperatorDebug.prototype.connect = function () {
         var _this = this;
@@ -1281,7 +1315,7 @@ var OperatorDebug = /** @class */ (function (_super) {
         // console.log("State:", state);
         this.robotState = state;
         if (this.robotState.joints) {
-            this.setState({ joints: state.joints });
+            this.setState({ joints: state.joints, state_machine: state.state_machine });
         }
     };
     OperatorDebug.prototype.gotRobotData = function (data) {
@@ -1372,16 +1406,32 @@ var OperatorDebug = /** @class */ (function (_super) {
         var _this = this;
         return (React__namespace.createElement("div", { className: "debug-operator-container" },
             React__namespace.createElement("div", { className: "camera-view" },
-                React__namespace.createElement("img", { width: "854", height: "480", src: this.state.imageData })),
+                React__namespace.createElement("img", { width: "854", height: "480", src: this.state.imageData }),
+                React__namespace.createElement("div", { className: "debug-command-container", onContextMenu: function (e) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        return false;
+                    } },
+                    React__namespace.createElement("div", { className: "command-input" },
+                        React__namespace.createElement("div", { className: "command-input-item" },
+                            React__namespace.createElement("span", null, "Command name"),
+                            React__namespace.createElement("input", { onChange: function (e) {
+                                    _this.setState({ commandNameInput: e.target.value });
+                                }, value: this.state.commandNameInput })),
+                        React__namespace.createElement("div", { className: "command-input-item" },
+                            React__namespace.createElement("span", null, "Command OP"),
+                            React__namespace.createElement("input", { value: this.state.commandOpInput, onChange: function (e) {
+                                    _this.setState({ commandOpInput: e.target.value });
+                                } })),
+                        React__namespace.createElement("button", { style: { marginTop: 10 }, onClick: function () { return _this.addCommand(); } }, "Add command")),
+                    React__namespace.createElement("div", { className: "command-item-container" }, this.state.commandList.map(function (command) {
+                        return React__namespace.createElement("div", { onMouseUp: function (e) {
+                                if (e.button == 2) {
+                                    _this.removeCommand(command.name);
+                                }
+                            }, className: "command-item", onClick: function () { return _this.sendOpClosure(command.op); } }, command.name);
+                    })))),
             React__namespace.createElement("div", { className: "controls" },
-                React__namespace.createElement("span", null, "Connection"),
-                React__namespace.createElement("div", { className: "input-container connection" },
-                    React__namespace.createElement("span", null, "Url:"),
-                    React__namespace.createElement("input", { name: "wsUrl", value: this.state.wsUrl, onChange: function (e) { return _this.connectionSettingChanged(e); } }),
-                    React__namespace.createElement("span", null, "Robot:"),
-                    React__namespace.createElement("input", { name: "robotName", value: this.state.robotName, onChange: function (e) { return _this.connectionSettingChanged(e); } }),
-                    React__namespace.createElement("button", { onClick: function () { return _this.disconnect(); }, disabled: !this.state.connected }, "Disconnect"),
-                    React__namespace.createElement("button", { onClick: function () { return _this.connect(); }, disabled: this.state.connected }, "Connect")),
                 React__namespace.createElement("div", { className: "operator-buttons" },
                     this.renderJoints(),
                     React__namespace.createElement("span", null, "Vacuum"),
@@ -1396,8 +1446,9 @@ var OperatorDebug = /** @class */ (function (_super) {
                         this.renderTagButtons(),
                         React__namespace.createElement("div", null,
                             React__namespace.createElement("button", { onClick: function () { return _this.finishCalibration(); }, disabled: !this.canFinishCalibration() }, "Finish calibration"))),
-                    React__namespace.createElement("div", null,
-                        React__namespace.createElement("span", null, "FPS: " + this.state.fps.toFixed(2)))),
+                    React__namespace.createElement("div", { className: "debug-operator-info-container" },
+                        React__namespace.createElement("span", null, "FPS: " + this.state.fps.toFixed(2)),
+                        React__namespace.createElement("span", null, "State: " + this.state.state_machine))),
                 React__namespace.createElement("div", null,
                     React__namespace.createElement("button", { className: "btn-send-home", onClick: this.sendOpClosure("go_home_safely"), disabled: !this.state.connected }, "Send home")),
                 React__namespace.createElement("div", { className: "depth-view" },

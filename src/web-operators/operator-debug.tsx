@@ -1,3 +1,4 @@
+import { stat } from "fs";
 import * as React from "react";
 import { Subscription } from "rxjs";
 import { CommandBase } from "./commands/command-base";
@@ -7,7 +8,6 @@ import { IOperatorProps, RobotData, RobotImageData, RobotState } from "./entitie
 import { IImageReceiver, WebSocketImageReceiver } from "./image-receiver";
 import { INetworkOperator, NetworkOperator } from "./network-operator";
 import "./operator-debug.scss";
-
 
 interface IOperatorState {
     wsUrl: string,
@@ -20,6 +20,10 @@ interface IOperatorState {
     isCalibrating: boolean,
     tagsCalibrated: {[tag: string]: boolean},
     joints: number[],
+    commandList: any[],
+    commandNameInput: string,
+    commandOpInput: string,
+    state_machine: string,
 }
 
 export class OperatorDebug extends React.Component<IOperatorProps, IOperatorState> {
@@ -51,6 +55,10 @@ export class OperatorDebug extends React.Component<IOperatorProps, IOperatorStat
             isCalibrating: false,
             tagsCalibrated: tagSets,
             joints: [],
+            commandList:[],
+            commandNameInput:"",
+            commandOpInput:"",
+            state_machine:""
         }
     }
 
@@ -62,6 +70,31 @@ export class OperatorDebug extends React.Component<IOperatorProps, IOperatorStat
 
     componentWillUnmount() {
         this.disconnect();
+    }
+
+    componentDidMount() {
+        this.connect();
+        const commands = JSON.parse(localStorage.getItem("rembrain_debug_operator_commands"))
+        commands && this.setState({commandList: commands})
+    }
+
+    addCommand () {
+        const {commandNameInput: name, commandOpInput: op} = this.state;
+        if (name && op) {
+            const newList = [...this.state.commandList, {name,op}]
+            this.setState({commandList: newList})    
+            localStorage.setItem("rembrain_debug_operator_commands",JSON.stringify(newList))
+            this.setState({commandNameInput: "", commandOpInput: ""})
+        }
+        
+    }
+
+    removeCommand (name) {
+        const idx = this.state.commandList.findIndex((el) => el.name===name)
+        const {commandList} = this.state
+        const newList = [...commandList.slice(0,idx), ...commandList.slice(idx+1)]
+        this.setState({ commandList: newList})
+        localStorage.setItem("rembrain_debug_operator_commands",JSON.stringify(newList))
     }
 
     connect() {
@@ -97,6 +130,8 @@ export class OperatorDebug extends React.Component<IOperatorProps, IOperatorStat
         });
     }
 
+    
+
     gotCameraData(cameraData: RobotImageData) {
         if (cameraData === undefined) return;
         let buf = cameraData.data.toString('base64');
@@ -124,7 +159,8 @@ export class OperatorDebug extends React.Component<IOperatorProps, IOperatorStat
         // console.log("State:", state);
         this.robotState = state;
         if (this.robotState.joints) {
-            this.setState({joints: state.joints});
+            
+            this.setState({joints: state.joints, state_machine: state.state_machine});
         }
     }
 
@@ -240,10 +276,50 @@ export class OperatorDebug extends React.Component<IOperatorProps, IOperatorStat
                 <div className="camera-view">
                     <img width="854" height="480"
                          src={this.state.imageData}/>
+                         <div className="debug-command-container" onContextMenu={(e) => {
+                                 e.stopPropagation()
+                                 e.preventDefault()
+                                 return false
+                             }}>
+                             <div className="command-input">
+                                <div className="command-input-item">
+                                    <span>Command name</span>
+                                    <input 
+                                        onChange={(e) => {
+                                            this.setState({commandNameInput:e.target.value})
+                                        }}
+                                        value={this.state.commandNameInput}/>
+                                </div>
+                                <div className="command-input-item">
+                                    <span>Command OP</span>
+                                    <input
+                                        value={this.state.commandOpInput}
+                                        onChange={(e) => {
+                                            this.setState({commandOpInput:e.target.value})
+                                        }}
+                                    />
+                                </div>
+                                    <button style={{marginTop:10}} onClick={() => this.addCommand()}>Add command</button>
+                             </div>
+                             <div className="command-item-container">
+                                {this.state.commandList.map(command => 
+                                        <div 
+                                            onMouseUp={(e) => {
+                                                if (e.button==2) {
+                                                    this.removeCommand(command.name)
+                                                }
+                                            }}
+                                            className="command-item" onClick={() => this.sendOpClosure(command.op)}>
+                                            {command.name}
+                                        </div>
+                                        )
+                                }
+                             </div>
+                         </div>
                 </div>
                 <div className="controls">
-                <span>Connection</span>
-                <div className="input-container connection">
+                {/*<span>Connection</span>*/}
+                {/*<div className="input-container connection">
                     <span>Url:</span>
                     <input name="wsUrl"
                            value={this.state.wsUrl}
@@ -252,10 +328,10 @@ export class OperatorDebug extends React.Component<IOperatorProps, IOperatorStat
                     <input name="robotName"
                            value={this.state.robotName} 
                            onChange={(e) => this.connectionSettingChanged(e)}/>
-                    {/* <span>Token:</span>
+                    <span>Token:</span>
                     <input name="accessToken"
                            value={this.state.accessToken} 
-                           onChange={(e) => this.connectionSettingChanged(e)}/> */}
+                           onChange={(e) => this.connectionSettingChanged(e)}/>
                     <button onClick={() => this.disconnect()}
                             disabled={!this.state.connected}>
                         Disconnect
@@ -263,8 +339,8 @@ export class OperatorDebug extends React.Component<IOperatorProps, IOperatorStat
                     <button onClick={() => this.connect()}
                             disabled={this.state.connected}>
                         Connect
-                    </button>
-                </div>
+                        </button>
+                </div>*/}
                 <div className="operator-buttons">
 
                     {this.renderJoints()}
@@ -300,8 +376,9 @@ export class OperatorDebug extends React.Component<IOperatorProps, IOperatorStat
                             </button>
                         </div>
                     </div>
-                    <div>
+                    <div className="debug-operator-info-container">
                         <span>{`FPS: ${this.state.fps.toFixed(2)}`}</span>
+                        <span>{`State: ${this.state.state_machine}`}</span>
                     </div>
                 </div>
                 <div>

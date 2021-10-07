@@ -9973,6 +9973,15 @@
 	    };
 	  }
 	}
+	/** @deprecated */
+
+	function __spreadArrays() {
+	  for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+
+	  for (var r = Array(s), k = 0, i = 0; i < il; i++) for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) r[k] = a[j];
+
+	  return r;
+	}
 
 	var Rectangle = /** @class */ (function () {
 	    function Rectangle(x, y, w, h) {
@@ -55692,7 +55701,7 @@ ${indent}columns: ${matrix.columns}
 	    StrokeStyle[StrokeStyle["NoImage_Text"] = 7] = "NoImage_Text";
 	})(StrokeStyle || (StrokeStyle = {}));
 
-	___$insertStyle(".debug-operator-container {\n  display: flex;\n  flex-direction: row;\n}\n.debug-operator-container .controls {\n  display: inline-flex;\n  vertical-align: top;\n  flex-direction: column-reverse;\n  margin-right: 10px;\n  margin-left: 10px;\n}\n.debug-operator-container .operator-buttons {\n  flex-grow: 1;\n}\n.debug-operator-container .input-container {\n  border: 1px solid black;\n  padding: 5px;\n  margin-bottom: 5px;\n  align-items: center;\n  grid-auto-rows: 25px;\n  grid-row-gap: 5px;\n  grid-column-gap: 5px;\n  color: black !important;\n}\n.debug-operator-container .connection {\n  display: grid;\n  grid-template-columns: 0.7fr 2fr;\n}\n.debug-operator-container .connection > span {\n  text-align: right;\n}\n.debug-operator-container .joint-controls {\n  display: grid;\n  grid-template-columns: 20px repeat(2, 1fr) 100px repeat(2, 1fr);\n  grid-column-gap: 5px;\n  align-items: center;\n}\n.debug-operator-container .joint-controls .joint-num {\n  text-align: right;\n}\n.debug-operator-container .joint-controls .joint-degrees {\n  text-align: center;\n}\n.debug-operator-container .joint-controls + .joint-controls {\n  margin-top: 10px;\n}\n.debug-operator-container .vacuum {\n  display: grid;\n  grid-template-columns: repeat(2, 1fr);\n}\n.debug-operator-container .calibration {\n  border: 1px solid black;\n  padding: 5px;\n  margin-bottom: 5px;\n  align-items: center;\n}\n.debug-operator-container .calibration > div + div {\n  margin-top: 10px;\n}\n.debug-operator-container .calibration > .tags {\n  display: grid;\n  grid-auto-rows: 25px;\n  grid-column-gap: 5px;\n}\n.debug-operator-container .btn-send-home {\n  width: 100%;\n  margin-top: 5px;\n}\n.debug-operator-container .depth-view {\n  width: 320px;\n  height: 180px;\n}\n.debug-operator-container .camera-view {\n  width: 854px;\n  height: 480px;\n}");
+	___$insertStyle(".debug-operator-container {\n  display: flex;\n  flex-direction: row;\n}\n.debug-operator-container .controls {\n  display: inline-flex;\n  vertical-align: top;\n  flex-direction: column-reverse;\n  margin-right: 10px;\n  margin-left: 10px;\n}\n.debug-operator-container .operator-buttons {\n  flex-grow: 1;\n}\n.debug-operator-container .input-container {\n  border: 1px solid black;\n  border-radius: 5px;\n  padding: 5px;\n  margin-bottom: 5px;\n  align-items: center;\n  grid-auto-rows: 25px;\n  grid-row-gap: 5px;\n  grid-column-gap: 5px;\n  color: black !important;\n}\n.debug-operator-container .connection {\n  display: grid;\n  grid-template-columns: 0.7fr 2fr;\n}\n.debug-operator-container .connection > span {\n  text-align: right;\n}\n.debug-operator-container .joint-controls {\n  display: grid;\n  grid-template-columns: 20px repeat(2, 1fr) 100px repeat(2, 1fr);\n  grid-column-gap: 5px;\n  align-items: center;\n}\n.debug-operator-container .joint-controls .joint-num {\n  text-align: right;\n}\n.debug-operator-container .joint-controls .joint-degrees {\n  text-align: center;\n}\n.debug-operator-container .joint-controls + .joint-controls {\n  margin-top: 10px;\n}\n.debug-operator-container .vacuum {\n  display: grid;\n  grid-template-columns: repeat(2, 1fr);\n}\n.debug-operator-container .calibration {\n  border: 1px solid black;\n  border-radius: 5px;\n  padding: 5px;\n  margin-bottom: 5px;\n  align-items: center;\n}\n.debug-operator-container .calibration > div + div {\n  margin-top: 10px;\n}\n.debug-operator-container .calibration > .tags {\n  display: grid;\n  grid-auto-rows: 25px;\n  grid-column-gap: 5px;\n}\n.debug-operator-container .btn-send-home {\n  width: 100%;\n  margin-top: 5px;\n}\n.debug-operator-container .depth-view {\n  width: 320px;\n  height: 180px;\n}\n.debug-operator-container .camera-view {\n  width: 854px;\n  height: 480px;\n}\n.debug-operator-container .debug-command-container {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n}\n.debug-operator-container .command-item-container {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  height: max-content !important;\n}\n.debug-operator-container .command-item {\n  margin: 5px;\n  font-size: 1.1em;\n  padding: 6px;\n  min-width: 100px;\n  flex-grow: 1;\n  text-align: center;\n  border: 1px solid black;\n  border-radius: 5px;\n  color: black !important;\n  height: max-content !important;\n  -webkit-user-select: none;\n  -khtml-user-select: none;\n  -moz-user-select: none;\n  -o-user-select: none;\n  user-select: none;\n  cursor: pointer;\n}\n.debug-operator-container .command-input {\n  width: max-content;\n  padding: 6px;\n  border: 1px solid black;\n  border-radius: 5px;\n  color: black !important;\n  height: max-content !important;\n}\n.debug-operator-container .command-input-item {\n  display: flex;\n  flex-direction: column;\n}\n.debug-operator-container .command-input-item > span {\n  margin-top: 5px;\n  margin-bottom: 5px;\n}\n.debug-operator-container .command-item:hover {\n  background-color: lightgray;\n}\n.debug-operator-container .debug-operator-info-container {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around;\n}");
 
 	var OperatorDebug = /** @class */ (function (_super) {
 	    __extends$1(OperatorDebug, _super);
@@ -55718,6 +55727,10 @@ ${indent}columns: ${matrix.columns}
 	            isCalibrating: false,
 	            tagsCalibrated: tagSets,
 	            joints: [],
+	            commandList: [],
+	            commandNameInput: "",
+	            commandOpInput: "",
+	            state_machine: ""
 	        };
 	        return _this;
 	    }
@@ -55727,6 +55740,27 @@ ${indent}columns: ${matrix.columns}
 	    };
 	    OperatorDebug.prototype.componentWillUnmount = function () {
 	        this.disconnect();
+	    };
+	    OperatorDebug.prototype.componentDidMount = function () {
+	        this.connect();
+	        var commands = JSON.parse(localStorage.getItem("rembrain_debug_operator_commands"));
+	        commands && this.setState({ commandList: commands });
+	    };
+	    OperatorDebug.prototype.addCommand = function () {
+	        var _a = this.state, name = _a.commandNameInput, op = _a.commandOpInput;
+	        if (name && op) {
+	            var newList = __spreadArrays(this.state.commandList, [{ name: name, op: op }]);
+	            this.setState({ commandList: newList });
+	            localStorage.setItem("rembrain_debug_operator_commands", JSON.stringify(newList));
+	            this.setState({ commandNameInput: "", commandOpInput: "" });
+	        }
+	    };
+	    OperatorDebug.prototype.removeCommand = function (name) {
+	        var idx = this.state.commandList.findIndex(function (el) { return el.name === name; });
+	        var commandList = this.state.commandList;
+	        var newList = __spreadArrays(commandList.slice(0, idx), commandList.slice(idx + 1));
+	        this.setState({ commandList: newList });
+	        localStorage.setItem("rembrain_debug_operator_commands", JSON.stringify(newList));
 	    };
 	    OperatorDebug.prototype.connect = function () {
 	        var _this = this;
@@ -55784,7 +55818,7 @@ ${indent}columns: ${matrix.columns}
 	        // console.log("State:", state);
 	        this.robotState = state;
 	        if (this.robotState.joints) {
-	            this.setState({ joints: state.joints });
+	            this.setState({ joints: state.joints, state_machine: state.state_machine });
 	        }
 	    };
 	    OperatorDebug.prototype.gotRobotData = function (data) {
@@ -55875,16 +55909,32 @@ ${indent}columns: ${matrix.columns}
 	        var _this = this;
 	        return (react.exports.createElement("div", { className: "debug-operator-container" },
 	            react.exports.createElement("div", { className: "camera-view" },
-	                react.exports.createElement("img", { width: "854", height: "480", src: this.state.imageData })),
+	                react.exports.createElement("img", { width: "854", height: "480", src: this.state.imageData }),
+	                react.exports.createElement("div", { className: "debug-command-container", onContextMenu: function (e) {
+	                        e.stopPropagation();
+	                        e.preventDefault();
+	                        return false;
+	                    } },
+	                    react.exports.createElement("div", { className: "command-input" },
+	                        react.exports.createElement("div", { className: "command-input-item" },
+	                            react.exports.createElement("span", null, "Command name"),
+	                            react.exports.createElement("input", { onChange: function (e) {
+	                                    _this.setState({ commandNameInput: e.target.value });
+	                                }, value: this.state.commandNameInput })),
+	                        react.exports.createElement("div", { className: "command-input-item" },
+	                            react.exports.createElement("span", null, "Command OP"),
+	                            react.exports.createElement("input", { value: this.state.commandOpInput, onChange: function (e) {
+	                                    _this.setState({ commandOpInput: e.target.value });
+	                                } })),
+	                        react.exports.createElement("button", { style: { marginTop: 10 }, onClick: function () { return _this.addCommand(); } }, "Add command")),
+	                    react.exports.createElement("div", { className: "command-item-container" }, this.state.commandList.map(function (command) {
+	                        return react.exports.createElement("div", { onMouseUp: function (e) {
+	                                if (e.button == 2) {
+	                                    _this.removeCommand(command.name);
+	                                }
+	                            }, className: "command-item", onClick: function () { return _this.sendOpClosure(command.op); } }, command.name);
+	                    })))),
 	            react.exports.createElement("div", { className: "controls" },
-	                react.exports.createElement("span", null, "Connection"),
-	                react.exports.createElement("div", { className: "input-container connection" },
-	                    react.exports.createElement("span", null, "Url:"),
-	                    react.exports.createElement("input", { name: "wsUrl", value: this.state.wsUrl, onChange: function (e) { return _this.connectionSettingChanged(e); } }),
-	                    react.exports.createElement("span", null, "Robot:"),
-	                    react.exports.createElement("input", { name: "robotName", value: this.state.robotName, onChange: function (e) { return _this.connectionSettingChanged(e); } }),
-	                    react.exports.createElement("button", { onClick: function () { return _this.disconnect(); }, disabled: !this.state.connected }, "Disconnect"),
-	                    react.exports.createElement("button", { onClick: function () { return _this.connect(); }, disabled: this.state.connected }, "Connect")),
 	                react.exports.createElement("div", { className: "operator-buttons" },
 	                    this.renderJoints(),
 	                    react.exports.createElement("span", null, "Vacuum"),
@@ -55899,8 +55949,9 @@ ${indent}columns: ${matrix.columns}
 	                        this.renderTagButtons(),
 	                        react.exports.createElement("div", null,
 	                            react.exports.createElement("button", { onClick: function () { return _this.finishCalibration(); }, disabled: !this.canFinishCalibration() }, "Finish calibration"))),
-	                    react.exports.createElement("div", null,
-	                        react.exports.createElement("span", null, "FPS: " + this.state.fps.toFixed(2)))),
+	                    react.exports.createElement("div", { className: "debug-operator-info-container" },
+	                        react.exports.createElement("span", null, "FPS: " + this.state.fps.toFixed(2)),
+	                        react.exports.createElement("span", null, "State: " + this.state.state_machine))),
 	                react.exports.createElement("div", null,
 	                    react.exports.createElement("button", { className: "btn-send-home", onClick: this.sendOpClosure("go_home_safely"), disabled: !this.state.connected }, "Send home")),
 	                react.exports.createElement("div", { className: "depth-view" },
@@ -55909,8 +55960,8 @@ ${indent}columns: ${matrix.columns}
 	    return OperatorDebug;
 	}(react.exports.Component));
 
-	var token = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJXQ2tmVTZZMW1vNGVaaHlHaWZnd2dLSmFPS0RjQ0xIVWNvR1NGZ0M1WGFvIn0.eyJleHAiOjE2MzM1OTc0NDAsImlhdCI6MTYzMzUxMTA0MCwianRpIjoiYTRlOTQ1ZTItNmE0ZS00NGNmLTljYWItOGM0MmQ5MDA4NTJkIiwiaXNzIjoiaHR0cHM6Ly9hdXRoLWRldi5yZW1icmFpbi5haTo4NDQzL2F1dGgvcmVhbG1zL3Rlc3QiLCJzdWIiOiI0M2QwNmU2MC1kOTYwLTQ5NzUtODAwZC00ZTdiOThjMTQ5OWQiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJjbGllbnRpZC0zIiwic2Vzc2lvbl9zdGF0ZSI6IjA3ODg0ZjdhLTRkZWYtNGE3Zi05NjliLWIzOGQ0ZjBmZjI2NiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9hdXRoX2Rldi5yZW1icmFpbi5pZTo4NDQzIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJhZG1pbiJdfSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwic2lkIjoiMDc4ODRmN2EtNGRlZi00YTdmLTk2OWItYjM4ZDRmMGZmMjY2IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJ0ZXN0IHRlc3QiLCJncm91cHMiOlsiYWRtaW4iXSwicHJlZmVycmVkX3VzZXJuYW1lIjoidGVzdCIsImdpdmVuX25hbWUiOiJ0ZXN0IiwiZmFtaWx5X25hbWUiOiJ0ZXN0IiwiZW1haWwiOiJ0ZXN0QHRlc3QudGVzdCJ9.RncZg_0U4EGQ1-2UtQR0BB4UM_Ca56KvFHDIwSIm5mcxVnkcmpRvd028-Uj_2t-yV60U447qMPIDTmnhNV46lCojq-1DPuzp1X05W39rLxvMEDHF6CpPCVieMzHuKzHOCpfNNXfzwvHqrKgcK40e8znfHYuspH6nmMYAD1Q4UW34vFbxjPgTuO0cwWcVGffP8LccCfq9hysnRqoNyqTc83EMFQidUUip5cvxabGTI_hd8BNumwM1o9dH2Oto5tEaq5b6Zeb7EgLXS8a5x30EcsEH5ks2veEQsTWQ5t6gDiXPDQiTMBgEwtgicEPx1XeGVHP_EZ6ai_AEa06qFFOMVQ";
-	ReactDOM.render(React.createElement(OperatorDebug, { accessToken: token, dataWSUrl: "wss://monitor-dev.rembrain.ai:5443", robotName: "tester" }), document.getElementById('root-debug'));
+	var token = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJXbHpXa1BWaFZrVkpHdi1TSEJCMGpHZWh1WWZPSEVTLTdwc0hJbUJwdlJVIn0.eyJleHAiOjE2MzM2ODIzODMsImlhdCI6MTYzMzU5NTk4MywianRpIjoiZjcwOTU3YWEtZTRhZi00NWI1LTg4N2YtYzk2YWQ3ZjIzODdkIiwiaXNzIjoiaHR0cHM6Ly9hdXRoLnJlbWJyYWluLmFpOjg0NDMvYXV0aC9yZWFsbXMvaHR0cC1nYXRlIiwic3ViIjoiMzc2ZTI2YjMtZmMwOC00M2I5LWJiZTctMTkzYTljZDkwMTQ5IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiaHR0cC1nYXRlIiwic2Vzc2lvbl9zdGF0ZSI6IjdkZTlkYTY5LTkwZDYtNGJlNC04ZWE0LWNmY2YyMDVlMDk3YyIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9hdXRoLnJlbWJyYWluLmllOjg0NDMvIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJhZG1pbiJdfSwic2NvcGUiOiJlbWFpbCBwcm9maWxlIiwic2lkIjoiN2RlOWRhNjktOTBkNi00YmU0LThlYTQtY2ZjZjIwNWUwOTdjIiwidXBuIjoidGVzdCIsImFkZHJlc3MiOnt9LCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6InRlc3QgdGVzdCIsImdyb3VwcyI6WyJhZG1pbiJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJ0ZXN0IiwiZ2l2ZW5fbmFtZSI6InRlc3QiLCJmYW1pbHlfbmFtZSI6InRlc3QiLCJlbWFpbCI6InRlc3RAZ21haWwuY29tIn0.oXrpIDzxf92jzsoyUpcXg9H0DtMT2m6kAfebRmaKUiltO0gL-90lR9QwLCmXmSrsI-hCTb8MsQwqkatTPEnKJV2mTKqAnp3WOGwR4oi2QUhOXDqCFpDxoR7GyCPN3I4MgMi2xm2FtUlHaDDOKidBVaL28mtjUlq6fqVJzDxzVeMFlBcREP7ME3CR1_XVVmmSCgwc1SLcezkFy4mZ_tzmmq6ZNbm2NkGiC89FrGGz7gjGoymX-odVFPSfXN-jO4u20B8-xzIRPwkIqlippIm-3jbUJKkblor1DgWECGk3mzseH0V1NcymHSZvjj8GKc6zpHV51ME00GhZ0xHyDDI7MQ";
+	ReactDOM.render(React.createElement(OperatorDebug, { accessToken: token, dataWSUrl: "wss://monitor.rembrain.ai:5443", robotName: "aivero_xarm2" }), document.getElementById('root-debug'));
 
 })();
 //# sourceMappingURL=index.js.map
