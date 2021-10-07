@@ -231,7 +231,7 @@ export class OperatorDebug extends React.Component<IOperatorProps, IOperatorStat
     renderJoints() {
         if (this.state.joints.length == 0) return undefined;
         let jointControls = this.state.joints.map((j, i) => 
-            <div key={i} className="joint-controls">
+            <div key={i} className="joint-controls ">
                 <div className="joint-num">{i}:</div>
                 <button onClick={() => this.moveJoint(i, -15)}>-15°</button>
                 <button onClick={() => this.moveJoint(i, -5)}>-5°</button>
