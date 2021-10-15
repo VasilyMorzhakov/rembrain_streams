@@ -1,13 +1,11 @@
 /// <reference types="react" />
-export declare const ReactResponsiveRgbStream: ({ token, websocketURL, robotName, handleError, maxWidth, minWidth, aspectRatio, isOn, placeholderText, exchange }: {
-    token: string;
-    websocketURL: string;
-    robotName: string;
-    handleError: any;
-    maxWidth: number;
-    minWidth: number;
-    aspectRatio: number;
-    isOn: boolean;
-    placeholderText: string;
-    exchange: string;
+declare const _default: ({ isOn, token, websocketURL, robotName, exchange, handleError, ...props }: {
+    [x: string]: any;
+    isOn?: boolean;
+    token: any;
+    websocketURL: any;
+    robotName: any;
+    exchange?: string;
+    handleError?: (error: any) => void;
 }) => JSX.Element;
+export default _default;

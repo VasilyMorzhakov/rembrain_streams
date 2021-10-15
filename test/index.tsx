@@ -1,17 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ReactRgbStream } from '../src';
+import { ReactResponsiveRgbStream, ReactRgbStream } from '../src';
 
 
 const props = {
-    width: 400,
-    height: 400,
+    minWidth: 400,
+    maxWidth: 800,
+    aspectRatio: 1/1,
     token: "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJXbHpXa1BWaFZrVkpHdi1TSEJCMGpHZWh1WWZPSEVTLTdwc0hJbUJwdlJVIn0.eyJleHAiOjE2MzQzNzA2MzUsImlhdCI6MTYzNDI4NDIzNSwianRpIjoiMTBmYjJiZGQtYzE1ZS00YWRhLThmOTAtNDU1ZjJiNzU2ZWY1IiwiaXNzIjoiaHR0cHM6Ly9hdXRoLnJlbWJyYWluLmFpOjg0NDMvYXV0aC9yZWFsbXMvaHR0cC1nYXRlIiwic3ViIjoiMzc2ZTI2YjMtZmMwOC00M2I5LWJiZTctMTkzYTljZDkwMTQ5IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiaHR0cC1nYXRlIiwic2Vzc2lvbl9zdGF0ZSI6IjhhOTI5ZWQ4LTZhYjUtNDYzYS05OWMwLTI4NTI4MWU1ZGQ2YiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9hdXRoLnJlbWJyYWluLmllOjg0NDMvIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJhZG1pbiJdfSwic2NvcGUiOiJlbWFpbCBwcm9maWxlIiwic2lkIjoiOGE5MjllZDgtNmFiNS00NjNhLTk5YzAtMjg1MjgxZTVkZDZiIiwidXBuIjoidGVzdCIsImFkZHJlc3MiOnt9LCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6InRlc3QgdGVzdCIsImdyb3VwcyI6WyJhZG1pbiJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJ0ZXN0IiwiZ2l2ZW5fbmFtZSI6InRlc3QiLCJmYW1pbHlfbmFtZSI6InRlc3QiLCJlbWFpbCI6InRlc3RAZ21haWwuY29tIn0.UMzkzVoTFXnV306URaJmy6eCT8Z9Pm9VyQu4kTNrbl6TE7YMzMlXSA_HJS8QGif0gXVW5bpYvC9ctQZ8T1a8AIAUhXV5-szkphpGdMjpEpn63jkLvMoLADUtSSZbWmVmdZjof9A__wmOFSR4PgHb2NU7d77dWBMlVltRpu4uWiVeSbEjdIQZiV1xAyBArOWWkq1PfvWFt5TZk3b5I7uip4tPVvmP6rgK-2VsSq3aqp7cT8ERq85K1pM_x9dWay2CkzwfV09FMc_ARhMYIyUye8Zm4rH5z8dwsWkaTp4nP54m0RXyVkBBc0O1o-EjUibSuWR7_BOGy74o4MtVA6HEJA",
     websocketURL: "wss://monitor.rembrain.ai:5443",
     robotName: "aivero_xarm2",
     exchange: "camera0"
 }
 ReactDOM.render(
-    <ReactRgbStream {...props} />,
+    <ReactResponsiveRgbStream {...props} />,
     document.getElementById('root-debug')
 );

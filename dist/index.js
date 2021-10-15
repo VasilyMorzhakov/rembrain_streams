@@ -14,10 +14,10 @@ function ___$insertStyle(css) {
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var React = require('react');
+var _ = require('buffer/');
 var fit = require('canvas-fit');
 var rxjs = require('rxjs');
 var imageJs = require('image-js');
-var _ = require('buffer/');
 var operators = require('rxjs/operators');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -161,25 +161,25 @@ var WsHOC = function (Canvas) { return function (_a) {
                 websocket.send(JSON.stringify(controlPacket));
             };
             websocket.onmessage = function (ev) { return __awaiter(void 0, void 0, void 0, function () {
-                var data, dataType, _a, lengths, _b, jpgBlob;
-                return __generator(this, function (_c) {
-                    switch (_c.label) {
+                var data, dataType, _a, lengths, _b, jpgBlob, HEADER_END, lengths, _c, imageBlob;
+                return __generator(this, function (_d) {
+                    switch (_d.label) {
                         case 0:
-                            _c.trys.push([0, 5, , 6]);
+                            _d.trys.push([0, 6, , 7]);
                             data = ev.data;
                             _a = Uint8Array.bind;
                             return [4 /*yield*/, data.slice(0, 1).arrayBuffer()];
                         case 1:
-                            dataType = new (_a.apply(Uint8Array, [void 0, _c.sent()]))()[0];
+                            dataType = new (_a.apply(Uint8Array, [void 0, _d.sent()]))()[0];
                             if (!(dataType === 2)) return [3 /*break*/, 3];
                             _b = Uint32Array.bind;
                             return [4 /*yield*/, data.slice(1, 13).arrayBuffer()];
                         case 2:
-                            lengths = new (_b.apply(Uint32Array, [void 0, _c.sent()]))();
+                            lengths = new (_b.apply(Uint32Array, [void 0, _d.sent()]))();
                             jpgBlob = data.slice(9, 9 + lengths[0]);
                             jpgBlob.arrayBuffer().then(function (val) {
                                 var imData = {
-                                    data: Buffer.from(val),
+                                    data: _.Buffer.from(val),
                                     type: 'image/jpg'
                                 };
                                 var newImg = new Image();
@@ -189,11 +189,18 @@ var WsHOC = function (Canvas) { return function (_a) {
                                     setImage(newImg);
                                 };
                             });
-                            return [3 /*break*/, 4];
+                            return [3 /*break*/, 5];
                         case 3:
-                            data.arrayBuffer().then(function (val) {
+                            if (!(dataType === 1)) return [3 /*break*/, 5];
+                            HEADER_END = 13;
+                            _c = Uint32Array.bind;
+                            return [4 /*yield*/, data.slice(1, HEADER_END).arrayBuffer()];
+                        case 4:
+                            lengths = new (_c.apply(Uint32Array, [void 0, _d.sent()]))();
+                            imageBlob = data.slice(HEADER_END, HEADER_END + lengths[0]);
+                            imageBlob.arrayBuffer().then(function (val) {
                                 var imData = {
-                                    data: Buffer.from(val),
+                                    data: _.Buffer.from(val),
                                     type: 'image/jpg'
                                 };
                                 var newImg = new Image();
@@ -203,13 +210,13 @@ var WsHOC = function (Canvas) { return function (_a) {
                                     setImage(newImg);
                                 };
                             });
-                            _c.label = 4;
-                        case 4: return [3 /*break*/, 6];
-                        case 5:
-                            _c.sent();
+                            _d.label = 5;
+                        case 5: return [3 /*break*/, 7];
+                        case 6:
+                            _d.sent();
                             handleError(ev.data);
-                            return [3 /*break*/, 6];
-                        case 6: return [2 /*return*/];
+                            return [3 /*break*/, 7];
+                        case 7: return [2 /*return*/];
                     }
                 });
             }); };
@@ -248,6 +255,7 @@ var ReactRgbStream = function (_a) {
     var _b = _a.posX, posX = _b === void 0 ? 0 : _b, _c = _a.posY, posY = _c === void 0 ? 0 : _c, width = _a.width, height = _a.height, _d = _a.placeholderText, placeholderText = _d === void 0 ? 'No Image' : _d, _e = _a.image, image = _e === void 0 ? new Image() : _e;
     var canvasRef = React.useRef(null);
     var canvasDraw = function () {
+        console.log(image);
         var canvas = canvasRef.current;
         if (canvas) {
             var context = canvas.getContext('2d');
@@ -269,16 +277,84 @@ var ReactRgbStream = function (_a) {
         }
     };
     React.useEffect(function () {
-        if (image.src) {
-            canvasDraw();
-        }
-        else {
+        canvasDraw();
+        if (!image.src) {
             drawPlaceholder();
         }
     }, [image]);
     return React__default["default"].createElement("canvas", { ref: canvasRef, width: width, height: height });
 };
 var ReactRgbStream$1 = WsHOC(ReactRgbStream);
+
+var ReactResponsiveRgbStream = function (_a) {
+    var maxWidth = _a.maxWidth, minWidth = _a.minWidth, aspectRatio = _a.aspectRatio, _b = _a.placeholderText, placeholderText = _b === void 0 ? 'No Image' : _b, image = _a.image;
+    var resizeTimeout;
+    var _c = React.useState(false), drawing = _c[0], setDrawing = _c[1];
+    var canvasRef = React.useRef(null);
+    var draw = function () {
+        var canvas = canvasRef.current;
+        if (canvas) {
+            var ctx = canvas.getContext('2d');
+            ctx && ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+        }
+    };
+    var handleResize = function () {
+        clearTimeout(resizeTimeout);
+        setDrawing(false);
+        resizeTimeout = setTimeout(function () {
+            var canvas = canvasRef.current;
+            if (canvas) {
+                fit__default["default"](canvas);
+                setDrawing(true);
+                if (!image.src) {
+                    drawPlaceholder();
+                }
+            }
+        }, 500);
+    };
+    var drawPlaceholder = function () {
+        var canvas = canvasRef.current;
+        if (canvas) {
+            var context = canvas.getContext('2d');
+            if (context) {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.fillStyle = '#d3d3d3';
+                context.textAlign = 'center';
+                context.font = '5em Arial';
+                context.textBaseline = 'middle';
+                context.fillText(placeholderText, canvas.width / 2, canvas.height / 2);
+            }
+        }
+    };
+    React.useEffect(function () {
+        var canvas = canvasRef.current;
+        if (canvas) {
+            fit__default["default"](canvas);
+            draw();
+            setDrawing(true);
+            window.addEventListener('resize', handleResize, false);
+        }
+        return function () {
+            window.removeEventListener('resize', handleResize, false);
+        };
+    }, []);
+    React.useEffect(function () {
+        draw();
+        if (!image.src) {
+            drawPlaceholder();
+        }
+    }, [image]);
+    return (React__default["default"].createElement("div", { style: {
+            aspectRatio: aspectRatio.toString(),
+            maxWidth: maxWidth,
+            minWidth: minWidth,
+            padding: 0,
+            margin: 0,
+            position: 'relative'
+        } },
+        React__default["default"].createElement("canvas", { style: drawing ? {} : { display: 'none' }, ref: canvasRef })));
+};
+var ReactResponsiveRgbStream$1 = WsHOC(ReactResponsiveRgbStream);
 
 var RembrainImage = function (_a) {
     var token = _a.token, url = _a.url, width = _a.width, height = _a.height, _b = _a.alt, alt = _b === void 0 ? "Image" : _b, _c = _a.onLoad, onLoad = _c === void 0 ? function () { } : _c, _d = _a.onError, onError = _d === void 0 ? function () { } : _d;
@@ -296,183 +372,6 @@ var RembrainImage = function (_a) {
         }
     }, [url]);
     return (React__default["default"].createElement("img", { onLoad: onLoad, src: src && src, id: 'rembrainImage', className: 'rembrain-image', width: width, height: height, alt: alt ? alt : '' }));
-};
-
-var ReactResponsiveRgbStream = function (_a) {
-    var token = _a.token, websocketURL = _a.websocketURL, robotName = _a.robotName, _b = _a.handleError, handleError = _b === void 0 ? function () { } : _b, maxWidth = _a.maxWidth, minWidth = _a.minWidth, aspectRatio = _a.aspectRatio, _c = _a.isOn, isOn = _c === void 0 ? true : _c, _d = _a.placeholderText, placeholderText = _d === void 0 ? 'No Image' : _d, _e = _a.exchange, exchange = _e === void 0 ? 'rgbjpeg' : _e;
-    var resizeTimeout;
-    var _f = React.useState(new Image()), image = _f[0], setImage = _f[1];
-    var _g = React.useState(false), drawing = _g[0], setDrawing = _g[1];
-    var _h = React.useState(undefined), websocket = _h[0], setWebsocket = _h[1];
-    var canvasRef = React.useRef(null);
-    var draw = function () {
-        var canvas = canvasRef.current;
-        if (canvas) {
-            var ctx = canvas.getContext('2d');
-            ctx && ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-        }
-    };
-    var connectWebsocket = function () {
-        if (websocket !== undefined) {
-            websocket.onopen = function () {
-                var controlPacket = {
-                    command: 'pull',
-                    exchange: exchange,
-                    accessToken: token,
-                    robot_name: robotName
-                };
-                websocket.send(JSON.stringify(controlPacket));
-            };
-            websocket.onmessage = function (ev) { return __awaiter(void 0, void 0, void 0, function () {
-                var data, dataType, _a, lengths, _b, jpgBlob;
-                return __generator(this, function (_c) {
-                    switch (_c.label) {
-                        case 0:
-                            _c.trys.push([0, 5, , 6]);
-                            data = ev.data;
-                            _a = Uint8Array.bind;
-                            return [4 /*yield*/, data.slice(0, 1).arrayBuffer()];
-                        case 1:
-                            dataType = new (_a.apply(Uint8Array, [void 0, _c.sent()]))()[0];
-                            if (!(dataType == 2)) return [3 /*break*/, 3];
-                            _b = Uint32Array.bind;
-                            return [4 /*yield*/, data.slice(1, 13).arrayBuffer()];
-                        case 2:
-                            lengths = new (_b.apply(Uint32Array, [void 0, _c.sent()]))();
-                            jpgBlob = data.slice(9, 9 + lengths[0]);
-                            jpgBlob.arrayBuffer().then(function (val) {
-                                var imData = {
-                                    data: Buffer.from(val),
-                                    type: 'image/jpg'
-                                };
-                                var newImg = new Image();
-                                var buf = imData.data.toString('base64');
-                                newImg.src = "data:" + imData.type + ";base64," + buf;
-                                newImg.onload = function () {
-                                    setImage(newImg);
-                                };
-                            });
-                            return [3 /*break*/, 4];
-                        case 3:
-                            data.arrayBuffer().then(function (val) {
-                                var imData = {
-                                    data: Buffer.from(val),
-                                    type: 'image/jpg'
-                                };
-                                var newImg = new Image();
-                                var buf = imData.data.toString('base64');
-                                newImg.src = "data:" + imData.type + ";base64," + buf;
-                                newImg.onload = function () {
-                                    setImage(newImg);
-                                };
-                            });
-                            _c.label = 4;
-                        case 4: return [3 /*break*/, 6];
-                        case 5:
-                            _c.sent();
-                            handleError(ev.data);
-                            return [3 /*break*/, 6];
-                        case 6: return [2 /*return*/];
-                    }
-                });
-            }); };
-            websocket.onclose = function (ev) {
-                console.log('Socket is closed. Reconnect will be attempted.', ev.reason);
-                setWebsocket(new WebSocket(websocketURL));
-                connectWebsocket();
-            };
-            websocket.onerror = function (ev) {
-                handleError(ev);
-                websocket.close();
-            };
-        }
-    };
-    var handleResize = function () {
-        clearTimeout(resizeTimeout);
-        setDrawing(false);
-        resizeTimeout = setTimeout(function () {
-            var canvas = canvasRef.current;
-            if (canvas) {
-                fit__default["default"](canvas);
-                setDrawing(true);
-                if (!image.src) {
-                    drawPlaceholder();
-                }
-            }
-        }, 500);
-    };
-    React.useEffect(function () {
-        websocket && connectWebsocket();
-        return function () {
-            if (websocket) {
-                websocket.onclose = function () { };
-                websocket.close();
-            }
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [websocket]);
-    var drawPlaceholder = function () {
-        var canvas = canvasRef.current;
-        if (canvas) {
-            var context = canvas.getContext('2d');
-            if (context) {
-                context.clearRect(0, 0, canvas.width, canvas.height);
-                context.fillStyle = '#d3d3d3';
-                context.textAlign = 'center';
-                context.font = '5em Arial';
-                context.textBaseline = 'middle';
-                context.fillText(placeholderText, canvas.width / 2, canvas.height / 2);
-            }
-        }
-    };
-    React.useEffect(function () {
-        websocket && websocket.close();
-        setImage(new Image());
-        drawPlaceholder();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [robotName, exchange, token]);
-    React.useEffect(function () {
-        if (!isOn) {
-            setImage(new Image());
-            if (websocket) {
-                websocket.onclose = function () { };
-                websocket.close();
-            }
-        }
-        else {
-            setWebsocket(new WebSocket(websocketURL));
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isOn]);
-    React.useEffect(function () {
-        var canvas = canvasRef.current;
-        if (canvas) {
-            fit__default["default"](canvas);
-            draw();
-            setDrawing(true);
-            window.addEventListener('resize', handleResize, false);
-        }
-        return function () {
-            window.removeEventListener('resize', handleResize, false);
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-    React.useEffect(function () {
-        draw();
-        if (!image.src) {
-            drawPlaceholder();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [image]);
-    return (React__default["default"].createElement("div", { style: {
-            aspectRatio: aspectRatio.toString(),
-            maxWidth: maxWidth,
-            minWidth: minWidth,
-            padding: 0,
-            margin: 0,
-            position: 'relative'
-        } },
-        React__default["default"].createElement("canvas", { style: drawing ? {} : { display: 'none' }, ref: canvasRef })));
 };
 
 var Rectangle = /** @class */ (function () {
@@ -1471,7 +1370,7 @@ var OperatorDebug = /** @class */ (function (_super) {
 
 exports.OperatorCanvas = OperatorCanvas;
 exports.OperatorDebug = OperatorDebug;
-exports.ReactResponsiveRgbStream = ReactResponsiveRgbStream;
+exports.ReactResponsiveRgbStream = ReactResponsiveRgbStream$1;
 exports.ReactRgbStream = ReactRgbStream$1;
 exports.RembrainImage = RembrainImage;
 //# sourceMappingURL=index.js.map

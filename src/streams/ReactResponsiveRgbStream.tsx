@@ -1,33 +1,22 @@
 import React, { useEffect, useRef, useState } from 'react'
 import fit from 'canvas-fit'
+import { WsHOC } from './WsHOC'
 
-export const ReactResponsiveRgbStream = ({
-  token,
-  websocketURL,
-  robotName,
-  handleError = () => {},
+const ReactResponsiveRgbStream = ({
   maxWidth,
   minWidth,
   aspectRatio,
-  isOn = true,
   placeholderText = 'No Image',
-  exchange = 'rgbjpeg'
-}: {
-  token: string,
-  websocketURL:string,
-  robotName: string,
-  handleError: any,
+  image
+} : {
   maxWidth: number,
   minWidth: number,
   aspectRatio: number,
-  isOn: boolean,
   placeholderText: string,
-  exchange: string
+  image: any,
 }) => {
   let resizeTimeout:NodeJS.Timeout
-  const [image, setImage] = useState(new Image())
   const [drawing, setDrawing] = useState(false)
-  const [websocket, setWebsocket] = useState<WebSocket|undefined>(undefined)
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   
@@ -37,74 +26,6 @@ export const ReactResponsiveRgbStream = ({
       const ctx = canvas.getContext('2d')
       ctx && ctx.drawImage(image, 0, 0, canvas.width, canvas.height)
     }
-  }
-
-  const connectWebsocket = () => {
-    if(websocket !== undefined) {
-    websocket.onopen = () => {
-      let controlPacket = {
-        command: 'pull',
-        exchange: exchange,
-        accessToken: token,
-        robot_name: robotName
-      }
-      websocket.send(JSON.stringify(controlPacket))
-    }
-
-    websocket.onmessage = async (ev) => {
-      try {
-        const { data } = ev
-        const dataType = new Uint8Array(await data.slice(0, 1).arrayBuffer())[0]
-        
-        if (dataType == 2) {
-          let lengths = new Uint32Array(
-            await data.slice(1, 13).arrayBuffer()
-          );
-          let jpgBlob = data.slice(9, 9 + lengths[0]);
-
-          jpgBlob.arrayBuffer().then((val: ArrayBuffer) => {
-            var imData = {
-              data: Buffer.from(val),
-              type: 'image/jpg'
-            }
-            const newImg = new Image()
-            const buf = imData.data.toString('base64')
-            newImg.src = `data:${imData.type};base64,` + buf
-            
-            newImg.onload = () => {
-              setImage(newImg)
-            }
-          })
-        } else {
-          data.arrayBuffer().then((val: ArrayBuffer) => {
-            var imData = {
-              data: Buffer.from(val),
-              type: 'image/jpg'
-            }
-            const newImg = new Image()
-            const buf = imData.data.toString('base64')
-            newImg.src = `data:${imData.type};base64,` + buf
-
-            newImg.onload = () => {
-              setImage(newImg)
-            }
-          })
-        }
-      } catch (e) {
-        handleError(ev.data)
-      }
-    }
-
-    websocket.onclose = (ev) => {
-      console.log('Socket is closed. Reconnect will be attempted.', ev.reason)
-      setWebsocket(new WebSocket(websocketURL))
-      connectWebsocket()
-    }
-    websocket.onerror = (ev) => {
-      handleError(ev)
-      websocket.close()
-    }
-  }
   }
 
   const handleResize = () => {
@@ -122,17 +43,6 @@ export const ReactResponsiveRgbStream = ({
       
     }, 500)
   }
-
-  useEffect(() => {
-    websocket && connectWebsocket()
-    return () => {
-      if (websocket) {
-        websocket.onclose = () => {}
-        websocket.close()
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [websocket])
 
   const drawPlaceholder = () => {
     const canvas = canvasRef.current
@@ -154,38 +64,16 @@ export const ReactResponsiveRgbStream = ({
   }
 
   useEffect(() => {
-    websocket && websocket.close()
-    setImage(new Image())
-    drawPlaceholder()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [robotName, exchange, token])
-
-  useEffect(() => {
-    if (!isOn) {
-      setImage(new Image())
-      if (websocket) {
-        websocket.onclose = () => {}
-        websocket.close()
-      }
-    } else {
-      setWebsocket(new WebSocket(websocketURL))
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOn])
-
-  useEffect(() => {
     const canvas = canvasRef.current
     if (canvas) {
       fit(canvas)
       draw()
       setDrawing(true)
-
       window.addEventListener('resize', handleResize, false)
     }
     return () => {
       window.removeEventListener('resize', handleResize, false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -193,7 +81,6 @@ export const ReactResponsiveRgbStream = ({
     if (!image.src) {
       drawPlaceholder()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [image])
 
   return (
@@ -211,3 +98,5 @@ export const ReactResponsiveRgbStream = ({
     </div>
   )
 }
+
+export default WsHOC(ReactResponsiveRgbStream)

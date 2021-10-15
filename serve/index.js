@@ -12392,16 +12392,105 @@
         return React.createElement(Canvas, __assign({ image: image }, props));
     }; };
 
-    var ReactRgbStream = function (_a) {
-        var _b = _a.posX, posX = _b === void 0 ? 0 : _b, _c = _a.posY, posY = _c === void 0 ? 0 : _c, width = _a.width, height = _a.height, _d = _a.placeholderText, placeholderText = _d === void 0 ? 'No Image' : _d, _e = _a.image, image = _e === void 0 ? new Image() : _e;
+    var elementSize = getSize;
+
+    function getSize(element) {
+      // Handle cases where the element is not already
+      // attached to the DOM by briefly appending it
+      // to document.body, and removing it again later.
+      if (element === window || element === document.body) {
+        return [window.innerWidth, window.innerHeight];
+      }
+
+      if (!element.parentNode) {
+        var temporary = true;
+        document.body.appendChild(element);
+      }
+
+      var bounds = element.getBoundingClientRect();
+      var styles = getComputedStyle(element);
+      var height = (bounds.height | 0) + parse$1(styles.getPropertyValue('margin-top')) + parse$1(styles.getPropertyValue('margin-bottom'));
+      var width = (bounds.width | 0) + parse$1(styles.getPropertyValue('margin-left')) + parse$1(styles.getPropertyValue('margin-right'));
+
+      if (temporary) {
+        document.body.removeChild(element);
+      }
+
+      return [width, height];
+    }
+
+    function parse$1(prop) {
+      return parseFloat(prop) || 0;
+    }
+
+    var size = elementSize;
+    var canvasFit = fit;
+    var scratch = new Float32Array(2);
+
+    function fit(canvas, parent, scale) {
+      var isSVG = canvas.nodeName.toUpperCase() === 'SVG';
+      canvas.style.position = canvas.style.position || 'absolute';
+      canvas.style.top = 0;
+      canvas.style.left = 0;
+      resize.scale = parseFloat(scale || 1);
+      resize.parent = parent;
+      return resize();
+
+      function resize() {
+        var p = resize.parent || canvas.parentNode;
+
+        if (typeof p === 'function') {
+          var dims = p(scratch) || scratch;
+          var width = dims[0];
+          var height = dims[1];
+        } else if (p && p !== document.body) {
+          var psize = size(p);
+          var width = psize[0] | 0;
+          var height = psize[1] | 0;
+        } else {
+          var width = window.innerWidth;
+          var height = window.innerHeight;
+        }
+
+        if (isSVG) {
+          canvas.setAttribute('width', width * resize.scale + 'px');
+          canvas.setAttribute('height', height * resize.scale + 'px');
+        } else {
+          canvas.width = width * resize.scale;
+          canvas.height = height * resize.scale;
+        }
+
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
+        return resize;
+      }
+    }
+
+    var ReactResponsiveRgbStream = function (_a) {
+        var maxWidth = _a.maxWidth, minWidth = _a.minWidth, aspectRatio = _a.aspectRatio, _b = _a.placeholderText, placeholderText = _b === void 0 ? 'No Image' : _b, image = _a.image;
+        var resizeTimeout;
+        var _c = react.exports.useState(false), drawing = _c[0], setDrawing = _c[1];
         var canvasRef = react.exports.useRef(null);
-        var canvasDraw = function () {
-            console.log(image);
+        var draw = function () {
             var canvas = canvasRef.current;
             if (canvas) {
-                var context = canvas.getContext('2d');
-                context && context.drawImage(image, posX, posY, width, height);
+                var ctx = canvas.getContext('2d');
+                ctx && ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
             }
+        };
+        var handleResize = function () {
+            clearTimeout(resizeTimeout);
+            setDrawing(false);
+            resizeTimeout = setTimeout(function () {
+                var canvas = canvasRef.current;
+                if (canvas) {
+                    canvasFit(canvas);
+                    setDrawing(true);
+                    if (!image.src) {
+                        drawPlaceholder();
+                    }
+                }
+            }, 500);
         };
         var drawPlaceholder = function () {
             var canvas = canvasRef.current;
@@ -12418,14 +12507,34 @@
             }
         };
         react.exports.useEffect(function () {
-            canvasDraw();
+            var canvas = canvasRef.current;
+            if (canvas) {
+                canvasFit(canvas);
+                draw();
+                setDrawing(true);
+                window.addEventListener('resize', handleResize, false);
+            }
+            return function () {
+                window.removeEventListener('resize', handleResize, false);
+            };
+        }, []);
+        react.exports.useEffect(function () {
+            draw();
             if (!image.src) {
                 drawPlaceholder();
             }
         }, [image]);
-        return React.createElement("canvas", { ref: canvasRef, width: width, height: height });
+        return (React.createElement("div", { style: {
+                aspectRatio: aspectRatio.toString(),
+                maxWidth: maxWidth,
+                minWidth: minWidth,
+                padding: 0,
+                margin: 0,
+                position: 'relative'
+            } },
+            React.createElement("canvas", { style: drawing ? {} : { display: 'none' }, ref: canvasRef })));
     };
-    var ReactRgbStream$1 = WsHOC(ReactRgbStream);
+    var ReactResponsiveRgbStream$1 = WsHOC(ReactResponsiveRgbStream);
 
     var Rectangle = /** @class */ (function () {
         function Rectangle(x, y, w, h) {
@@ -56117,14 +56226,15 @@ ${indent}columns: ${matrix.columns}
     })(react.exports.Component));
 
     var props = {
-        width: 400,
-        height: 400,
+        minWidth: 400,
+        maxWidth: 800,
+        aspectRatio: 1 / 1,
         token: "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJXbHpXa1BWaFZrVkpHdi1TSEJCMGpHZWh1WWZPSEVTLTdwc0hJbUJwdlJVIn0.eyJleHAiOjE2MzQzNzA2MzUsImlhdCI6MTYzNDI4NDIzNSwianRpIjoiMTBmYjJiZGQtYzE1ZS00YWRhLThmOTAtNDU1ZjJiNzU2ZWY1IiwiaXNzIjoiaHR0cHM6Ly9hdXRoLnJlbWJyYWluLmFpOjg0NDMvYXV0aC9yZWFsbXMvaHR0cC1nYXRlIiwic3ViIjoiMzc2ZTI2YjMtZmMwOC00M2I5LWJiZTctMTkzYTljZDkwMTQ5IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiaHR0cC1nYXRlIiwic2Vzc2lvbl9zdGF0ZSI6IjhhOTI5ZWQ4LTZhYjUtNDYzYS05OWMwLTI4NTI4MWU1ZGQ2YiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9hdXRoLnJlbWJyYWluLmllOjg0NDMvIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJhZG1pbiJdfSwic2NvcGUiOiJlbWFpbCBwcm9maWxlIiwic2lkIjoiOGE5MjllZDgtNmFiNS00NjNhLTk5YzAtMjg1MjgxZTVkZDZiIiwidXBuIjoidGVzdCIsImFkZHJlc3MiOnt9LCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6InRlc3QgdGVzdCIsImdyb3VwcyI6WyJhZG1pbiJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJ0ZXN0IiwiZ2l2ZW5fbmFtZSI6InRlc3QiLCJmYW1pbHlfbmFtZSI6InRlc3QiLCJlbWFpbCI6InRlc3RAZ21haWwuY29tIn0.UMzkzVoTFXnV306URaJmy6eCT8Z9Pm9VyQu4kTNrbl6TE7YMzMlXSA_HJS8QGif0gXVW5bpYvC9ctQZ8T1a8AIAUhXV5-szkphpGdMjpEpn63jkLvMoLADUtSSZbWmVmdZjof9A__wmOFSR4PgHb2NU7d77dWBMlVltRpu4uWiVeSbEjdIQZiV1xAyBArOWWkq1PfvWFt5TZk3b5I7uip4tPVvmP6rgK-2VsSq3aqp7cT8ERq85K1pM_x9dWay2CkzwfV09FMc_ARhMYIyUye8Zm4rH5z8dwsWkaTp4nP54m0RXyVkBBc0O1o-EjUibSuWR7_BOGy74o4MtVA6HEJA",
         websocketURL: "wss://monitor.rembrain.ai:5443",
         robotName: "aivero_xarm2",
         exchange: "camera0"
     };
-    ReactDOM.render(React.createElement(ReactRgbStream$1, __assign({}, props)), document.getElementById('root-debug'));
+    ReactDOM.render(React.createElement(ReactResponsiveRgbStream$1, __assign({}, props)), document.getElementById('root-debug'));
 
 })();
 //# sourceMappingURL=index.js.map
