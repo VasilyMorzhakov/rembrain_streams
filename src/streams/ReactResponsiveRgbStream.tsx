@@ -70,6 +70,7 @@ export const ReactResponsiveRgbStream = ({
             const newImg = new Image()
             const buf = imData.data.toString('base64')
             newImg.src = `data:${imData.type};base64,` + buf
+            
             newImg.onload = () => {
               setImage(newImg)
             }
@@ -83,6 +84,7 @@ export const ReactResponsiveRgbStream = ({
             const newImg = new Image()
             const buf = imData.data.toString('base64')
             newImg.src = `data:${imData.type};base64,` + buf
+
             newImg.onload = () => {
               setImage(newImg)
             }

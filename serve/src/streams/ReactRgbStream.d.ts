@@ -1,14 +1,11 @@
 /// <reference types="react" />
-export declare const ReactRgbStream: ({ posX, posY, width, height, token, websocketURL, robotName, handleError, isOn, placeholderText, exchange }: {
-    posX: number;
-    posY: number;
-    width: number;
-    height: number;
-    token: string;
-    websocketURL: string;
-    robotName: string;
-    handleError: any;
-    isOn: boolean;
-    placeholderText: string;
-    exchange: string;
+declare const _default: ({ isOn, token, websocketURL, robotName, exchange, handleError, ...props }: {
+    [x: string]: any;
+    isOn?: boolean;
+    token: any;
+    websocketURL: any;
+    robotName: any;
+    exchange?: string;
+    handleError?: (error: any) => void;
 }) => JSX.Element;
+export default _default;

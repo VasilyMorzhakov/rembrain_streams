@@ -23,44 +23,26 @@ var operators = require('rxjs/operators');
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 function _interopNamespace(e) {
-  if (e && e.__esModule) return e;
-  var n = Object.create(null);
-  if (e) {
-    Object.keys(e).forEach(function (k) {
-      if (k !== 'default') {
-        var d = Object.getOwnPropertyDescriptor(e, k);
-        Object.defineProperty(n, k, d.get ? d : {
-          enumerable: true,
-          get: function () { return e[k]; }
+    if (e && e.__esModule) return e;
+    var n = Object.create(null);
+    if (e) {
+        Object.keys(e).forEach(function (k) {
+            if (k !== 'default') {
+                var d = Object.getOwnPropertyDescriptor(e, k);
+                Object.defineProperty(n, k, d.get ? d : {
+                    enumerable: true,
+                    get: function () { return e[k]; }
+                });
+            }
         });
-      }
-    });
-  }
-  n["default"] = e;
-  return Object.freeze(n);
+    }
+    n["default"] = e;
+    return Object.freeze(n);
 }
 
 var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
 var React__namespace = /*#__PURE__*/_interopNamespace(React);
 var fit__default = /*#__PURE__*/_interopDefaultLegacy(fit);
-
-var RembrainImage = function (_a) {
-    var token = _a.token, url = _a.url, width = _a.width, height = _a.height, _b = _a.alt, alt = _b === void 0 ? "Image" : _b, _c = _a.onLoad, onLoad = _c === void 0 ? function () { } : _c, _d = _a.onError, onError = _d === void 0 ? function () { } : _d;
-    var _e = React.useState(""), src = _e[0], setSrc = _e[1];
-    React.useEffect(function () {
-        if (url) {
-            fetch(url, { headers: { Authorization: token } }).then(function (resp) {
-                resp.blob().then(function (blobResp) {
-                    var data = blobResp;
-                    var urlCreator = window.URL || window.webkitURL;
-                    var objectUrl = urlCreator.createObjectURL(data);
-                    setSrc(objectUrl);
-                });
-            }).catch(onError);
-        }
-    }, [url]);
-    return (React__default["default"].createElement("img", { onLoad: onLoad, src: src && src, id: 'rembrainImage', className: 'rembrain-image', width: width, height: height, alt: alt ? alt : '' }));
-};
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -103,6 +85,18 @@ var __assign = function() {
     };
     return __assign.apply(this, arguments);
 };
+
+function __rest(s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+}
 
 function __awaiter(thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -151,18 +145,10 @@ function __spreadArrays() {
     return r;
 }
 
-var ReactRgbStream = function (_a) {
-    var _b = _a.posX, posX = _b === void 0 ? 0 : _b, _c = _a.posY, posY = _c === void 0 ? 0 : _c, width = _a.width, height = _a.height, token = _a.token, websocketURL = _a.websocketURL, robotName = _a.robotName, _d = _a.handleError, handleError = _d === void 0 ? function () { } : _d, _e = _a.isOn, isOn = _e === void 0 ? true : _e, _f = _a.placeholderText, placeholderText = _f === void 0 ? 'No Image' : _f, _g = _a.exchange, exchange = _g === void 0 ? 'rgbjpeg' : _g;
-    var canvasRef = React.useRef(null);
-    var _h = React.useState(new Image()), image = _h[0], setImage = _h[1];
-    var _j = React.useState(undefined), websocket = _j[0], setWebsocket = _j[1];
-    var canvasDraw = function () {
-        var canvas = canvasRef.current;
-        if (canvas) {
-            var context = canvas.getContext('2d');
-            context && context.drawImage(image, posX, posY, width, height);
-        }
-    };
+var WsHOC = function (Canvas) { return function (_a) {
+    var _b = _a.isOn, isOn = _b === void 0 ? true : _b, token = _a.token, websocketURL = _a.websocketURL, robotName = _a.robotName, _c = _a.exchange, exchange = _c === void 0 ? "rgbjpeg" : _c, _d = _a.handleError, handleError = _d === void 0 ? function (error) { console.log({ error: error }); } : _d, props = __rest(_a, ["isOn", "token", "websocketURL", "robotName", "exchange", "handleError"]);
+    var _e = React.useState(new Image()), image = _e[0], setImage = _e[1];
+    var _f = React.useState(undefined), websocket = _f[0], setWebsocket = _f[1];
     var connectWebsocket = function () {
         if (websocket !== undefined) {
             websocket.onopen = function () {
@@ -229,25 +215,45 @@ var ReactRgbStream = function (_a) {
             }); };
             websocket.onclose = function (ev) {
                 console.log('Socket is closed. Reconnect will be attempted.', ev.reason);
-                setWebsocket(new WebSocket(websocketURL));
-                connectWebsocket();
+                if (ev.reason !== 'stay down') {
+                    connectWebsocket();
+                    setWebsocket(new WebSocket(websocketURL));
+                }
+                else {
+                    setWebsocket(undefined);
+                }
             };
             websocket.onerror = function (ev) {
                 handleError(ev);
-                websocket.close();
             };
         }
     };
     React.useEffect(function () {
         websocket && connectWebsocket();
-        return function () {
-            if (websocket) {
-                websocket.onclose = function () { };
-                websocket.close();
-            }
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [websocket]);
+    React.useEffect(function () {
+        websocket && websocket.close(1000, "stay down");
+        if (!isOn) {
+            setWebsocket(undefined);
+            setImage(new Image());
+        }
+        else {
+            setWebsocket(new WebSocket(websocketURL));
+        }
+    }, [robotName, exchange, token, isOn]);
+    return React__default["default"].createElement(Canvas, __assign({ image: image }, props));
+}; };
+
+var ReactRgbStream = function (_a) {
+    var _b = _a.posX, posX = _b === void 0 ? 0 : _b, _c = _a.posY, posY = _c === void 0 ? 0 : _c, width = _a.width, height = _a.height, _d = _a.placeholderText, placeholderText = _d === void 0 ? 'No Image' : _d, _e = _a.image, image = _e === void 0 ? new Image() : _e;
+    var canvasRef = React.useRef(null);
+    var canvasDraw = function () {
+        var canvas = canvasRef.current;
+        if (canvas) {
+            var context = canvas.getContext('2d');
+            context && context.drawImage(image, posX, posY, width, height);
+        }
+    };
     var drawPlaceholder = function () {
         var canvas = canvasRef.current;
         if (canvas) {
@@ -263,32 +269,33 @@ var ReactRgbStream = function (_a) {
         }
     };
     React.useEffect(function () {
-        websocket && websocket.close();
-        setImage(new Image());
-        drawPlaceholder();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [robotName, exchange, token]);
-    React.useEffect(function () {
-        if (!isOn) {
-            setImage(new Image());
-            if (websocket) {
-                websocket.onclose = function () { };
-                websocket.close();
-            }
+        if (image.src) {
+            canvasDraw();
         }
         else {
-            setWebsocket(new WebSocket(websocketURL));
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isOn]);
-    React.useEffect(function () {
-        canvasDraw();
-        if (!image.src) {
             drawPlaceholder();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [image]);
     return React__default["default"].createElement("canvas", { ref: canvasRef, width: width, height: height });
+};
+var ReactRgbStream$1 = WsHOC(ReactRgbStream);
+
+var RembrainImage = function (_a) {
+    var token = _a.token, url = _a.url, width = _a.width, height = _a.height, _b = _a.alt, alt = _b === void 0 ? "Image" : _b, _c = _a.onLoad, onLoad = _c === void 0 ? function () { } : _c, _d = _a.onError, onError = _d === void 0 ? function () { } : _d;
+    var _e = React.useState(""), src = _e[0], setSrc = _e[1];
+    React.useEffect(function () {
+        if (url) {
+            fetch(url, { headers: { Authorization: token } }).then(function (resp) {
+                resp.blob().then(function (blobResp) {
+                    var data = blobResp;
+                    var urlCreator = window.URL || window.webkitURL;
+                    var objectUrl = urlCreator.createObjectURL(data);
+                    setSrc(objectUrl);
+                });
+            }).catch(onError);
+        }
+    }, [url]);
+    return (React__default["default"].createElement("img", { onLoad: onLoad, src: src && src, id: 'rembrainImage', className: 'rembrain-image', width: width, height: height, alt: alt ? alt : '' }));
 };
 
 var ReactResponsiveRgbStream = function (_a) {
@@ -1198,7 +1205,7 @@ var StrokeStyle;
     StrokeStyle[StrokeStyle["NoImage_Text"] = 7] = "NoImage_Text";
 })(StrokeStyle || (StrokeStyle = {}));
 
-___$insertStyle(".debug-operator-container {\n  display: flex;\n  flex-direction: row;\n}\n.debug-operator-container .controls {\n  display: inline-flex;\n  vertical-align: top;\n  flex-direction: column-reverse;\n  margin-right: 10px;\n  margin-left: 10px;\n}\n.debug-operator-container .operator-buttons {\n  flex-grow: 1;\n}\n.debug-operator-container .input-container {\n  padding: 5px;\n  margin-bottom: 5px;\n  align-items: center;\n  grid-auto-rows: 25px;\n  grid-row-gap: 5px;\n  grid-column-gap: 5px;\n}\n.debug-operator-container .connection {\n  display: grid;\n  grid-template-columns: 0.7fr 2fr;\n}\n.debug-operator-container .connection > span {\n  text-align: right;\n}\n.debug-operator-container .joint-controls {\n  display: grid;\n  grid-template-columns: 20px repeat(2, 1fr) 100px repeat(2, 1fr);\n  grid-column-gap: 5px;\n  align-items: center;\n}\n.debug-operator-container .joint-controls .joint-num {\n  text-align: right;\n}\n.debug-operator-container .joint-controls .joint-degrees {\n  text-align: center;\n}\n.debug-operator-container .joint-controls + .joint-controls {\n  margin-top: 10px;\n}\n.debug-operator-container .vacuum {\n  display: grid;\n  grid-template-columns: repeat(2, 1fr);\n}\n.debug-operator-container .calibration {\n  border-radius: 5px;\n  padding: 5px;\n  margin-bottom: 5px;\n  align-items: center;\n}\n.debug-operator-container .calibration > div + div {\n  margin-top: 10px;\n}\n.debug-operator-container .calibration > .tags {\n  display: grid;\n  grid-auto-rows: 25px;\n  grid-column-gap: 5px;\n}\n.debug-operator-container .btn-send-home {\n  width: 100%;\n  margin-top: 7px;\n  margin-bottom: 7px;\n}\n.debug-operator-container .depth-view {\n  width: 320px;\n  height: 180px;\n}\n.debug-operator-container .camera-view {\n  width: 854px;\n  height: 480px;\n}\n.debug-operator-container .debug-command-container {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n}\n.debug-operator-container .command-item-container {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  height: max-content !important;\n}\n.debug-operator-container .command-item {\n  margin: 5px;\n  font-size: 1.1em;\n  padding: 6px;\n  min-width: 100px;\n  flex-grow: 1;\n  text-align: center;\n  border-radius: 5px;\n  height: max-content !important;\n  -webkit-user-select: none;\n  -khtml-user-select: none;\n  -moz-user-select: none;\n  -o-user-select: none;\n  user-select: none;\n  cursor: pointer;\n}\n.debug-operator-container .command-input {\n  width: max-content;\n  padding: 6px;\n  border-radius: 5px;\n  height: max-content !important;\n}\n.debug-operator-container .command-input-item {\n  display: flex;\n  flex-direction: column;\n}\n.debug-operator-container .command-input-item > span {\n  margin-top: 5px;\n  margin-bottom: 5px;\n}\n.debug-operator-container .command-item:hover {\n  filter: brightness(0.9);\n}\n.debug-operator-container .debug-operator-info-container {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around;\n}");
+___$insertStyle(".debug-operator-container {\n  display: flex;\n  flex-direction: row;\n}\n.debug-operator-container .controls {\n  display: inline-flex;\n  vertical-align: top;\n  flex-direction: column-reverse;\n  margin-right: 10px;\n  margin-left: 10px;\n}\n.debug-operator-container .operator-buttons {\n  flex-grow: 1;\n}\n.debug-operator-container .input-container {\n  padding: 5px;\n  margin-bottom: 5px;\n  align-items: center;\n  grid-auto-rows: 25px;\n  grid-row-gap: 5px;\n  grid-column-gap: 5px;\n}\n.debug-operator-container .connection {\n  display: grid;\n  grid-template-columns: 0.7fr 2fr;\n}\n.debug-operator-container .connection > span {\n  text-align: right;\n}\n.debug-operator-container .joint-controls {\n  display: grid;\n  grid-template-columns: 20px repeat(2, 1fr) 100px repeat(2, 1fr);\n  grid-column-gap: 5px;\n  align-items: center;\n}\n.debug-operator-container .joint-controls .joint-num {\n  text-align: right;\n}\n.debug-operator-container .joint-controls .joint-degrees {\n  text-align: center;\n}\n.debug-operator-container .joint-controls + .joint-controls {\n  margin-top: 10px;\n}\n.debug-operator-container .vacuum {\n  display: grid;\n  grid-template-columns: repeat(2, 1fr);\n}\n.debug-operator-container .calibration {\n  border-radius: 5px;\n  padding: 5px;\n  margin-bottom: 5px;\n  align-items: center;\n}\n.debug-operator-container .calibration > div + div {\n  margin-top: 10px;\n}\n.debug-operator-container .calibration > .tags {\n  display: grid;\n  grid-auto-rows: 25px;\n  grid-column-gap: 5px;\n}\n.debug-operator-container .btn-send-home {\n  width: 100%;\n  margin-top: 7px;\n  margin-bottom: 7px;\n}\n.debug-operator-container .depth-view {\n  width: 320px;\n  height: 180px;\n}\n.debug-operator-container .camera-view {\n  width: 854px;\n  height: 480px;\n}\n.debug-operator-container .debug-command-container {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n}\n.debug-operator-container .command-item-container {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  height: max-content !important;\n}\n.debug-operator-container .command-item {\n  margin: 5px;\n  font-size: 1.1em;\n  min-width: 100px;\n  background-color: lightgray;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-content: center;\n  align-items: center;\n  flex-grow: 1;\n  border-radius: 5px;\n  height: max-content !important;\n  -webkit-user-select: none;\n  -khtml-user-select: none;\n  -moz-user-select: none;\n  -o-user-select: none;\n  user-select: none;\n  cursor: pointer;\n}\n.debug-operator-container .command-item > span {\n  margin-left: 10px;\n}\n.debug-operator-container .command-item-icon {\n  filter: brightness(0.9);\n  padding: 7px 12px;\n  display: flex;\n  align-items: center;\n  align-content: center;\n  background-color: lightgray;\n}\n.debug-operator-container .command-input {\n  width: max-content;\n  padding: 6px;\n  border-radius: 5px;\n  height: max-content !important;\n}\n.debug-operator-container .command-input-item {\n  display: flex;\n  flex-direction: column;\n}\n.debug-operator-container .command-input-item > span {\n  margin-top: 5px;\n  margin-bottom: 5px;\n}\n.debug-operator-container .command-item:hover {\n  filter: brightness(0.9);\n}\n.debug-operator-container .debug-operator-info-container {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around;\n}");
 
 var OperatorDebug = /** @class */ (function (_super) {
     __extends(OperatorDebug, _super);
@@ -1425,11 +1432,16 @@ var OperatorDebug = /** @class */ (function (_super) {
                                 } })),
                         React__namespace.createElement("button", { style: { marginTop: 10 }, onClick: function () { return _this.addCommand(); } }, "Add command")),
                     React__namespace.createElement("div", { className: "command-item-container" }, this.state.commandList.map(function (command) {
-                        return React__namespace.createElement("div", { onMouseUp: function (e) {
-                                if (e.button == 2) {
+                        return React__namespace.createElement("div", { className: "command-item", onClick: function () {
+                                return _this.sendOpClosure(command.op);
+                            } },
+                            React__namespace.createElement("span", null, command.name),
+                            React__namespace.createElement("div", { className: "command-item-icon", onClick: function (ev) {
+                                    ev.stopPropagation();
                                     _this.removeCommand(command.name);
-                                }
-                            }, className: "command-item", onClick: function () { return _this.sendOpClosure(command.op); } }, command.name);
+                                } },
+                                React__namespace.createElement("svg", { width: 10, "aria-hidden": "true", focusable: "false", "data-prefix": "fas", "data-icon": "xmark", role: "img", xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 320 512" },
+                                    React__namespace.createElement("path", { fill: "currentColor", d: "M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25C304.4 412.9 296.2 416 288 416s-16.38-3.125-22.62-9.375L160 301.3L54.63 406.6C48.38 412.9 40.19 416 32 416S15.63 412.9 9.375 406.6c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z" }))));
                     })))),
             React__namespace.createElement("div", { className: "controls" },
                 React__namespace.createElement("div", { className: "operator-buttons" },
@@ -1460,6 +1472,6 @@ var OperatorDebug = /** @class */ (function (_super) {
 exports.OperatorCanvas = OperatorCanvas;
 exports.OperatorDebug = OperatorDebug;
 exports.ReactResponsiveRgbStream = ReactResponsiveRgbStream;
-exports.ReactRgbStream = ReactRgbStream;
+exports.ReactRgbStream = ReactRgbStream$1;
 exports.RembrainImage = RembrainImage;
 //# sourceMappingURL=index.js.map
