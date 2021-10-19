@@ -868,7 +868,7 @@ var OperatorCanvas = /** @class */ (function (_super) {
             var ctx = canvas.getContext("2d");
             if (this.hasImage) {
                 // Base: image from the robot
-                ctx.drawImage(this.img, 0, 0);
+                ctx.drawImage(this.img, 0, 0, 1280, 720);
                 // Compositing depth calculation on top
                 ctx.save();
                 ctx.globalCompositeOperation = "screen";

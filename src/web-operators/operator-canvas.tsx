@@ -143,7 +143,7 @@ export class OperatorCanvas extends React.Component {
             
             if (this.hasImage) {
                 // Base: image from the robot
-                ctx.drawImage(this.img, 0, 0);
+                ctx.drawImage(this.img, 0, 0, 1280, 720);
                 
                 // Compositing depth calculation on top
                 ctx.save();

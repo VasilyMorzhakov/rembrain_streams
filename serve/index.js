@@ -55354,7 +55354,7 @@ ${indent}columns: ${matrix.columns}
 
     // import { IImageReceiver } from "./image-receiver";
     // import { NetworkOperator } from "./network-operator";
-    /** @class */ ((function (_super) {
+    var OperatorCanvas = /** @class */ (function (_super) {
         __extends$1(OperatorCanvas, _super);
         function OperatorCanvas(props) {
             var _this = _super.call(this, props) || this;
@@ -55465,7 +55465,7 @@ ${indent}columns: ${matrix.columns}
                 var ctx = canvas.getContext("2d");
                 if (this.hasImage) {
                     // Base: image from the robot
-                    ctx.drawImage(this.img, 0, 0);
+                    ctx.drawImage(this.img, 0, 0, 1280, 720);
                     // Compositing depth calculation on top
                     ctx.save();
                     ctx.globalCompositeOperation = "screen";
@@ -55699,7 +55699,7 @@ ${indent}columns: ${matrix.columns}
             }
         };
         return OperatorCanvas;
-    })(react.exports.Component));
+    }(react.exports.Component));
     var CanvasAction;
     (function (CanvasAction) {
         CanvasAction[CanvasAction["Stroke"] = 0] = "Stroke";
@@ -55719,7 +55719,7 @@ ${indent}columns: ${matrix.columns}
 
     ___$insertStyle(".debug-operator-container {\n  display: flex;\n  flex-direction: row;\n}\n.debug-operator-container .controls {\n  display: inline-flex;\n  vertical-align: top;\n  flex-direction: column-reverse;\n  margin-right: 10px;\n  margin-left: 10px;\n}\n.debug-operator-container .operator-buttons {\n  flex-grow: 1;\n}\n.debug-operator-container .input-container {\n  padding: 5px;\n  margin-bottom: 5px;\n  align-items: center;\n  grid-auto-rows: 25px;\n  grid-row-gap: 5px;\n  grid-column-gap: 5px;\n}\n.debug-operator-container .connection {\n  display: grid;\n  grid-template-columns: 0.7fr 2fr;\n}\n.debug-operator-container .connection > span {\n  text-align: right;\n}\n.debug-operator-container .joint-controls {\n  display: grid;\n  grid-template-columns: 20px repeat(2, 1fr) 100px repeat(2, 1fr);\n  grid-column-gap: 5px;\n  align-items: center;\n}\n.debug-operator-container .joint-controls .joint-num {\n  text-align: right;\n}\n.debug-operator-container .joint-controls .joint-degrees {\n  text-align: center;\n}\n.debug-operator-container .joint-controls + .joint-controls {\n  margin-top: 10px;\n}\n.debug-operator-container .vacuum {\n  display: grid;\n  grid-template-columns: repeat(2, 1fr);\n}\n.debug-operator-container .calibration {\n  border-radius: 5px;\n  padding: 5px;\n  margin-bottom: 5px;\n  align-items: center;\n}\n.debug-operator-container .calibration > div + div {\n  margin-top: 10px;\n}\n.debug-operator-container .calibration > .tags {\n  display: grid;\n  grid-auto-rows: 25px;\n  grid-column-gap: 5px;\n}\n.debug-operator-container .btn-send-home {\n  width: 100%;\n  margin-top: 7px;\n  margin-bottom: 7px;\n}\n.debug-operator-container .depth-view {\n  width: 320px;\n  height: 180px;\n}\n.debug-operator-container .camera-view {\n  width: 854px;\n  height: 480px;\n}\n.debug-operator-container .debug-command-container {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n}\n.debug-operator-container .command-item-container {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  height: max-content !important;\n}\n.debug-operator-container .command-item {\n  margin: 5px;\n  font-size: 1.1em;\n  min-width: 100px;\n  background-color: lightgray;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-content: center;\n  align-items: center;\n  flex-grow: 1;\n  border-radius: 5px;\n  height: max-content !important;\n  -webkit-user-select: none;\n  -khtml-user-select: none;\n  -moz-user-select: none;\n  -o-user-select: none;\n  user-select: none;\n  cursor: pointer;\n}\n.debug-operator-container .command-item > span {\n  margin-left: 10px;\n}\n.debug-operator-container .command-item-icon {\n  filter: brightness(0.9);\n  padding: 7px 12px;\n  display: flex;\n  align-items: center;\n  align-content: center;\n  background-color: lightgray;\n}\n.debug-operator-container .command-input {\n  width: max-content;\n  padding: 6px;\n  border-radius: 5px;\n  height: max-content !important;\n}\n.debug-operator-container .command-input-item {\n  display: flex;\n  flex-direction: column;\n}\n.debug-operator-container .command-input-item > span {\n  margin-top: 5px;\n  margin-bottom: 5px;\n}\n.debug-operator-container .command-item:hover {\n  filter: brightness(0.9);\n}\n.debug-operator-container .debug-operator-info-container {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around;\n}");
 
-    var OperatorDebug = /** @class */ (function (_super) {
+    /** @class */ ((function (_super) {
         __extends$1(OperatorDebug, _super);
         function OperatorDebug(props) {
             var _this = _super.call(this, props) || this;
@@ -55979,7 +55979,7 @@ ${indent}columns: ${matrix.columns}
                         react.exports.createElement("img", { width: "320", height: "180", src: this.state.depthData })))));
         };
         return OperatorDebug;
-    }(react.exports.Component));
+    })(react.exports.Component));
 
     //const props = {
     //    minWidth: 400,
@@ -55993,9 +55993,9 @@ ${indent}columns: ${matrix.columns}
     var props = {
         dataWSUrl: "wss://monitor-dev.rembrain.ai:5443",
         robotName: "weigher_1",
-        accessToken: "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJXQ2tmVTZZMW1vNGVaaHlHaWZnd2dLSmFPS0RjQ0xIVWNvR1NGZ0M1WGFvIn0.eyJleHAiOjE2MzQ2MzY2MTUsImlhdCI6MTYzNDYzNjMxNSwianRpIjoiMzVjOWFjY2ItYWMzMS00OGU0LThhYTktMzk3NjI3OTEwZTk3IiwiaXNzIjoiaHR0cHM6Ly9hdXRoLWRldi5yZW1icmFpbi5haTo4NDQzL2F1dGgvcmVhbG1zL3Rlc3QiLCJzdWIiOiI0M2QwNmU2MC1kOTYwLTQ5NzUtODAwZC00ZTdiOThjMTQ5OWQiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJjbGllbnRpZC0zIiwic2Vzc2lvbl9zdGF0ZSI6IjU2ZDU0YmVmLWYzYzgtNDhhOS1iYThmLTRhNTY2YzNiMzIxMyIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9hdXRoX2Rldi5yZW1icmFpbi5pZTo4NDQzIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJhZG1pbiJdfSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwic2lkIjoiNTZkNTRiZWYtZjNjOC00OGE5LWJhOGYtNGE1NjZjM2IzMjEzIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJ0ZXN0IHRlc3QiLCJncm91cHMiOlsiYWRtaW4iXSwicHJlZmVycmVkX3VzZXJuYW1lIjoidGVzdCIsImdpdmVuX25hbWUiOiJ0ZXN0IiwiZmFtaWx5X25hbWUiOiJ0ZXN0IiwiZW1haWwiOiJ0ZXN0QHRlc3QudGVzdCJ9.fRRg4Cixkig-XzeGvHIhhde_PiWwth4h-qSc02FnIx15cplFoaTtePnd2lvGZVqAWF41DB5UN5sO-Yz0iAwgS_C3qU284K8PhqQP7Oe__fnst3QXwmcdb2mYyu2PThS-ZlpDUyJdWUJirijopAvtZm-nxp7qbTEvosP5LSZXTYEKw61o3hMu06tTZtpq6W_0mKa61yoKsM4bh9P9bLMcc6qw5fOIgC_fl-Y81jMgSc-ElD35YvLy6ivG23c2QJBwTBeccGT61mhvgiwqM-p-_1Ly3SlagRFbLnBV-FxbL8WqRLkS8mL9IwpgJi0nglLmajmm6qESL5XWuds2OIqrjg",
+        accessToken: "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJXQ2tmVTZZMW1vNGVaaHlHaWZnd2dLSmFPS0RjQ0xIVWNvR1NGZ0M1WGFvIn0.eyJleHAiOjE2MzQ2Mzc3ODEsImlhdCI6MTYzNDYzNzQ4MSwianRpIjoiN2FjYmIyYWItMjVlNi00NGY3LWI3ZWQtZGIyYTc3YjAxODM4IiwiaXNzIjoiaHR0cHM6Ly9hdXRoLWRldi5yZW1icmFpbi5haTo4NDQzL2F1dGgvcmVhbG1zL3Rlc3QiLCJzdWIiOiI0M2QwNmU2MC1kOTYwLTQ5NzUtODAwZC00ZTdiOThjMTQ5OWQiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJjbGllbnRpZC0zIiwic2Vzc2lvbl9zdGF0ZSI6ImZhNTJiZjE0LTgzYzgtNDVhYy05ZGQwLWVkN2RlNDAyMGE5ZiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9hdXRoX2Rldi5yZW1icmFpbi5pZTo4NDQzIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJhZG1pbiJdfSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwic2lkIjoiZmE1MmJmMTQtODNjOC00NWFjLTlkZDAtZWQ3ZGU0MDIwYTlmIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJ0ZXN0IHRlc3QiLCJncm91cHMiOlsiYWRtaW4iXSwicHJlZmVycmVkX3VzZXJuYW1lIjoidGVzdCIsImdpdmVuX25hbWUiOiJ0ZXN0IiwiZmFtaWx5X25hbWUiOiJ0ZXN0IiwiZW1haWwiOiJ0ZXN0QHRlc3QudGVzdCJ9.d5I_dzcnbXTtwS2S8snWlWRRkU6QLGITtDp5hyF75xmF_DPzJzV9oJKBUbp1ZFUOl7WAg5r246Uq5SFbnzBIzR7YCJxhdu34afM66-VATV_tNpmoEPjeaKm-AaMn1SWyUf9aa9iog7-eP4Lhtco3ia8djx0kurRDhg1C4SbR9VRFjPPkLwyYg511PVQJjZlg2Q42yiT67KWeZjxcKxxY0JwX--F7pkHixOESbPPQ9Nox8M3E0iGtc-pdyNeCAPV9WOK-mUleUJ1umJBwIlosb2GIRhy1OOtchLCXGmbys76seGxudPXT-gokyvhQvEifOq_wabpGoBa-_GVKC3zReQ",
     };
-    ReactDOM.render(React.createElement(OperatorDebug, __assign({}, props)), document.getElementById('root-debug'));
+    ReactDOM.render(React.createElement(OperatorCanvas, __assign({}, props)), document.getElementById('root-debug'));
 
 })();
 //# sourceMappingURL=index.js.map
