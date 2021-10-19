@@ -1,7 +1,7 @@
 import { stat } from "fs";
 import * as React from "react";
 import { Subscription } from "rxjs";
-import { CommandBase } from "./commands/command-base";
+import { CommandBase, CommandSettings } from "./commands/command-base";
 import { CommandSetJoints } from "./commands/command-set-joints";
 import { CommandSetTag } from "./commands/command-set-tag";
 import { IOperatorProps, RobotData, RobotImageData, RobotState } from "./entities";
@@ -306,7 +306,9 @@ export class OperatorDebug extends React.Component<IOperatorProps, IOperatorStat
                                         <div 
                                             
                                             className="command-item" onClick={() => 
-                                                this.sendOpClosure(command.op)
+                                                {
+                                                    this._networkOperator.enqueueCommand({op: command.op, source: CommandSettings.getInstance().source + " "+ this.state.accessToken})
+                                                }
                                             }>
                                             <span>{command.name}</span>
                                             <div className="command-item-icon" onClick={(ev) => {

@@ -1,9 +1,9 @@
-import { RobotData } from "../entities";
+import { RobotData } from '../entities';
 export interface OperatorCommand {
     op: string;
     source: string;
-    timestamp: number;
-    frame_timestamp: number;
+    timestamp?: number;
+    frame_timestamp?: number;
 }
 export declare class CommandSettings {
     private static instance;

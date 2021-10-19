@@ -64,16 +64,6 @@
 
       return __assign.apply(this, arguments);
     };
-    function __rest(s, e) {
-      var t = {};
-
-      for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0) t[p] = s[p];
-
-      if (s != null && typeof Object.getOwnPropertySymbols === "function") for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-        if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i])) t[p[i]] = s[p[i]];
-      }
-      return t;
-    }
     function __awaiter$1(thisArg, _arguments, P, generator) {
       function adopt(value) {
         return value instanceof P ? value : new P(function (resolve) {
@@ -12285,256 +12275,6 @@
         throw new Error('BigInt not supported');
       }
     })(buffer);
-
-    var WsHOC = function (Canvas) { return function (_a) {
-        var _b = _a.isOn, isOn = _b === void 0 ? true : _b, token = _a.token, websocketURL = _a.websocketURL, robotName = _a.robotName, _c = _a.exchange, exchange = _c === void 0 ? "rgbjpeg" : _c, _d = _a.handleError, handleError = _d === void 0 ? function (error) { console.log({ error: error }); } : _d, props = __rest(_a, ["isOn", "token", "websocketURL", "robotName", "exchange", "handleError"]);
-        var _e = react.exports.useState(new Image()), image = _e[0], setImage = _e[1];
-        var _f = react.exports.useState(undefined), websocket = _f[0], setWebsocket = _f[1];
-        var connectWebsocket = function () {
-            if (websocket !== undefined) {
-                websocket.onopen = function () {
-                    var controlPacket = {
-                        command: 'pull',
-                        exchange: exchange,
-                        accessToken: token,
-                        robot_name: robotName
-                    };
-                    websocket.send(JSON.stringify(controlPacket));
-                };
-                websocket.onmessage = function (ev) { return __awaiter$1(void 0, void 0, void 0, function () {
-                    var data, dataType, _a, lengths, _b, jpgBlob, HEADER_END, lengths, _c, imageBlob;
-                    return __generator$1(this, function (_d) {
-                        switch (_d.label) {
-                            case 0:
-                                _d.trys.push([0, 6, , 7]);
-                                data = ev.data;
-                                _a = Uint8Array.bind;
-                                return [4 /*yield*/, data.slice(0, 1).arrayBuffer()];
-                            case 1:
-                                dataType = new (_a.apply(Uint8Array, [void 0, _d.sent()]))()[0];
-                                if (!(dataType === 2)) return [3 /*break*/, 3];
-                                _b = Uint32Array.bind;
-                                return [4 /*yield*/, data.slice(1, 13).arrayBuffer()];
-                            case 2:
-                                lengths = new (_b.apply(Uint32Array, [void 0, _d.sent()]))();
-                                jpgBlob = data.slice(9, 9 + lengths[0]);
-                                jpgBlob.arrayBuffer().then(function (val) {
-                                    var imData = {
-                                        data: buffer.Buffer.from(val),
-                                        type: 'image/jpg'
-                                    };
-                                    var newImg = new Image();
-                                    var buf = imData.data.toString('base64');
-                                    newImg.src = "data:" + imData.type + ";base64," + buf;
-                                    newImg.onload = function () {
-                                        setImage(newImg);
-                                    };
-                                });
-                                return [3 /*break*/, 5];
-                            case 3:
-                                if (!(dataType === 1)) return [3 /*break*/, 5];
-                                HEADER_END = 13;
-                                _c = Uint32Array.bind;
-                                return [4 /*yield*/, data.slice(1, HEADER_END).arrayBuffer()];
-                            case 4:
-                                lengths = new (_c.apply(Uint32Array, [void 0, _d.sent()]))();
-                                imageBlob = data.slice(HEADER_END, HEADER_END + lengths[0]);
-                                imageBlob.arrayBuffer().then(function (val) {
-                                    var imData = {
-                                        data: buffer.Buffer.from(val),
-                                        type: 'image/jpg'
-                                    };
-                                    var newImg = new Image();
-                                    var buf = imData.data.toString('base64');
-                                    newImg.src = "data:" + imData.type + ";base64," + buf;
-                                    newImg.onload = function () {
-                                        setImage(newImg);
-                                    };
-                                });
-                                _d.label = 5;
-                            case 5: return [3 /*break*/, 7];
-                            case 6:
-                                _d.sent();
-                                handleError(ev.data);
-                                return [3 /*break*/, 7];
-                            case 7: return [2 /*return*/];
-                        }
-                    });
-                }); };
-                websocket.onclose = function (ev) {
-                    console.log('Socket is closed. Reconnect will be attempted.', ev.reason);
-                    if (ev.reason !== 'stay down') {
-                        connectWebsocket();
-                        setWebsocket(new WebSocket(websocketURL));
-                    }
-                    else {
-                        setWebsocket(undefined);
-                    }
-                };
-                websocket.onerror = function (ev) {
-                    handleError(ev);
-                };
-            }
-        };
-        react.exports.useEffect(function () {
-            websocket && connectWebsocket();
-        }, [websocket]);
-        react.exports.useEffect(function () {
-            websocket && websocket.close(1000, "stay down");
-            if (!isOn) {
-                setWebsocket(undefined);
-                setImage(new Image());
-            }
-            else {
-                setWebsocket(new WebSocket(websocketURL));
-            }
-        }, [robotName, exchange, token, isOn]);
-        return React.createElement(Canvas, __assign({ image: image }, props));
-    }; };
-
-    var elementSize = getSize;
-
-    function getSize(element) {
-      // Handle cases where the element is not already
-      // attached to the DOM by briefly appending it
-      // to document.body, and removing it again later.
-      if (element === window || element === document.body) {
-        return [window.innerWidth, window.innerHeight];
-      }
-
-      if (!element.parentNode) {
-        var temporary = true;
-        document.body.appendChild(element);
-      }
-
-      var bounds = element.getBoundingClientRect();
-      var styles = getComputedStyle(element);
-      var height = (bounds.height | 0) + parse$1(styles.getPropertyValue('margin-top')) + parse$1(styles.getPropertyValue('margin-bottom'));
-      var width = (bounds.width | 0) + parse$1(styles.getPropertyValue('margin-left')) + parse$1(styles.getPropertyValue('margin-right'));
-
-      if (temporary) {
-        document.body.removeChild(element);
-      }
-
-      return [width, height];
-    }
-
-    function parse$1(prop) {
-      return parseFloat(prop) || 0;
-    }
-
-    var size = elementSize;
-    var canvasFit = fit;
-    var scratch = new Float32Array(2);
-
-    function fit(canvas, parent, scale) {
-      var isSVG = canvas.nodeName.toUpperCase() === 'SVG';
-      canvas.style.position = canvas.style.position || 'absolute';
-      canvas.style.top = 0;
-      canvas.style.left = 0;
-      resize.scale = parseFloat(scale || 1);
-      resize.parent = parent;
-      return resize();
-
-      function resize() {
-        var p = resize.parent || canvas.parentNode;
-
-        if (typeof p === 'function') {
-          var dims = p(scratch) || scratch;
-          var width = dims[0];
-          var height = dims[1];
-        } else if (p && p !== document.body) {
-          var psize = size(p);
-          var width = psize[0] | 0;
-          var height = psize[1] | 0;
-        } else {
-          var width = window.innerWidth;
-          var height = window.innerHeight;
-        }
-
-        if (isSVG) {
-          canvas.setAttribute('width', width * resize.scale + 'px');
-          canvas.setAttribute('height', height * resize.scale + 'px');
-        } else {
-          canvas.width = width * resize.scale;
-          canvas.height = height * resize.scale;
-        }
-
-        canvas.style.width = width + 'px';
-        canvas.style.height = height + 'px';
-        return resize;
-      }
-    }
-
-    var ReactResponsiveRgbStream = function (_a) {
-        var maxWidth = _a.maxWidth, minWidth = _a.minWidth, aspectRatio = _a.aspectRatio, _b = _a.placeholderText, placeholderText = _b === void 0 ? 'No Image' : _b, image = _a.image;
-        var resizeTimeout;
-        var _c = react.exports.useState(false), drawing = _c[0], setDrawing = _c[1];
-        var canvasRef = react.exports.useRef(null);
-        var draw = function () {
-            var canvas = canvasRef.current;
-            if (canvas) {
-                var ctx = canvas.getContext('2d');
-                ctx && ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-            }
-        };
-        var handleResize = function () {
-            clearTimeout(resizeTimeout);
-            setDrawing(false);
-            resizeTimeout = setTimeout(function () {
-                var canvas = canvasRef.current;
-                if (canvas) {
-                    canvasFit(canvas);
-                    setDrawing(true);
-                    if (!image.src) {
-                        drawPlaceholder();
-                    }
-                }
-            }, 500);
-        };
-        var drawPlaceholder = function () {
-            var canvas = canvasRef.current;
-            if (canvas) {
-                var context = canvas.getContext('2d');
-                if (context) {
-                    context.clearRect(0, 0, canvas.width, canvas.height);
-                    context.fillStyle = '#d3d3d3';
-                    context.textAlign = 'center';
-                    context.font = '5em Arial';
-                    context.textBaseline = 'middle';
-                    context.fillText(placeholderText, canvas.width / 2, canvas.height / 2);
-                }
-            }
-        };
-        react.exports.useEffect(function () {
-            var canvas = canvasRef.current;
-            if (canvas) {
-                canvasFit(canvas);
-                draw();
-                setDrawing(true);
-                window.addEventListener('resize', handleResize, false);
-            }
-            return function () {
-                window.removeEventListener('resize', handleResize, false);
-            };
-        }, []);
-        react.exports.useEffect(function () {
-            draw();
-            if (!image.src) {
-                drawPlaceholder();
-            }
-        }, [image]);
-        return (React.createElement("div", { style: {
-                aspectRatio: aspectRatio.toString(),
-                maxWidth: maxWidth,
-                minWidth: minWidth,
-                padding: 0,
-                margin: 0,
-                position: 'relative'
-            } },
-            React.createElement("canvas", { style: drawing ? {} : { display: 'none' }, ref: canvasRef })));
-    };
-    var ReactResponsiveRgbStream$1 = WsHOC(ReactResponsiveRgbStream);
 
     var Rectangle = /** @class */ (function () {
         function Rectangle(x, y, w, h) {
@@ -27787,7 +27527,7 @@
       } = options;
 
       if (inPlace) {
-        Image$1.prototype[name] = function (...args) {
+        Image.prototype[name] = function (...args) {
           // remove computed properties
           this.computed = null;
           let result = method.apply(this, [...partialArgs, ...args]);
@@ -27799,12 +27539,12 @@
           return result;
         };
       } else {
-        Image$1.prototype[name] = function (...args) {
+        Image.prototype[name] = function (...args) {
           return method.apply(this, [...partialArgs, ...args]);
         };
       }
 
-      return Image$1;
+      return Image;
     }
     function extendProperty(name, method, options = {}) {
       let {
@@ -27823,8 +27563,8 @@
         return result;
       };
 
-      Object.defineProperty(Image$1.prototype, name, computedPropertyDescriptor$1);
-      return Image$1;
+      Object.defineProperty(Image.prototype, name, computedPropertyDescriptor$1);
+      return Image;
     }
 
     /**
@@ -32702,7 +32442,7 @@
         }
       }
 
-      let image = Image$1.createFrom(this[0]);
+      let image = Image.createFrom(this[0]);
       let newData = image.data;
 
       for (let i = 0; i < this[0].data.length; i++) {
@@ -32722,7 +32462,7 @@
       this.checkProcessable('max', {
         bitDepth: [8, 16]
       });
-      let image = Image$1.createFrom(this[0]);
+      let image = Image.createFrom(this[0]);
       image.data.fill(0);
 
       for (const current of this) {
@@ -32744,7 +32484,7 @@
       this.checkProcessable('max', {
         bitDepth: [8, 16]
       });
-      let image = Image$1.createFrom(this[0]);
+      let image = Image.createFrom(this[0]);
       image.data.fill(image.maxValue);
 
       for (const current of this) {
@@ -32800,7 +32540,7 @@
       }
 
       static load(urls) {
-        return Promise.all(urls.map(Image$1.load)).then(images => new Stack(images));
+        return Promise.all(urls.map(Image.load)).then(images => new Stack(images));
       }
 
       static extendMethod(name, method, options = {}) {
@@ -33006,7 +32746,7 @@
         return loadPNGFromPalette(png);
       }
 
-      return new Image$1(png.width, png.height, png.data, {
+      return new Image(png.width, png.height, png.data, {
         components,
         alpha,
         bitDepth: png.depth
@@ -33041,7 +32781,7 @@
         }
       }
 
-      return new Image$1(png.width, png.height, data, {
+      return new Image(png.width, png.height, data, {
         components: 3,
         alpha: hasAlpha,
         bitDepth: 8
@@ -33060,7 +32800,7 @@
         useTArray: true,
         maxMemoryUsageInMB: 1024
       });
-      return new Image$1(jpeg.width, jpeg.height, jpeg.data, {
+      return new Image(jpeg.width, jpeg.height, jpeg.data, {
         meta
       });
     }
@@ -33109,7 +32849,7 @@
           data[ptr++] = color[2];
         }
 
-        return new Image$1(image.width, image.height, data, {
+        return new Image(image.width, image.height, data, {
           components: 3,
           alpha: image.alpha,
           colorModel: RGB$1,
@@ -33117,7 +32857,7 @@
           meta: getMetadata(image)
         });
       } else {
-        return new Image$1(image.width, image.height, image.data, {
+        return new Image(image.width, image.height, image.data, {
           components: image.type === 2 ? 3 : 1,
           alpha: image.alpha,
           colorModel: image.type === 2 ? RGB$1 : GREY$1,
@@ -33139,7 +32879,7 @@
           let ctx = canvas.getContext('2d');
           ctx.drawImage(image, 0, 0, w, h);
           let data = ctx.getImageData(0, 0, w, h).data;
-          resolve(new Image$1(w, h, data, options));
+          resolve(new Image(w, h, data, options));
         };
 
         image.onerror = function () {
@@ -33308,10 +33048,10 @@
         if (internalOptions.copy) {
           return thisImage.clone();
         } else {
-          return Image$1.createFrom(thisImage, newParameters);
+          return Image.createFrom(thisImage, newParameters);
         }
       } else {
-        if (!Image$1.isImage(out)) {
+        if (!Image.isImage(out)) {
           throw new TypeError('out must be an Image object');
         }
 
@@ -33764,7 +33504,7 @@
       channels = validateArrayOfChannels(this, channels);
       let kWidth = radius;
       let kHeight = radius;
-      let newImage = Image$1.createFrom(this);
+      let newImage = Image.createFrom(this);
       let size = (kWidth * 2 + 1) * (kHeight * 2 + 1);
       let kernel = new Array(size);
 
@@ -40505,7 +40245,7 @@ ${indent}columns: ${matrix.columns}
       } = options;
       let createOptions = {};
       if (bitDepth) createOptions.bitDepth = bitDepth;
-      let newImage = Image$1.createFrom(this, createOptions);
+      let newImage = Image.createFrom(this, createOptions);
       channels = validateArrayOfChannels(this, channels);
 
       if (algorithm !== 'separable') {
@@ -40865,7 +40605,7 @@ ${indent}columns: ${matrix.columns}
 
         return value;
       } else {
-        if (value instanceof Image$1) {
+        if (value instanceof Image) {
           return value.data;
         }
 
@@ -41054,7 +40794,7 @@ ${indent}columns: ${matrix.columns}
         throw new Error('hypotenuse: both images must have the same number of channels');
       }
 
-      let newImage = Image$1.createFrom(this, {
+      let newImage = Image.createFrom(this, {
         bitDepth: bitDepth
       });
       channels = validateArrayOfChannels(this, {
@@ -41686,7 +41426,7 @@ ${indent}columns: ${matrix.columns}
       }
 
       const result = model.predict(allCoordinates);
-      const background = Image$1.createFrom(this);
+      const background = Image.createFrom(this);
 
       for (let i = 0; i < this.size; i++) {
         background.data[i] = Math.min(this.maxValue, Math.max(0, result[i][0]));
@@ -41743,14 +41483,14 @@ ${indent}columns: ${matrix.columns}
             const newImage = result.clone();
             result = dilateOnceBinaryOnlyOnes(result, newImage, kernel.length, kernel[0].length);
           } else {
-            const newImage = Image$1.createFrom(result);
+            const newImage = Image.createFrom(result);
             result = dilateOnceBinary(result, newImage, kernel);
           }
         } else if (onlyOnes) {
-          const newImage = Image$1.createFrom(result);
+          const newImage = Image.createFrom(result);
           result = dilateOnceGreyOnlyOnes(result, newImage, kernel.length, kernel[0].length);
         } else {
-          const newImage = Image$1.createFrom(result);
+          const newImage = Image.createFrom(result);
           result = dilateOnceGrey(result, newImage, kernel);
         }
       }
@@ -41944,14 +41684,14 @@ ${indent}columns: ${matrix.columns}
             const newImage = result.clone();
             result = erodeOnceBinaryOnlyOnes(result, newImage, kernel.length, kernel[0].length);
           } else {
-            const newImage = Image$1.createFrom(result);
+            const newImage = Image.createFrom(result);
             result = erodeOnceBinary(result, newImage, kernel);
           }
         } else if (onlyOnes) {
-          const newImage = Image$1.createFrom(result);
+          const newImage = Image.createFrom(result);
           result = erodeOnceGreyOnlyOnes(result, newImage, kernel.length, kernel[0].length);
         } else {
-          const newImage = Image$1.createFrom(result);
+          const newImage = Image.createFrom(result);
           result = erodeOnceGrey(result, newImage, kernel);
         }
       }
@@ -42468,7 +42208,7 @@ ${indent}columns: ${matrix.columns}
         heightRect = Math.ceil(Math.max(distance2Points(tl, bl), distance2Points(tr, br)));
       }
 
-      let newImage = Image$1.createFrom(this, {
+      let newImage = Image.createFrom(this, {
         width: widthRect,
         height: heightRect
       });
@@ -42551,7 +42291,7 @@ ${indent}columns: ${matrix.columns}
         throw new RangeError(`crop: (x: ${x}, y:${y}, width:${width}, height:${height}) size is out of range`);
       }
 
-      let newImage = Image$1.createFrom(this, {
+      let newImage = Image.createFrom(this, {
         width,
         height,
         position: [x, y]
@@ -42851,7 +42591,7 @@ ${indent}columns: ${matrix.columns}
 
       let shiftX = Math.round((this.width - width) / 2);
       let shiftY = Math.round((this.height - height) / 2);
-      const newImage = Image$1.createFrom(this, {
+      const newImage = Image.createFrom(this, {
         width,
         height,
         position: [shiftX, shiftY]
@@ -42888,7 +42628,7 @@ ${indent}columns: ${matrix.columns}
         alpha: [0, 1],
         colorModel: [RGB$1]
       });
-      let newImage = Image$1.createFrom(this, {
+      let newImage = Image.createFrom(this, {
         colorModel: HSV
       });
       let ptr = 0;
@@ -42957,7 +42697,7 @@ ${indent}columns: ${matrix.columns}
         alpha: [0, 1],
         colorModel: [RGB$1]
       });
-      let newImage = Image$1.createFrom(this, {
+      let newImage = Image.createFrom(this, {
         colorModel: HSL
       });
       let threshold = Math.floor(this.maxValue / 2);
@@ -43029,7 +42769,7 @@ ${indent}columns: ${matrix.columns}
         alpha: [0, 1],
         colorModel: [RGB$1]
       });
-      let newImage = Image$1.createFrom(this, {
+      let newImage = Image.createFrom(this, {
         components: 4,
         colorModel: CMYK$1
       });
@@ -43076,7 +42816,7 @@ ${indent}columns: ${matrix.columns}
      */
 
     function rgba8() {
-      return new Image$1(this.width, this.height, this.getRGBAData(), {
+      return new Image(this.width, this.height, this.getRGBAData(), {
         kind: 'RGBA',
         parent: this
       });
@@ -44577,7 +44317,7 @@ ${indent}columns: ${matrix.columns}
         threshold = getThreshold.call(this, options);
       }
 
-      let newImage = new Image$1(this.width, this.height, {
+      let newImage = new Image(this.width, this.height, {
         kind: 'BINARY',
         parent: this
       });
@@ -44673,7 +44413,7 @@ ${indent}columns: ${matrix.columns}
       let newWidth = this.width + size[0] * 2;
       let newHeight = this.height + size[1] * 2;
       let channels = this.channels;
-      let newImage = Image$1.createFrom(this, {
+      let newImage = Image.createFrom(this, {
         width: newWidth,
         height: newHeight
       });
@@ -44740,7 +44480,7 @@ ${indent}columns: ${matrix.columns}
         return this.clone();
       }
 
-      let newImage = Image$1.createFrom(this, {
+      let newImage = Image.createFrom(this, {
         bitDepth: newColorDepth
       });
 
@@ -44797,7 +44537,7 @@ ${indent}columns: ${matrix.columns}
       const radians = degrees * Math.PI / 180;
       const newWidth = Math.floor(Math.abs(width * Math.cos(radians)) + Math.abs(height * Math.sin(radians)));
       const newHeight = Math.floor(Math.abs(height * Math.cos(radians)) + Math.abs(width * Math.sin(radians)));
-      const newImage = Image$1.createFrom(this, {
+      const newImage = Image.createFrom(this, {
         width: newWidth,
         height: newHeight
       });
@@ -44941,7 +44681,7 @@ ${indent}columns: ${matrix.columns}
      */
 
     function rotateLeft() {
-      const newImage = Image$1.createFrom(this, {
+      const newImage = Image.createFrom(this, {
         width: this.height,
         height: this.width
       });
@@ -44965,7 +44705,7 @@ ${indent}columns: ${matrix.columns}
      */
 
     function rotateRight() {
-      const newImage = Image$1.createFrom(this, {
+      const newImage = Image.createFrom(this, {
         width: this.height,
         height: this.width
       });
@@ -44983,7 +44723,7 @@ ${indent}columns: ${matrix.columns}
     }
 
     function rotate180() {
-      const newImage = Image$1.createFrom(this);
+      const newImage = Image.createFrom(this);
       const newMaxWidth = newImage.width - 1;
       const newMaxHeight = newImage.height - 1;
 
@@ -45144,7 +44884,7 @@ ${indent}columns: ${matrix.columns}
 
       if (this.alpha && preserveAlpha) {
         for (let i = 0; i < this.components; i++) {
-          let newImage = Image$1.createFrom(this, {
+          let newImage = Image.createFrom(this, {
             components: 1,
             alpha: true,
             colorModel: GREY$1
@@ -45160,7 +44900,7 @@ ${indent}columns: ${matrix.columns}
         }
       } else {
         for (let i = 0; i < this.channels; i++) {
-          let newImage = Image$1.createFrom(this, {
+          let newImage = Image.createFrom(this, {
             components: 1,
             alpha: false,
             colorModel: GREY$1
@@ -45200,7 +44940,7 @@ ${indent}columns: ${matrix.columns}
         bitDepth: [8, 16]
       });
       channel = validateChannel(this, channel);
-      let newImage = Image$1.createFrom(this, {
+      let newImage = Image.createFrom(this, {
         components: 1,
         alpha: keepAlpha,
         colorModel: GREY$1
@@ -45243,7 +44983,7 @@ ${indent}columns: ${matrix.columns}
       this.checkProcessable('combineChannels', {
         bitDepth: [8, 16]
       });
-      let newImage = Image$1.createFrom(this, {
+      let newImage = Image.createFrom(this, {
         components: 1,
         alpha: keepAlpha,
         colorModel: GREY$1
@@ -46098,7 +45838,7 @@ ${indent}columns: ${matrix.columns}
       }
 
       if (this.bitDepth > 1) {
-        let extract = Image$1.createFrom(this, {
+        let extract = Image.createFrom(this, {
           width: mask.width,
           height: mask.height,
           alpha: 1,
@@ -46124,7 +45864,7 @@ ${indent}columns: ${matrix.columns}
 
         return extract;
       } else {
-        let extract = Image$1.createFrom(this, {
+        let extract = Image.createFrom(this, {
           width: mask.width,
           height: mask.height,
           position: position,
@@ -46299,7 +46039,7 @@ ${indent}columns: ${matrix.columns}
         y = 0,
         inPlace = true
       } = options;
-      const destination = inPlace ? this : Image$1.createFrom(this);
+      const destination = inPlace ? this : Image.createFrom(this);
       this.checkProcessable('floodFill', {
         bitDepth: 1
       });
@@ -47066,7 +46806,7 @@ ${indent}columns: ${matrix.columns}
 
 
       getMask() {
-        let img = new Image$1(this.width, this.height, {
+        let img = new Image(this.width, this.height, {
           kind: BINARY
         });
 
@@ -51594,7 +51334,7 @@ ${indent}columns: ${matrix.columns}
 
       get contourMask() {
         if (!this.computed.contourMask) {
-          let img = new Image$1(this.width, this.height, {
+          let img = new Image(this.width, this.height, {
             kind: BINARY,
             position: [this.minX, this.minY],
             parent: this.map.parent
@@ -51623,7 +51363,7 @@ ${indent}columns: ${matrix.columns}
 
       get boxMask() {
         if (!this.computed.boxMask) {
-          let img = new Image$1(this.width, this.height, {
+          let img = new Image(this.width, this.height, {
             kind: BINARY,
             position: [this.minX, this.minY],
             parent: this.map.parent
@@ -51651,7 +51391,7 @@ ${indent}columns: ${matrix.columns}
 
       get mask() {
         if (!this.computed.mask) {
-          let img = new Image$1(this.width, this.height, {
+          let img = new Image(this.width, this.height, {
             kind: BINARY,
             position: [this.minX, this.minY],
             parent: this.map.parent
@@ -51673,7 +51413,7 @@ ${indent}columns: ${matrix.columns}
 
       get filledMask() {
         if (!this.computed.filledMask) {
-          let img = new Image$1(this.width, this.height, {
+          let img = new Image(this.width, this.height, {
             kind: BINARY,
             position: [this.minX, this.minY],
             parent: this.map.parent
@@ -51749,7 +51489,7 @@ ${indent}columns: ${matrix.columns}
       get convexHullMask() {
         if (!this.computed.convexHullMask) {
           const convexHull = this.convexHull;
-          const img = new Image$1(this.width + 1, this.height + 1, {
+          const img = new Image(this.width + 1, this.height + 1, {
             kind: BINARY,
             position: [this.minX, this.minY],
             parent: this.map.parent
@@ -51766,7 +51506,7 @@ ${indent}columns: ${matrix.columns}
       get convexHullFilledMask() {
         if (!this.computed.convexHullFilledMask) {
           const convexHull = this.convexHull;
-          const img = new Image$1(this.width, this.height, {
+          const img = new Image(this.width, this.height, {
             kind: BINARY,
             position: [this.minX, this.minY],
             parent: this.map.parent
@@ -51883,7 +51623,7 @@ ${indent}columns: ${matrix.columns}
 
       get feretMask() {
         if (!this.computed.feretMask) {
-          const image = new Image$1(this.width + 1, this.height + 1, {
+          const image = new Image(this.width + 1, this.height + 1, {
             kind: BINARY,
             position: [this.minX, this.minY],
             parent: this.map.parent
@@ -51903,7 +51643,7 @@ ${indent}columns: ${matrix.columns}
           if (rectangle.length > 0) {
             // the problem is that the rectangle may be outside the roi
             const minMax$1 = minMax(rectangle);
-            const img = new Image$1(minMax$1[1][0] - minMax$1[0][0] + 1, minMax$1[1][1] - minMax$1[0][1] + 1, {
+            const img = new Image(minMax$1[1][0] - minMax$1[0][0] + 1, minMax$1[1][1] - minMax$1[0][1] + 1, {
               kind: BINARY,
               position: [this.minX + minMax$1[0][0], this.minY + minMax$1[0][1]],
               parent: this.map.parent
@@ -51914,7 +51654,7 @@ ${indent}columns: ${matrix.columns}
             });
             this.computed.mbrMask = img;
           } else {
-            this.computed.mbrMask = new Image$1(1, 1, {
+            this.computed.mbrMask = new Image(1, 1, {
               kind: BINARY,
               position: [this.minX, this.minY],
               parent: this.map.parent
@@ -51927,7 +51667,7 @@ ${indent}columns: ${matrix.columns}
 
       get mbrFilledMask() {
         if (!this.computed.mbrFilledMask) {
-          const img = new Image$1(this.width, this.height, {
+          const img = new Image(this.width, this.height, {
             kind: BINARY,
             position: [this.minX, this.minY],
             parent: this.map.parent
@@ -54354,7 +54094,7 @@ ${indent}columns: ${matrix.columns}
 
 
       getMask(options = {}) {
-        let mask = new Image$1(this._image.width, this._image.height, {
+        let mask = new Image(this._image.width, this._image.height, {
           kind: 'BINARY'
         });
         let masks = this.getMasks(options);
@@ -54680,7 +54420,7 @@ ${indent}columns: ${matrix.columns}
      * </script>
      */
 
-    class Image$1 {
+    class Image {
       constructor(width, height, data, options) {
         if (arguments.length === 1) {
           options = width;
@@ -54850,7 +54590,7 @@ ${indent}columns: ${matrix.columns}
       static fromCanvas(canvas) {
         const ctx = canvas.getContext('2d');
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        return new Image$1(imageData.width, imageData.height, imageData.data);
+        return new Image(imageData.width, imageData.height, imageData.data);
       }
       /**
        * Create a new Image based on the characteristics of another one.
@@ -54868,7 +54608,7 @@ ${indent}columns: ${matrix.columns}
           parent: other,
           position: [0, 0]
         }, options);
-        return new Image$1(newOptions);
+        return new Image(newOptions);
       }
       /**
        * Create a new manager for regions of interest based on the current image.
@@ -54889,7 +54629,7 @@ ${indent}columns: ${matrix.columns}
 
       clone() {
         const newData = this.data.slice();
-        return new Image$1(this.width, this.height, newData, this);
+        return new Image(this.width, this.height, newData, this);
       }
 
       apply(filter) {
@@ -54902,15 +54642,15 @@ ${indent}columns: ${matrix.columns}
       }
 
     }
-    setValueMethods(Image$1);
-    setBitMethods(Image$1);
-    setExportMethods(Image$1);
-    Image$1.prototype.checkProcessable = checkProcessable;
-    Image$1.prototype.getRGBAData = getRGBAData;
-    Image$1.load = load;
-    Image$1.extendMethod = extendMethod;
-    Image$1.extendProperty = extendProperty;
-    extend$1(Image$1);
+    setValueMethods(Image);
+    setBitMethods(Image);
+    setExportMethods(Image);
+    Image.prototype.checkProcessable = checkProcessable;
+    Image.prototype.getRGBAData = getRGBAData;
+    Image.load = load;
+    Image.extendMethod = extendMethod;
+    Image.extendProperty = extendProperty;
+    extend$1(Image);
 
     var workerTemplate$1 = {};
 
@@ -55189,7 +54929,7 @@ ${indent}columns: ${matrix.columns}
     function runOnce(manager, image, options) {
       return manager.post('data', [image, options]).then(function (response) {
         for (let i in response) {
-          response[i] = new Image$1(response[i]);
+          response[i] = new Image(response[i]);
         }
 
         return response;
@@ -55398,7 +55138,7 @@ ${indent}columns: ${matrix.columns}
                             }, function (err) { return console.log('Error while sending image:', err); });
                             depthBlob
                                 .arrayBuffer()
-                                .then(function (val) { return Image$1.load(val); }, function (err) { return console.log('Error while loading depth map: ', err); })
+                                .then(function (val) { return Image.load(val); }, function (err) { return console.log('Error while loading depth map: ', err); })
                                 .then(function (depth) {
                                 if (!depth)
                                     return;
@@ -55479,6 +55219,7 @@ ${indent}columns: ${matrix.columns}
                 message: command,
                 accessToken: this.settings.accessToken
             };
+            console.log({ messageObj: messageObj });
             console.log('Enqueuing command:', command);
             this.messageQueue.push(messageObj);
             this.sendQueuedCommands();
@@ -55503,7 +55244,7 @@ ${indent}columns: ${matrix.columns}
         };
         NetworkOperator.prototype.unpackData = function (data) {
             if (typeof data === 'string') {
-                console.error('Error on sending command: ', data);
+                console.log('Command answer:', data);
                 return;
             }
             data.text().then(function (res) { return console.log(JSON.parse(res)); });
@@ -55518,7 +55259,7 @@ ${indent}columns: ${matrix.columns}
 
     var CommandSettings = /** @class */ (function () {
         function CommandSettings() {
-            this.source = "operator";
+            this.source = 'operator';
         }
         CommandSettings.getInstance = function () {
             if (!CommandSettings.instance) {
@@ -55963,7 +55704,7 @@ ${indent}columns: ${matrix.columns}
 
     ___$insertStyle(".debug-operator-container {\n  display: flex;\n  flex-direction: row;\n}\n.debug-operator-container .controls {\n  display: inline-flex;\n  vertical-align: top;\n  flex-direction: column-reverse;\n  margin-right: 10px;\n  margin-left: 10px;\n}\n.debug-operator-container .operator-buttons {\n  flex-grow: 1;\n}\n.debug-operator-container .input-container {\n  padding: 5px;\n  margin-bottom: 5px;\n  align-items: center;\n  grid-auto-rows: 25px;\n  grid-row-gap: 5px;\n  grid-column-gap: 5px;\n}\n.debug-operator-container .connection {\n  display: grid;\n  grid-template-columns: 0.7fr 2fr;\n}\n.debug-operator-container .connection > span {\n  text-align: right;\n}\n.debug-operator-container .joint-controls {\n  display: grid;\n  grid-template-columns: 20px repeat(2, 1fr) 100px repeat(2, 1fr);\n  grid-column-gap: 5px;\n  align-items: center;\n}\n.debug-operator-container .joint-controls .joint-num {\n  text-align: right;\n}\n.debug-operator-container .joint-controls .joint-degrees {\n  text-align: center;\n}\n.debug-operator-container .joint-controls + .joint-controls {\n  margin-top: 10px;\n}\n.debug-operator-container .vacuum {\n  display: grid;\n  grid-template-columns: repeat(2, 1fr);\n}\n.debug-operator-container .calibration {\n  border-radius: 5px;\n  padding: 5px;\n  margin-bottom: 5px;\n  align-items: center;\n}\n.debug-operator-container .calibration > div + div {\n  margin-top: 10px;\n}\n.debug-operator-container .calibration > .tags {\n  display: grid;\n  grid-auto-rows: 25px;\n  grid-column-gap: 5px;\n}\n.debug-operator-container .btn-send-home {\n  width: 100%;\n  margin-top: 7px;\n  margin-bottom: 7px;\n}\n.debug-operator-container .depth-view {\n  width: 320px;\n  height: 180px;\n}\n.debug-operator-container .camera-view {\n  width: 854px;\n  height: 480px;\n}\n.debug-operator-container .debug-command-container {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n}\n.debug-operator-container .command-item-container {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  height: max-content !important;\n}\n.debug-operator-container .command-item {\n  margin: 5px;\n  font-size: 1.1em;\n  min-width: 100px;\n  background-color: lightgray;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-content: center;\n  align-items: center;\n  flex-grow: 1;\n  border-radius: 5px;\n  height: max-content !important;\n  -webkit-user-select: none;\n  -khtml-user-select: none;\n  -moz-user-select: none;\n  -o-user-select: none;\n  user-select: none;\n  cursor: pointer;\n}\n.debug-operator-container .command-item > span {\n  margin-left: 10px;\n}\n.debug-operator-container .command-item-icon {\n  filter: brightness(0.9);\n  padding: 7px 12px;\n  display: flex;\n  align-items: center;\n  align-content: center;\n  background-color: lightgray;\n}\n.debug-operator-container .command-input {\n  width: max-content;\n  padding: 6px;\n  border-radius: 5px;\n  height: max-content !important;\n}\n.debug-operator-container .command-input-item {\n  display: flex;\n  flex-direction: column;\n}\n.debug-operator-container .command-input-item > span {\n  margin-top: 5px;\n  margin-bottom: 5px;\n}\n.debug-operator-container .command-item:hover {\n  filter: brightness(0.9);\n}\n.debug-operator-container .debug-operator-info-container {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around;\n}");
 
-    /** @class */ ((function (_super) {
+    var OperatorDebug = /** @class */ (function (_super) {
         __extends$1(OperatorDebug, _super);
         function OperatorDebug(props) {
             var _this = _super.call(this, props) || this;
@@ -56189,7 +55930,7 @@ ${indent}columns: ${matrix.columns}
                             react.exports.createElement("button", { style: { marginTop: 10 }, onClick: function () { return _this.addCommand(); } }, "Add command")),
                         react.exports.createElement("div", { className: "command-item-container" }, this.state.commandList.map(function (command) {
                             return react.exports.createElement("div", { className: "command-item", onClick: function () {
-                                    return _this.sendOpClosure(command.op);
+                                    _this._networkOperator.enqueueCommand({ op: command.op, source: CommandSettings.getInstance().source + " " + _this.state.accessToken });
                                 } },
                                 react.exports.createElement("span", null, command.name),
                                 react.exports.createElement("div", { className: "command-item-icon", onClick: function (ev) {
@@ -56223,18 +55964,23 @@ ${indent}columns: ${matrix.columns}
                         react.exports.createElement("img", { width: "320", height: "180", src: this.state.depthData })))));
         };
         return OperatorDebug;
-    })(react.exports.Component));
+    }(react.exports.Component));
 
+    //const props = {
+    //    minWidth: 400,
+    //    maxWidth: 800,
+    //    aspectRatio: 1/1,
+    //    token: "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJXbHpXa1BWaFZrVkpHdi1TSEJCMGpHZWh1WWZPSEVTLTdwc0hJbUJwdlJVIn0.eyJleHAiOjE2MzQzNzA2MzUsImlhdCI6MTYzNDI4NDIzNSwianRpIjoiMTBmYjJiZGQtYzE1ZS00YWRhLThmOTAtNDU1ZjJiNzU2ZWY1IiwiaXNzIjoiaHR0cHM6Ly9hdXRoLnJlbWJyYWluLmFpOjg0NDMvYXV0aC9yZWFsbXMvaHR0cC1nYXRlIiwic3ViIjoiMzc2ZTI2YjMtZmMwOC00M2I5LWJiZTctMTkzYTljZDkwMTQ5IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiaHR0cC1nYXRlIiwic2Vzc2lvbl9zdGF0ZSI6IjhhOTI5ZWQ4LTZhYjUtNDYzYS05OWMwLTI4NTI4MWU1ZGQ2YiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9hdXRoLnJlbWJyYWluLmllOjg0NDMvIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJhZG1pbiJdfSwic2NvcGUiOiJlbWFpbCBwcm9maWxlIiwic2lkIjoiOGE5MjllZDgtNmFiNS00NjNhLTk5YzAtMjg1MjgxZTVkZDZiIiwidXBuIjoidGVzdCIsImFkZHJlc3MiOnt9LCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6InRlc3QgdGVzdCIsImdyb3VwcyI6WyJhZG1pbiJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJ0ZXN0IiwiZ2l2ZW5fbmFtZSI6InRlc3QiLCJmYW1pbHlfbmFtZSI6InRlc3QiLCJlbWFpbCI6InRlc3RAZ21haWwuY29tIn0.UMzkzVoTFXnV306URaJmy6eCT8Z9Pm9VyQu4kTNrbl6TE7YMzMlXSA_HJS8QGif0gXVW5bpYvC9ctQZ8T1a8AIAUhXV5-szkphpGdMjpEpn63jkLvMoLADUtSSZbWmVmdZjof9A__wmOFSR4PgHb2NU7d77dWBMlVltRpu4uWiVeSbEjdIQZiV1xAyBArOWWkq1PfvWFt5TZk3b5I7uip4tPVvmP6rgK-2VsSq3aqp7cT8ERq85K1pM_x9dWay2CkzwfV09FMc_ARhMYIyUye8Zm4rH5z8dwsWkaTp4nP54m0RXyVkBBc0O1o-EjUibSuWR7_BOGy74o4MtVA6HEJA",
+    //    websocketURL: "wss://monitor.rembrain.ai:5443",
+    //    robotName: "aivero_xarm2",
+    //    exchange: "camera0"
+    //}
     var props = {
-        minWidth: 400,
-        maxWidth: 800,
-        aspectRatio: 1 / 1,
-        token: "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJXbHpXa1BWaFZrVkpHdi1TSEJCMGpHZWh1WWZPSEVTLTdwc0hJbUJwdlJVIn0.eyJleHAiOjE2MzQzNzA2MzUsImlhdCI6MTYzNDI4NDIzNSwianRpIjoiMTBmYjJiZGQtYzE1ZS00YWRhLThmOTAtNDU1ZjJiNzU2ZWY1IiwiaXNzIjoiaHR0cHM6Ly9hdXRoLnJlbWJyYWluLmFpOjg0NDMvYXV0aC9yZWFsbXMvaHR0cC1nYXRlIiwic3ViIjoiMzc2ZTI2YjMtZmMwOC00M2I5LWJiZTctMTkzYTljZDkwMTQ5IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiaHR0cC1nYXRlIiwic2Vzc2lvbl9zdGF0ZSI6IjhhOTI5ZWQ4LTZhYjUtNDYzYS05OWMwLTI4NTI4MWU1ZGQ2YiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9hdXRoLnJlbWJyYWluLmllOjg0NDMvIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJhZG1pbiJdfSwic2NvcGUiOiJlbWFpbCBwcm9maWxlIiwic2lkIjoiOGE5MjllZDgtNmFiNS00NjNhLTk5YzAtMjg1MjgxZTVkZDZiIiwidXBuIjoidGVzdCIsImFkZHJlc3MiOnt9LCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6InRlc3QgdGVzdCIsImdyb3VwcyI6WyJhZG1pbiJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJ0ZXN0IiwiZ2l2ZW5fbmFtZSI6InRlc3QiLCJmYW1pbHlfbmFtZSI6InRlc3QiLCJlbWFpbCI6InRlc3RAZ21haWwuY29tIn0.UMzkzVoTFXnV306URaJmy6eCT8Z9Pm9VyQu4kTNrbl6TE7YMzMlXSA_HJS8QGif0gXVW5bpYvC9ctQZ8T1a8AIAUhXV5-szkphpGdMjpEpn63jkLvMoLADUtSSZbWmVmdZjof9A__wmOFSR4PgHb2NU7d77dWBMlVltRpu4uWiVeSbEjdIQZiV1xAyBArOWWkq1PfvWFt5TZk3b5I7uip4tPVvmP6rgK-2VsSq3aqp7cT8ERq85K1pM_x9dWay2CkzwfV09FMc_ARhMYIyUye8Zm4rH5z8dwsWkaTp4nP54m0RXyVkBBc0O1o-EjUibSuWR7_BOGy74o4MtVA6HEJA",
-        websocketURL: "wss://monitor.rembrain.ai:5443",
-        robotName: "aivero_xarm2",
-        exchange: "camera0"
+        dataWSUrl: "wss://monitor-dev.rembrain.ai:5443",
+        robotName: "weigher_1",
+        accessToken: "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJXQ2tmVTZZMW1vNGVaaHlHaWZnd2dLSmFPS0RjQ0xIVWNvR1NGZ0M1WGFvIn0.eyJleHAiOjE2MzQ2MzU0OTQsImlhdCI6MTYzNDYzNTE5NCwianRpIjoiMDA0NjlkODEtMmM1MC00ZTI5LWE1ZWYtMmMyNWQzYjM5ZWYyIiwiaXNzIjoiaHR0cHM6Ly9hdXRoLWRldi5yZW1icmFpbi5haTo4NDQzL2F1dGgvcmVhbG1zL3Rlc3QiLCJzdWIiOiI0M2QwNmU2MC1kOTYwLTQ5NzUtODAwZC00ZTdiOThjMTQ5OWQiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJjbGllbnRpZC0zIiwic2Vzc2lvbl9zdGF0ZSI6ImE3ZjdiYzk3LTg0N2YtNGY1NC1iNDVmLWE5YjExZWYzYzZhNCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9hdXRoX2Rldi5yZW1icmFpbi5pZTo4NDQzIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJhZG1pbiJdfSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwic2lkIjoiYTdmN2JjOTctODQ3Zi00ZjU0LWI0NWYtYTliMTFlZjNjNmE0IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJ0ZXN0IHRlc3QiLCJncm91cHMiOlsiYWRtaW4iXSwicHJlZmVycmVkX3VzZXJuYW1lIjoidGVzdCIsImdpdmVuX25hbWUiOiJ0ZXN0IiwiZmFtaWx5X25hbWUiOiJ0ZXN0IiwiZW1haWwiOiJ0ZXN0QHRlc3QudGVzdCJ9.PPv9lR7zZx2XuFzNwxrQXxXv13jn0oZ96r9oqpF7kVFV4ctykPQXTnk_NcZ0Rys0alfnso55wL5LmWdOds_8Rgf-Ds_1_IntAdMXLHzyhArbbak_j9J7-XerIYWmdRyL0yV1-GDMJsJP2yWf1kOK_6Oe3lnq7UER5pG_-TH7HGyFJrkJey1d8PesocOfV3hXfkFtllhiTv62T_0-a6nUbttLGIrsOwcgicTqkchKSkvvT-JDDNWqGGSq-S47bC3p_KxFK-BH0z7Vyn0bTA8Q-GNBXqOAN49o8kE0yCOYOGGyhuNNlnO6OSFCpPUDvbA3VfF32KUW6RxrZLGV-8V-4w",
     };
-    ReactDOM.render(React.createElement(ReactResponsiveRgbStream$1, __assign({}, props)), document.getElementById('root-debug'));
+    ReactDOM.render(React.createElement(OperatorDebug, __assign({}, props)), document.getElementById('root-debug'));
 
 })();
 //# sourceMappingURL=index.js.map

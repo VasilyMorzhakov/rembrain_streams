@@ -622,6 +622,7 @@ var NetworkOperator = /** @class */ (function () {
             message: command,
             accessToken: this.settings.accessToken
         };
+        console.log({ messageObj: messageObj });
         console.log('Enqueuing command:', command);
         this.messageQueue.push(messageObj);
         this.sendQueuedCommands();
@@ -646,7 +647,7 @@ var NetworkOperator = /** @class */ (function () {
     };
     NetworkOperator.prototype.unpackData = function (data) {
         if (typeof data === 'string') {
-            console.error('Error on sending command: ', data);
+            console.log('Command answer:', data);
             return;
         }
         data.text().then(function (res) { return console.log(JSON.parse(res)); });
@@ -661,7 +662,7 @@ var NetworkOperator = /** @class */ (function () {
 
 var CommandSettings = /** @class */ (function () {
     function CommandSettings() {
-        this.source = "operator";
+        this.source = 'operator';
     }
     CommandSettings.getInstance = function () {
         if (!CommandSettings.instance) {
@@ -1332,7 +1333,7 @@ var OperatorDebug = /** @class */ (function (_super) {
                         React__namespace.createElement("button", { style: { marginTop: 10 }, onClick: function () { return _this.addCommand(); } }, "Add command")),
                     React__namespace.createElement("div", { className: "command-item-container" }, this.state.commandList.map(function (command) {
                         return React__namespace.createElement("div", { className: "command-item", onClick: function () {
-                                return _this.sendOpClosure(command.op);
+                                _this._networkOperator.enqueueCommand({ op: command.op, source: CommandSettings.getInstance().source + " " + _this.state.accessToken });
                             } },
                             React__namespace.createElement("span", null, command.name),
                             React__namespace.createElement("div", { className: "command-item-icon", onClick: function (ev) {

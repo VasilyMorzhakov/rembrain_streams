@@ -36,6 +36,7 @@ export class NetworkOperator implements INetworkOperator {
       message: command,
       accessToken: this.settings.accessToken
     }
+    console.log({ messageObj })
     console.log('Enqueuing command:', command)
     this.messageQueue.push(messageObj)
     this.sendQueuedCommands()
@@ -87,7 +88,7 @@ export class NetworkOperator implements INetworkOperator {
 
   unpackData(data: Blob | string) {
     if (typeof data === 'string') {
-      console.error('Error on sending command: ', data)
+      console.log('Command answer:', data)
       return
     }
     data.text().then((res) => console.log(JSON.parse(res)))
