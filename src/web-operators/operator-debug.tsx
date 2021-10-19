@@ -304,7 +304,7 @@ export class OperatorDebug extends React.Component<IOperatorProps, IOperatorStat
                              <div className="command-item-container">
                                 {this.state.commandList.map(command => 
                                         <div 
-                                            
+                                            id={command.name}
                                             className="command-item" onClick={() => 
                                                 {
                                                     this._networkOperator.enqueueCommand({op: command.op, source: CommandSettings.getInstance().source + " "+ this.state.accessToken})

@@ -507,10 +507,10 @@ var WebSocketImageReceiver = /** @class */ (function () {
     };
     WebSocketImageReceiver.prototype.unpackData = function (data) {
         return __awaiter(this, void 0, void 0, function () {
-            var dataType, _a, HEADER_END, lengths, _b, imageBlob, depthBlob, statusBlob;
+            var dataType, _a, HEADER_END, lengths, _b, imageBlob, depthBlob, statusBlob, lengths, _c, jpgBlob;
             var _this = this;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
                         if (typeof data === 'string') {
                             console.error('Error unpacking video feed:', data);
@@ -519,16 +519,13 @@ var WebSocketImageReceiver = /** @class */ (function () {
                         _a = Uint8Array.bind;
                         return [4 /*yield*/, data.slice(0, 1).arrayBuffer()];
                     case 1:
-                        dataType = new (_a.apply(Uint8Array, [void 0, _c.sent()]))()[0];
-                        if (!(dataType != 1)) return [3 /*break*/, 2];
-                        console.log("Data type " + dataType + " isn't JPG+PNG(1)");
-                        return [3 /*break*/, 4];
-                    case 2:
+                        dataType = new (_a.apply(Uint8Array, [void 0, _d.sent()]))()[0];
+                        if (!(dataType === 1)) return [3 /*break*/, 3];
                         HEADER_END = 13;
                         _b = Uint32Array.bind;
                         return [4 /*yield*/, data.slice(1, HEADER_END).arrayBuffer()];
-                    case 3:
-                        lengths = new (_b.apply(Uint32Array, [void 0, _c.sent()]))();
+                    case 2:
+                        lengths = new (_b.apply(Uint32Array, [void 0, _d.sent()]))();
                         imageBlob = data.slice(HEADER_END, HEADER_END + lengths[0]);
                         depthBlob = data.slice(HEADER_END + lengths[0], HEADER_END + lengths[0] + lengths[1]);
                         statusBlob = data.slice(HEADER_END + lengths[0] + lengths[1], HEADER_END + lengths[0] + lengths[1] + lengths[2]);
@@ -548,8 +545,26 @@ var WebSocketImageReceiver = /** @class */ (function () {
                             _this.depthSubject.next(depth);
                         });
                         statusBlob.text().then(function (val) { return _this.dataSubject.next(JSON.parse(val)); }, function (err) { return console.log('Error while getting status:', err); });
-                        _c.label = 4;
-                    case 4: return [2 /*return*/];
+                        return [3 /*break*/, 6];
+                    case 3:
+                        if (!(dataType === 2)) return [3 /*break*/, 5];
+                        _c = Uint32Array.bind;
+                        return [4 /*yield*/, data.slice(1, 13).arrayBuffer()];
+                    case 4:
+                        lengths = new (_c.apply(Uint32Array, [void 0, _d.sent()]))();
+                        jpgBlob = data.slice(9, 9 + lengths[0]);
+                        jpgBlob.arrayBuffer().then(function (val) {
+                            var imData = {
+                                data: _.Buffer.from(val),
+                                type: 'image/jpg'
+                            };
+                            _this.imageSubject.next(imData);
+                        });
+                        return [3 /*break*/, 6];
+                    case 5:
+                        console.log("Data type " + dataType + " isn't JPG+PNG(1)");
+                        _d.label = 6;
+                    case 6: return [2 /*return*/];
                 }
             });
         });
@@ -1332,7 +1347,7 @@ var OperatorDebug = /** @class */ (function (_super) {
                                 } })),
                         React__namespace.createElement("button", { style: { marginTop: 10 }, onClick: function () { return _this.addCommand(); } }, "Add command")),
                     React__namespace.createElement("div", { className: "command-item-container" }, this.state.commandList.map(function (command) {
-                        return React__namespace.createElement("div", { className: "command-item", onClick: function () {
+                        return React__namespace.createElement("div", { id: command.name, className: "command-item", onClick: function () {
                                 _this._networkOperator.enqueueCommand({ op: command.op, source: CommandSettings.getInstance().source + " " + _this.state.accessToken });
                             } },
                             React__namespace.createElement("span", null, command.name),

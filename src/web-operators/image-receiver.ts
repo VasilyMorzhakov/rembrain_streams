@@ -77,9 +77,7 @@ export class WebSocketImageReceiver implements IImageReceiver {
       return
     }
     let dataType = new Uint8Array(await data.slice(0, 1).arrayBuffer())[0]
-    if (dataType != 1) {
-      console.log(`Data type ${dataType} isn't JPG+PNG(1)`)
-    } else {
+    if (dataType === 1) {
       const HEADER_END = 13
       // 1st byte is the type of image, for now assuming it's JPG+PNG and skip it
       let lengths = new Uint32Array(
@@ -124,6 +122,19 @@ export class WebSocketImageReceiver implements IImageReceiver {
         (val) => this.dataSubject.next(JSON.parse(val)),
         (err) => console.log('Error while getting status:', err)
       )
+    } else if (dataType === 2) {
+      let lengths = new Uint32Array(await data.slice(1, 13).arrayBuffer())
+      let jpgBlob = data.slice(9, 9 + lengths[0])
+
+      jpgBlob.arrayBuffer().then((val: ArrayBuffer) => {
+        var imData = {
+          data: Buffer.from(val),
+          type: 'image/jpg'
+        }
+        this.imageSubject.next(imData)
+      })
+    } else {
+      console.log(`Data type ${dataType} isn't JPG+PNG(1)`)
     }
   }
 

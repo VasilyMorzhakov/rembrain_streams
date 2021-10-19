@@ -55104,10 +55104,10 @@ ${indent}columns: ${matrix.columns}
         };
         WebSocketImageReceiver.prototype.unpackData = function (data) {
             return __awaiter$1(this, void 0, void 0, function () {
-                var dataType, _a, HEADER_END, lengths, _b, imageBlob, depthBlob, statusBlob;
+                var dataType, _a, HEADER_END, lengths, _b, imageBlob, depthBlob, statusBlob, lengths, _c, jpgBlob;
                 var _this = this;
-                return __generator$1(this, function (_c) {
-                    switch (_c.label) {
+                return __generator$1(this, function (_d) {
+                    switch (_d.label) {
                         case 0:
                             if (typeof data === 'string') {
                                 console.error('Error unpacking video feed:', data);
@@ -55116,16 +55116,13 @@ ${indent}columns: ${matrix.columns}
                             _a = Uint8Array.bind;
                             return [4 /*yield*/, data.slice(0, 1).arrayBuffer()];
                         case 1:
-                            dataType = new (_a.apply(Uint8Array, [void 0, _c.sent()]))()[0];
-                            if (!(dataType != 1)) return [3 /*break*/, 2];
-                            console.log("Data type " + dataType + " isn't JPG+PNG(1)");
-                            return [3 /*break*/, 4];
-                        case 2:
+                            dataType = new (_a.apply(Uint8Array, [void 0, _d.sent()]))()[0];
+                            if (!(dataType === 1)) return [3 /*break*/, 3];
                             HEADER_END = 13;
                             _b = Uint32Array.bind;
                             return [4 /*yield*/, data.slice(1, HEADER_END).arrayBuffer()];
-                        case 3:
-                            lengths = new (_b.apply(Uint32Array, [void 0, _c.sent()]))();
+                        case 2:
+                            lengths = new (_b.apply(Uint32Array, [void 0, _d.sent()]))();
                             imageBlob = data.slice(HEADER_END, HEADER_END + lengths[0]);
                             depthBlob = data.slice(HEADER_END + lengths[0], HEADER_END + lengths[0] + lengths[1]);
                             statusBlob = data.slice(HEADER_END + lengths[0] + lengths[1], HEADER_END + lengths[0] + lengths[1] + lengths[2]);
@@ -55145,8 +55142,26 @@ ${indent}columns: ${matrix.columns}
                                 _this.depthSubject.next(depth);
                             });
                             statusBlob.text().then(function (val) { return _this.dataSubject.next(JSON.parse(val)); }, function (err) { return console.log('Error while getting status:', err); });
-                            _c.label = 4;
-                        case 4: return [2 /*return*/];
+                            return [3 /*break*/, 6];
+                        case 3:
+                            if (!(dataType === 2)) return [3 /*break*/, 5];
+                            _c = Uint32Array.bind;
+                            return [4 /*yield*/, data.slice(1, 13).arrayBuffer()];
+                        case 4:
+                            lengths = new (_c.apply(Uint32Array, [void 0, _d.sent()]))();
+                            jpgBlob = data.slice(9, 9 + lengths[0]);
+                            jpgBlob.arrayBuffer().then(function (val) {
+                                var imData = {
+                                    data: buffer.Buffer.from(val),
+                                    type: 'image/jpg'
+                                };
+                                _this.imageSubject.next(imData);
+                            });
+                            return [3 /*break*/, 6];
+                        case 5:
+                            console.log("Data type " + dataType + " isn't JPG+PNG(1)");
+                            _d.label = 6;
+                        case 6: return [2 /*return*/];
                     }
                 });
             });
@@ -55929,7 +55944,7 @@ ${indent}columns: ${matrix.columns}
                                     } })),
                             react.exports.createElement("button", { style: { marginTop: 10 }, onClick: function () { return _this.addCommand(); } }, "Add command")),
                         react.exports.createElement("div", { className: "command-item-container" }, this.state.commandList.map(function (command) {
-                            return react.exports.createElement("div", { className: "command-item", onClick: function () {
+                            return react.exports.createElement("div", { id: command.name, className: "command-item", onClick: function () {
                                     _this._networkOperator.enqueueCommand({ op: command.op, source: CommandSettings.getInstance().source + " " + _this.state.accessToken });
                                 } },
                                 react.exports.createElement("span", null, command.name),
@@ -55978,7 +55993,7 @@ ${indent}columns: ${matrix.columns}
     var props = {
         dataWSUrl: "wss://monitor-dev.rembrain.ai:5443",
         robotName: "weigher_1",
-        accessToken: "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJXQ2tmVTZZMW1vNGVaaHlHaWZnd2dLSmFPS0RjQ0xIVWNvR1NGZ0M1WGFvIn0.eyJleHAiOjE2MzQ2MzU0OTQsImlhdCI6MTYzNDYzNTE5NCwianRpIjoiMDA0NjlkODEtMmM1MC00ZTI5LWE1ZWYtMmMyNWQzYjM5ZWYyIiwiaXNzIjoiaHR0cHM6Ly9hdXRoLWRldi5yZW1icmFpbi5haTo4NDQzL2F1dGgvcmVhbG1zL3Rlc3QiLCJzdWIiOiI0M2QwNmU2MC1kOTYwLTQ5NzUtODAwZC00ZTdiOThjMTQ5OWQiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJjbGllbnRpZC0zIiwic2Vzc2lvbl9zdGF0ZSI6ImE3ZjdiYzk3LTg0N2YtNGY1NC1iNDVmLWE5YjExZWYzYzZhNCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9hdXRoX2Rldi5yZW1icmFpbi5pZTo4NDQzIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJhZG1pbiJdfSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwic2lkIjoiYTdmN2JjOTctODQ3Zi00ZjU0LWI0NWYtYTliMTFlZjNjNmE0IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJ0ZXN0IHRlc3QiLCJncm91cHMiOlsiYWRtaW4iXSwicHJlZmVycmVkX3VzZXJuYW1lIjoidGVzdCIsImdpdmVuX25hbWUiOiJ0ZXN0IiwiZmFtaWx5X25hbWUiOiJ0ZXN0IiwiZW1haWwiOiJ0ZXN0QHRlc3QudGVzdCJ9.PPv9lR7zZx2XuFzNwxrQXxXv13jn0oZ96r9oqpF7kVFV4ctykPQXTnk_NcZ0Rys0alfnso55wL5LmWdOds_8Rgf-Ds_1_IntAdMXLHzyhArbbak_j9J7-XerIYWmdRyL0yV1-GDMJsJP2yWf1kOK_6Oe3lnq7UER5pG_-TH7HGyFJrkJey1d8PesocOfV3hXfkFtllhiTv62T_0-a6nUbttLGIrsOwcgicTqkchKSkvvT-JDDNWqGGSq-S47bC3p_KxFK-BH0z7Vyn0bTA8Q-GNBXqOAN49o8kE0yCOYOGGyhuNNlnO6OSFCpPUDvbA3VfF32KUW6RxrZLGV-8V-4w",
+        accessToken: "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJXQ2tmVTZZMW1vNGVaaHlHaWZnd2dLSmFPS0RjQ0xIVWNvR1NGZ0M1WGFvIn0.eyJleHAiOjE2MzQ2MzY2MTUsImlhdCI6MTYzNDYzNjMxNSwianRpIjoiMzVjOWFjY2ItYWMzMS00OGU0LThhYTktMzk3NjI3OTEwZTk3IiwiaXNzIjoiaHR0cHM6Ly9hdXRoLWRldi5yZW1icmFpbi5haTo4NDQzL2F1dGgvcmVhbG1zL3Rlc3QiLCJzdWIiOiI0M2QwNmU2MC1kOTYwLTQ5NzUtODAwZC00ZTdiOThjMTQ5OWQiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJjbGllbnRpZC0zIiwic2Vzc2lvbl9zdGF0ZSI6IjU2ZDU0YmVmLWYzYzgtNDhhOS1iYThmLTRhNTY2YzNiMzIxMyIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9hdXRoX2Rldi5yZW1icmFpbi5pZTo4NDQzIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJhZG1pbiJdfSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwic2lkIjoiNTZkNTRiZWYtZjNjOC00OGE5LWJhOGYtNGE1NjZjM2IzMjEzIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJ0ZXN0IHRlc3QiLCJncm91cHMiOlsiYWRtaW4iXSwicHJlZmVycmVkX3VzZXJuYW1lIjoidGVzdCIsImdpdmVuX25hbWUiOiJ0ZXN0IiwiZmFtaWx5X25hbWUiOiJ0ZXN0IiwiZW1haWwiOiJ0ZXN0QHRlc3QudGVzdCJ9.fRRg4Cixkig-XzeGvHIhhde_PiWwth4h-qSc02FnIx15cplFoaTtePnd2lvGZVqAWF41DB5UN5sO-Yz0iAwgS_C3qU284K8PhqQP7Oe__fnst3QXwmcdb2mYyu2PThS-ZlpDUyJdWUJirijopAvtZm-nxp7qbTEvosP5LSZXTYEKw61o3hMu06tTZtpq6W_0mKa61yoKsM4bh9P9bLMcc6qw5fOIgC_fl-Y81jMgSc-ElD35YvLy6ivG23c2QJBwTBeccGT61mhvgiwqM-p-_1Ly3SlagRFbLnBV-FxbL8WqRLkS8mL9IwpgJi0nglLmajmm6qESL5XWuds2OIqrjg",
     };
     ReactDOM.render(React.createElement(OperatorDebug, __assign({}, props)), document.getElementById('root-debug'));
 
