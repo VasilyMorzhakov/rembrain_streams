@@ -40,7 +40,7 @@ export class OperatorDebug extends React.Component<IOperatorProps, IOperatorStat
     constructor(props: IOperatorProps) {
         super(props);
 
-        let tags = [6, 8, 11, 12];
+        let tags = [6, 8, 10];
         let tagSets = {};
         tags.map(t => tagSets[t] = false);
         
