@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import {Buffer} from "buffer/"
 
 export const WsHOC = (Canvas) => ({
@@ -75,11 +75,12 @@ export const WsHOC = (Canvas) => ({
             }
           }
           websocket.onclose = (ev) => {
-            console.log('Socket is closed. Reconnect will be attempted.', ev.reason)
             if (ev.reason !== 'stay down') {
+              console.log('Socket is closed. Reconnect will be attempted.', ev.reason)
               connectWebsocket()
               setWebsocket(new WebSocket(websocketURL))
             } else {
+              console.log("Socket is closed.")
               setWebsocket(undefined)
             }
           }
@@ -91,6 +92,10 @@ export const WsHOC = (Canvas) => ({
 
       useEffect(() => {
         websocket && connectWebsocket()
+        return () => {
+          websocket&&websocket.close(1000,"stay down")
+          setWebsocket(undefined)
+        }
       }, [websocket])
 
       useEffect(() => {

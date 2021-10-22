@@ -221,12 +221,13 @@ var WsHOC = function (Canvas) { return function (_a) {
                 });
             }); };
             websocket.onclose = function (ev) {
-                console.log('Socket is closed. Reconnect will be attempted.', ev.reason);
                 if (ev.reason !== 'stay down') {
+                    console.log('Socket is closed. Reconnect will be attempted.', ev.reason);
                     connectWebsocket();
                     setWebsocket(new WebSocket(websocketURL));
                 }
                 else {
+                    console.log("Socket is closed.");
                     setWebsocket(undefined);
                 }
             };
@@ -237,6 +238,10 @@ var WsHOC = function (Canvas) { return function (_a) {
     };
     React.useEffect(function () {
         websocket && connectWebsocket();
+        return function () {
+            websocket && websocket.close(1000, "stay down");
+            setWebsocket(undefined);
+        };
     }, [websocket]);
     React.useEffect(function () {
         websocket && websocket.close(1000, "stay down");
