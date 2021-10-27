@@ -161,34 +161,24 @@ var WsHOC = function (Canvas) { return function (_a) {
                 websocket.send(JSON.stringify(controlPacket));
             };
             websocket.onmessage = function (ev) { return __awaiter(void 0, void 0, void 0, function () {
-                var data, dataType, _a, lengths, _b, jpgBlob, HEADER_END, lengths, _c, imageBlob;
+                var data, dataType, _a, imageBlob, lengths, _b, HEADER_END, lengths, _c;
                 return __generator(this, function (_d) {
                     switch (_d.label) {
                         case 0:
-                            _d.trys.push([0, 6, , 7]);
+                            _d.trys.push([0, 8, , 9]);
                             data = ev.data;
+                            if (!(typeof data === "object")) return [3 /*break*/, 6];
                             _a = Uint8Array.bind;
                             return [4 /*yield*/, data.slice(0, 1).arrayBuffer()];
                         case 1:
                             dataType = new (_a.apply(Uint8Array, [void 0, _d.sent()]))()[0];
+                            imageBlob = null;
                             if (!(dataType === 2)) return [3 /*break*/, 3];
                             _b = Uint32Array.bind;
                             return [4 /*yield*/, data.slice(1, 13).arrayBuffer()];
                         case 2:
                             lengths = new (_b.apply(Uint32Array, [void 0, _d.sent()]))();
-                            jpgBlob = data.slice(9, 9 + lengths[0]);
-                            jpgBlob.arrayBuffer().then(function (val) {
-                                var imData = {
-                                    data: _.Buffer.from(val),
-                                    type: 'image/jpg'
-                                };
-                                var newImg = new Image();
-                                var buf = imData.data.toString('base64');
-                                newImg.src = "data:" + imData.type + ";base64," + buf;
-                                newImg.onload = function () {
-                                    setImage(newImg);
-                                };
-                            });
+                            imageBlob = data.slice(9, 9 + lengths[0]);
                             return [3 /*break*/, 5];
                         case 3:
                             if (!(dataType === 1)) return [3 /*break*/, 5];
@@ -198,25 +188,32 @@ var WsHOC = function (Canvas) { return function (_a) {
                         case 4:
                             lengths = new (_c.apply(Uint32Array, [void 0, _d.sent()]))();
                             imageBlob = data.slice(HEADER_END, HEADER_END + lengths[0]);
-                            imageBlob.arrayBuffer().then(function (val) {
-                                var imData = {
-                                    data: _.Buffer.from(val),
-                                    type: 'image/jpg'
-                                };
-                                var newImg = new Image();
-                                var buf = imData.data.toString('base64');
-                                newImg.src = "data:" + imData.type + ";base64," + buf;
-                                newImg.onload = function () {
-                                    setImage(newImg);
-                                };
-                            });
                             _d.label = 5;
-                        case 5: return [3 /*break*/, 7];
+                        case 5:
+                            if (imageBlob) {
+                                imageBlob.arrayBuffer().then(function (val) {
+                                    var imData = {
+                                        data: _.Buffer.from(val),
+                                        type: 'image/jpg'
+                                    };
+                                    var newImg = new Image();
+                                    var buf = imData.data.toString('base64');
+                                    newImg.src = "data:" + imData.type + ";base64," + buf;
+                                    newImg.onload = function () {
+                                        setImage(newImg);
+                                    };
+                                });
+                            }
+                            return [3 /*break*/, 7];
                         case 6:
+                            console.log("Websocket received message: " + data);
+                            _d.label = 7;
+                        case 7: return [3 /*break*/, 9];
+                        case 8:
                             _d.sent();
                             handleError(ev.data);
-                            return [3 /*break*/, 7];
-                        case 7: return [2 /*return*/];
+                            return [3 /*break*/, 9];
+                        case 9: return [2 /*return*/];
                     }
                 });
             }); };
@@ -238,10 +235,6 @@ var WsHOC = function (Canvas) { return function (_a) {
     };
     React.useEffect(function () {
         websocket && connectWebsocket();
-        return function () {
-            websocket && websocket.close(1000, "stay down");
-            setWebsocket(undefined);
-        };
     }, [websocket]);
     React.useEffect(function () {
         websocket && websocket.close(1000, "stay down");
