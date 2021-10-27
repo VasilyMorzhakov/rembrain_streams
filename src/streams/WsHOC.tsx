@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect} from "react"
 import {Buffer} from "buffer/"
 
 export const WsHOC = (Canvas) => ({
@@ -29,35 +29,28 @@ export const WsHOC = (Canvas) => ({
           websocket.onmessage = async (ev) => {
             try {
               const { data } = ev
-              const dataType = new Uint8Array(await data.slice(0, 1).arrayBuffer())[0]
               
-              if (dataType === 2) {
-                let lengths = new Uint32Array(
-                  await data.slice(1, 13).arrayBuffer()
-                );
-                let jpgBlob = data.slice(9, 9 + lengths[0]);
-                
-                jpgBlob.arrayBuffer().then((val: ArrayBuffer) => {
-                  var imData = {
-                    data: Buffer.from(val),
-                    type: 'image/jpg'
-                  }
-                  const newImg = new Image()
-                  const buf = imData.data.toString('base64')
-                  newImg.src = `data:${imData.type};base64,` + buf
-                  newImg.onload = () => {
-                    setImage(newImg)
-                  }
-                })
-              } else if (dataType === 1){      
-                const HEADER_END = 13
-                let lengths = new Uint32Array(
-                  await data.slice(1, HEADER_END).arrayBuffer()
-                )
-                let imageBlob = data.slice(HEADER_END, HEADER_END + lengths[0])
-                imageBlob.arrayBuffer().then(
-                  (val) => {
-                    let imData = {
+              if (typeof data === "object") {
+                const dataType = new Uint8Array(await data.slice(0, 1).arrayBuffer())[0]
+                let imageBlob = null;
+                if (dataType === 2) {
+                  let lengths = new Uint32Array(
+                    await data.slice(1, 13).arrayBuffer()
+                  );
+                  imageBlob = data.slice(9, 9 + lengths[0]);
+                  
+                  
+                } else if (dataType === 1){      
+                  const HEADER_END = 13
+                  let lengths = new Uint32Array(
+                    await data.slice(1, HEADER_END).arrayBuffer()
+                  )
+                  imageBlob = data.slice(HEADER_END, HEADER_END + lengths[0])
+                  
+                }
+                if (imageBlob) {
+                  imageBlob.arrayBuffer().then((val: ArrayBuffer) => {
+                    var imData = {
                       data: Buffer.from(val),
                       type: 'image/jpg'
                     }
@@ -67,9 +60,13 @@ export const WsHOC = (Canvas) => ({
                     newImg.onload = () => {
                       setImage(newImg)
                     }
-                  }
-                )
+                  })
+                }
+                
+              } else {
+                console.log(`Websocket received message: ${data}`)
               }
+              
             } catch (e) {
               handleError(ev.data)
             }
