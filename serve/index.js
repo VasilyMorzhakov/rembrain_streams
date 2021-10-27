@@ -10219,7 +10219,8 @@
 
       const base64 = base64Js;
       const ieee754$1 = ieee754;
-      const customInspectSymbol = typeof Symbol === 'function' && typeof Symbol['for'] === 'function' ? Symbol['for']('nodejs.util.inspect.custom') // eslint-disable-line dot-notation
+      const customInspectSymbol = typeof Symbol === 'function' && typeof Symbol['for'] === 'function' // eslint-disable-line dot-notation
+      ? Symbol['for']('nodejs.util.inspect.custom') // eslint-disable-line dot-notation
       : null;
       exports.Buffer = Buffer;
       exports.SlowBuffer = SlowBuffer;
@@ -12302,34 +12303,24 @@
                     websocket.send(JSON.stringify(controlPacket));
                 };
                 websocket.onmessage = function (ev) { return __awaiter$1(void 0, void 0, void 0, function () {
-                    var data, dataType, _a, lengths, _b, jpgBlob, HEADER_END, lengths, _c, imageBlob;
+                    var data, dataType, _a, imageBlob, lengths, _b, HEADER_END, lengths, _c;
                     return __generator$1(this, function (_d) {
                         switch (_d.label) {
                             case 0:
-                                _d.trys.push([0, 6, , 7]);
+                                _d.trys.push([0, 8, , 9]);
                                 data = ev.data;
+                                if (!(typeof data === "object")) return [3 /*break*/, 6];
                                 _a = Uint8Array.bind;
                                 return [4 /*yield*/, data.slice(0, 1).arrayBuffer()];
                             case 1:
                                 dataType = new (_a.apply(Uint8Array, [void 0, _d.sent()]))()[0];
+                                imageBlob = null;
                                 if (!(dataType === 2)) return [3 /*break*/, 3];
                                 _b = Uint32Array.bind;
                                 return [4 /*yield*/, data.slice(1, 13).arrayBuffer()];
                             case 2:
                                 lengths = new (_b.apply(Uint32Array, [void 0, _d.sent()]))();
-                                jpgBlob = data.slice(9, 9 + lengths[0]);
-                                jpgBlob.arrayBuffer().then(function (val) {
-                                    var imData = {
-                                        data: buffer.Buffer.from(val),
-                                        type: 'image/jpg'
-                                    };
-                                    var newImg = new Image();
-                                    var buf = imData.data.toString('base64');
-                                    newImg.src = "data:" + imData.type + ";base64," + buf;
-                                    newImg.onload = function () {
-                                        setImage(newImg);
-                                    };
-                                });
+                                imageBlob = data.slice(9, 9 + lengths[0]);
                                 return [3 /*break*/, 5];
                             case 3:
                                 if (!(dataType === 1)) return [3 /*break*/, 5];
@@ -12339,25 +12330,32 @@
                             case 4:
                                 lengths = new (_c.apply(Uint32Array, [void 0, _d.sent()]))();
                                 imageBlob = data.slice(HEADER_END, HEADER_END + lengths[0]);
-                                imageBlob.arrayBuffer().then(function (val) {
-                                    var imData = {
-                                        data: buffer.Buffer.from(val),
-                                        type: 'image/jpg'
-                                    };
-                                    var newImg = new Image();
-                                    var buf = imData.data.toString('base64');
-                                    newImg.src = "data:" + imData.type + ";base64," + buf;
-                                    newImg.onload = function () {
-                                        setImage(newImg);
-                                    };
-                                });
                                 _d.label = 5;
-                            case 5: return [3 /*break*/, 7];
+                            case 5:
+                                if (imageBlob) {
+                                    imageBlob.arrayBuffer().then(function (val) {
+                                        var imData = {
+                                            data: buffer.Buffer.from(val),
+                                            type: 'image/jpg'
+                                        };
+                                        var newImg = new Image();
+                                        var buf = imData.data.toString('base64');
+                                        newImg.src = "data:" + imData.type + ";base64," + buf;
+                                        newImg.onload = function () {
+                                            setImage(newImg);
+                                        };
+                                    });
+                                }
+                                return [3 /*break*/, 7];
                             case 6:
+                                console.log("Websocket received message: " + data);
+                                _d.label = 7;
+                            case 7: return [3 /*break*/, 9];
+                            case 8:
                                 _d.sent();
                                 handleError(ev.data);
-                                return [3 /*break*/, 7];
-                            case 7: return [2 /*return*/];
+                                return [3 /*break*/, 9];
+                            case 9: return [2 /*return*/];
                         }
                     });
                 }); };
@@ -12379,10 +12377,6 @@
         };
         react.exports.useEffect(function () {
             websocket && connectWebsocket();
-            return function () {
-                websocket && websocket.close(1000, "stay down");
-                setWebsocket(undefined);
-            };
         }, [websocket]);
         react.exports.useEffect(function () {
             websocket && websocket.close(1000, "stay down");
@@ -13006,7 +13000,7 @@
                   errors = errors !== null && errors !== void 0 ? errors : [];
 
                   if (err instanceof UnsubscriptionError) {
-                    errors = __spreadArray(__spreadArray([], __read(errors), false), __read(err.errors), false);
+                    errors = __spreadArray(__spreadArray([], __read(errors)), __read(err.errors));
                   } else {
                     errors.push(err);
                   }
@@ -13306,7 +13300,7 @@
         }
 
         try {
-          handler.apply(void 0, __spreadArray([], __read(args), false));
+          handler.apply(void 0, __spreadArray([], __read(args)));
         } catch (err) {
           if (config.useDeprecatedSynchronousErrorHandling) {
             captureError(err);
@@ -21644,7 +21638,9 @@
                 }
               } else if ((op & 64) === 0) {
                 /* 2nd level distance code */
-                here = dcode[(here & 0xffff) + (hold & (1 << op) - 1)];
+                here = dcode[(here & 0xffff
+                /*here.val*/
+                ) + (hold & (1 << op) - 1)];
                 continue dodist;
               } else {
                 strm.msg = 'invalid distance code';
@@ -21656,7 +21652,9 @@
             }
           } else if ((op & 64) === 0) {
             /* 2nd level length code */
-            here = lcode[(here & 0xffff) + (hold & (1 << op) - 1)];
+            here = lcode[(here & 0xffff
+            /*here.val*/
+            ) + (hold & (1 << op) - 1)];
             continue dolen;
           } else if (op & 32) {
             /* end-of-block */
@@ -22758,13 +22756,17 @@
 
             if (!(state.wrap & 1) ||
             /* check if zlib header allowed */
-            (((hold & 0xff) << 8) + (hold >> 8)) % 31) {
+            (((hold & 0xff
+            /*BITS(8)*/
+            ) << 8) + (hold >> 8)) % 31) {
               strm.msg = 'incorrect header check';
               state.mode = BAD;
               break;
             }
 
-            if ((hold & 0x0f) !== Z_DEFLATED) {
+            if ((hold & 0x0f
+            /*BITS(4)*/
+            ) !== Z_DEFLATED) {
               strm.msg = 'unknown compression method';
               state.mode = BAD;
               break;
@@ -22774,7 +22776,9 @@
             hold >>>= 4;
             bits -= 4; //---//
 
-            len = (hold & 0x0f) + 8;
+            len = (hold & 0x0f
+            /*BITS(4)*/
+            ) + 8;
 
             if (state.wbits === 0) {
               state.wbits = len;
@@ -23185,7 +23189,9 @@
             hold >>>= 1;
             bits -= 1; //---//
 
-            switch (hold & 0x03) {
+            switch (hold & 0x03
+            /*BITS(2)*/
+            ) {
               case 0:
                 /* stored block */
                 //Tracev((stderr, "inflate:     stored block%s\n",
@@ -23316,17 +23322,23 @@
             } //===//
 
 
-            state.nlen = (hold & 0x1f) + 257; //--- DROPBITS(5) ---//
+            state.nlen = (hold & 0x1f
+            /*BITS(5)*/
+            ) + 257; //--- DROPBITS(5) ---//
 
             hold >>>= 5;
             bits -= 5; //---//
 
-            state.ndist = (hold & 0x1f) + 1; //--- DROPBITS(5) ---//
+            state.ndist = (hold & 0x1f
+            /*BITS(5)*/
+            ) + 1; //--- DROPBITS(5) ---//
 
             hold >>>= 5;
             bits -= 5; //---//
 
-            state.ncode = (hold & 0x0f) + 4; //--- DROPBITS(4) ---//
+            state.ncode = (hold & 0x0f
+            /*BITS(4)*/
+            ) + 4; //--- DROPBITS(4) ---//
 
             hold >>>= 4;
             bits -= 4; //---//
@@ -23643,7 +23655,9 @@
               last_val = here_val;
 
               for (;;) {
-                here = state.lencode[last_val + ((hold & (1 << last_bits + last_op) - 1) >> last_bits)];
+                here = state.lencode[last_val + ((hold & (1 << last_bits + last_op) - 1
+                /*BITS(last.bits + last.op)*/
+                ) >> last_bits)];
                 here_bits = here >>> 24;
                 here_op = here >>> 16 & 0xff;
                 here_val = here & 0xffff;
@@ -23763,7 +23777,9 @@
               last_val = here_val;
 
               for (;;) {
-                here = state.distcode[last_val + ((hold & (1 << last_bits + last_op) - 1) >> last_bits)];
+                here = state.distcode[last_val + ((hold & (1 << last_bits + last_op) - 1
+                /*BITS(last.bits + last.op)*/
+                ) >> last_bits)];
                 here_bits = here >>> 24;
                 here_op = here >>> 16 & 0xff;
                 here_val = here & 0xffff;
@@ -23946,7 +23962,9 @@
               state.total += _out;
 
               if (_out) {
-                strm.adler = state.check = state.flags ? crc32_1(state.check, output, _out, put - _out) : adler32_1(state.check, output, _out, put - _out);
+                strm.adler = state.check =
+                /*UPDATE(state.check, put - _out, _out);*/
+                state.flags ? crc32_1(state.check, output, _out, put - _out) : adler32_1(state.check, output, _out, put - _out);
               }
 
               _out = left; // NB: crc32 stored as signed 32-bit int, zswap32 returns signed too
@@ -24043,7 +24061,9 @@
       state.total += _out;
 
       if (state.wrap && _out) {
-        strm.adler = state.check = state.flags ? crc32_1(state.check, output, _out, strm.next_out - _out) : adler32_1(state.check, output, _out, strm.next_out - _out);
+        strm.adler = state.check =
+        /*UPDATE(state.check, strm.next_out - _out, _out);*/
+        state.flags ? crc32_1(state.check, output, _out, strm.next_out - _out) : adler32_1(state.check, output, _out, strm.next_out - _out);
       }
 
       strm.data_type = state.bits + (state.last ? 64 : 0) + (state.mode === TYPE ? 128 : 0) + (state.mode === LEN_ || state.mode === COPY_ ? 256 : 0);
@@ -29650,7 +29670,8 @@
           };
         }
 
-        if (check([0x33, 0x67, 0x70, 0x35]) || check([0x0, 0x0, 0x0]) && check([0x66, 0x74, 0x79, 0x70], {
+        if (check([0x33, 0x67, 0x70, 0x35]) || // 3gp5
+        check([0x0, 0x0, 0x0]) && check([0x66, 0x74, 0x79, 0x70], {
           offset: 4
         }) && (check([0x6D, 0x70, 0x34, 0x31], {
           offset: 8
@@ -56250,9 +56271,9 @@ ${indent}columns: ${matrix.columns}
         minWidth: 400,
         maxWidth: 800,
         aspectRatio: 1 / 1,
-        token: "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJXbHpXa1BWaFZrVkpHdi1TSEJCMGpHZWh1WWZPSEVTLTdwc0hJbUJwdlJVIn0.eyJleHAiOjE2MzQ5ODQ5ODQsImlhdCI6MTYzNDg5ODU4NCwianRpIjoiNTdhZmUyZWMtNWQwMy00ZDZmLWE0MzgtYjEyZmNhMTdjODZhIiwiaXNzIjoiaHR0cHM6Ly9hdXRoLWJhY2t1cC5yZW1icmFpbi5haTo4NDQzL2F1dGgvcmVhbG1zL2h0dHAtZ2F0ZSIsInN1YiI6IjM3NmUyNmIzLWZjMDgtNDNiOS1iYmU3LTE5M2E5Y2Q5MDE0OSIsInR5cCI6IkJlYXJlciIsImF6cCI6Imh0dHAtZ2F0ZSIsInNlc3Npb25fc3RhdGUiOiI5OTJlYjQ5OC0yYjRjLTRhMTMtYjNlMS0yZTNmM2NjODY5MGIiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHBzOi8vYXV0aC5yZW1icmFpbi5pZTo4NDQzLyJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiYWRtaW4iXX0sInNjb3BlIjoiZW1haWwgcHJvZmlsZSIsInNpZCI6Ijk5MmViNDk4LTJiNGMtNGExMy1iM2UxLTJlM2YzY2M4NjkwYiIsInVwbiI6InRlc3QiLCJhZGRyZXNzIjp7fSwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJ0ZXN0IHRlc3QiLCJncm91cHMiOlsiYWRtaW4iXSwicHJlZmVycmVkX3VzZXJuYW1lIjoidGVzdCIsImdpdmVuX25hbWUiOiJ0ZXN0IiwiZmFtaWx5X25hbWUiOiJ0ZXN0IiwiZW1haWwiOiJ0ZXN0QGdtYWlsLmNvbSJ9.Gm2gnX794mZAoQ008hH75vmLmb9ReEFVleTlp-ieRLtO52TxpfRM3GoFSCGXr4jF_IdA7ZF-V9SUG41f2PT1GGEjmhJDGBvcpKXffm-Jd0-AJHx5IEKTKi1pi3PqVyInLYsp7Bw5rt4AFPldp48yC7-_fY5uWwee15aQbrY8xEjtLPAmQHr-W0gaodcXKkzMPvi21T22FOOf5WEVd4Th9NpzgCm9N88M5JvN3QBMxiyoXNrhabrzHYcSL9awuPjnz1RKZn3G6220jIx-G3b8F-0fHD9hTeihzgDlE-q4xkKpKek0ng0QZ4m75xlDXhdAbzguuiw3uAKCHpwlrx0lzw",
-        websocketURL: "wss://monitor.rembrain.ai:5443",
-        robotName: "aivero_xarm2",
+        token: "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJXQ2tmVTZZMW1vNGVaaHlHaWZnd2dLSmFPS0RjQ0xIVWNvR1NGZ0M1WGFvIn0.eyJleHAiOjE2MzUzMzIyNzksImlhdCI6MTYzNTMzMTk3OSwianRpIjoiMDNhODU5OTMtODEzNy00MDY4LWEyMjgtYTMzYzRmZWM2NmUxIiwiaXNzIjoiaHR0cHM6Ly9hdXRoLWRldi5yZW1icmFpbi5haTo4NDQzL2F1dGgvcmVhbG1zL3Rlc3QiLCJzdWIiOiI0M2QwNmU2MC1kOTYwLTQ5NzUtODAwZC00ZTdiOThjMTQ5OWQiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJjbGllbnRpZC0zIiwic2Vzc2lvbl9zdGF0ZSI6IjIwNTcwZWEyLTNmOTUtNDc4OC1hYzBkLTgwNDljODUzY2MxZiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9hdXRoLWRldi5yZW1icmFpbi5haTo4NDQzIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJhZG1pbiJdfSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwic2lkIjoiMjA1NzBlYTItM2Y5NS00Nzg4LWFjMGQtODA0OWM4NTNjYzFmIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJ0ZXN0IHRlc3QiLCJncm91cHMiOlsiYWRtaW4iXSwicHJlZmVycmVkX3VzZXJuYW1lIjoidGVzdCIsImdpdmVuX25hbWUiOiJ0ZXN0IiwiZmFtaWx5X25hbWUiOiJ0ZXN0IiwiZW1haWwiOiJ0ZXN0QHRlc3QudGVzdCJ9.Qnffi0hg3bdUimuYIlPKfukU1L4c8G1LcS4YfCKSWItGBBi6iuIAE7HVh_RJF3gXBu4_K9pxlulppvF_z4jqRntwAxX2HNYNnbsVW9mPAlQ192CMAE-h8W2MZM7BXTEr1XS0uAAw4G-IDUDT3MWn4uYFCR5FLb166b1qR1wAwusGVP1lXRnybYqNc8NAXY8ShuT86Yj5Vp1CYY5MSUcowQSveUGpOiDQ5pCUsANULQQjO1tTK-YEHffVzOhJ4LzqkJnkquzCogG77tkDqjuC9FrG2Y8ID26QVGHDUleNREQ0myZlcWEUpzWDJ5yRf4xv1TlTwwdqOzFNHSODIf2dNw",
+        websocketURL: "wss://monitor-dev.rembrain.ai:5443",
+        robotName: "weigher_1",
         exchange: "camera0"
     };
     //const props = {

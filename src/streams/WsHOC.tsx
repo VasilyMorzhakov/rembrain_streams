@@ -89,10 +89,6 @@ export const WsHOC = (Canvas) => ({
 
       useEffect(() => {
         websocket && connectWebsocket()
-        return () => {
-          websocket&&websocket.close(1000,"stay down")
-          setWebsocket(undefined)
-        }
       }, [websocket])
 
       useEffect(() => {
