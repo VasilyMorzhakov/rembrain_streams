@@ -15,7 +15,7 @@ const ReactResponsiveRgbStream = ({
   placeholderText: string,
   image: any,
 }) => {
-  let resizeTimeout:NodeJS.Timeout
+  let resizeTimeout:any
   const [drawing, setDrawing] = useState(false)
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null)

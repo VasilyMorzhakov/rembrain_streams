@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
+    "outDir": "./dist",
     "module": "esnext",
-    "target": "ES5",
-    "lib": ["ES6", "DOM", "ES2016", "ES2017"],
+    "target": "ES2017",
+    "lib": ["ES6", "DOM", "ES2016", "ES2017", "WebWorker"],
     "sourceMap": true,
-    "allowJs": false,
+    "allowJs": true,
     "jsx": "react",
     "declaration": true,
     "moduleResolution": "node",

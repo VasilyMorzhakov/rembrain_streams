@@ -12,7 +12,6 @@ const ReactRgbStream = ({
   const canvasRef = useRef<HTMLCanvasElement | null> (null)
 
   const canvasDraw = () => {
-    console.log(image)
     const canvas = canvasRef.current
     if (canvas) {
       const context = canvas.getContext('2d')
