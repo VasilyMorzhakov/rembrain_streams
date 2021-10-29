@@ -89,6 +89,8 @@ onmessage = ({ data }) => {
   }
 }
 */
-onmessage = () => {
-  postMessage('WEBWORKER ALIVE')
+export default () => {
+  onmessage = () => {
+    postMessage('WEBWORKER ALIVE')
+  }
 }
