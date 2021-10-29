@@ -1,4 +1,5 @@
-import "@babel/polyfill";
+import "core-js/stable";
+import "regenerator-runtime/runtime";
 import ReactRgbStream from './streams/ReactRgbStream';
 import ReactResponsiveRgbStream from './streams/ReactResponsiveRgbStream';
 export { RembrainImage } from './image/RembrainImage';
