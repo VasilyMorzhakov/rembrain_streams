@@ -1,3 +1,5 @@
+// @ts-ignore
+import Worker from 'worker-loader!./ws.worker.ts';
 import React, { useState, useEffect } from "react"
 
 export const WsHOC = (Canvas) => ({
@@ -15,7 +17,7 @@ export const WsHOC = (Canvas) => ({
       
       useEffect(() => {
         let webworker
-        webworker = new Worker("./worker.ts", {type:"module"})
+        webworker = new Worker()
 
         webworker.addEventListener('message', ({data}) => {
           const {type, payload} = data

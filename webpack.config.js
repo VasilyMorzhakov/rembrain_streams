@@ -1,5 +1,4 @@
 const path = require('path')
-const WorkerPlugin = require('worker-plugin')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const htmlWebpackPlugin = new HtmlWebpackPlugin({
@@ -30,9 +29,15 @@ const settings = {
   ],
   devtool: 'inline-source-map',
   mode,
-  plugins: [new WorkerPlugin()],
+  plugins: [],
   module: {
     rules: [
+      {
+        test: /\.worker\.(js|ts)$/,
+        use: {
+          loader: 'worker-loader'
+        }
+      },
       {
         test: /\.(js|jsx|ts|tsx)$/,
         use: 'babel-loader',
