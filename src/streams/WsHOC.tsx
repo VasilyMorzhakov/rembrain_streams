@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react"
-import wsworker from "./wsworker";
+import Worker from "./worker.js";
 
-class WebWorker {
-  constructor(worker) {
-      const code = worker.toString();
-      const blob = new Blob(['('+code+')()']);
-      return new Worker(URL.createObjectURL(blob));
-  }
-}
+//class WebWorker {
+//  constructor(worker) {
+//      const code = worker.toString();
+//      const blob = new Blob(['('+code+')()']);
+//      return new Worker(URL.createObjectURL(blob));
+//  }
+//}
 
 export const WsHOC = (Canvas) => ({
     isOn=true,
@@ -20,11 +20,11 @@ export const WsHOC = (Canvas) => ({
   }) => {
     
     const [image, setImage] = useState(new Image())
-    const [worker,setWorker] = useState(null)
+    const [wsworker,setWorker] = useState(null)
       
       useEffect(() => {
         let webworker
-        webworker = new WebWorker(wsworker)
+        webworker = new Worker()
 
         webworker.addEventListener('message', ({data}) => {
           const {type, payload} = data
@@ -58,7 +58,7 @@ export const WsHOC = (Canvas) => ({
       },[])
 
       useEffect(() => {
-        if (worker) {
+        if (wsworker) {
           if (isOn) {
             let controlPacket = {
               command: 'pull',
@@ -66,13 +66,13 @@ export const WsHOC = (Canvas) => ({
               accessToken: token,
               robot_name: robotName
             }
-            worker.postMessage({type:"open", payload: JSON.stringify(controlPacket), url: websocketURL})
+            wsworker.postMessage({type:"open", payload: JSON.stringify(controlPacket), url: websocketURL})
           } else {
-            worker.postMessage({type:"close"})
+            wsworker.postMessage({type:"close"})
           }
           
         }  
-      }, [robotName, exchange, token, isOn, worker])
+      }, [robotName, exchange, token, isOn, wsworker])
     
     return <Canvas image={image} {...props}/>    
 }
