@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react"
-//import wsworker from "./wsworker";
+import wsworker from "./wsworker";
 
-//class WebWorker {
-//  constructor(worker) {
-//      const code = worker.toString();
-//      const blob = new Blob(['('+code+')()']);
-//      return new Worker(URL.createObjectURL(blob));
-//  }
-//}
+class WebWorker {
+  constructor(worker) {
+      const code = worker.toString();
+      const blob = new Blob(['('+code+')()']);
+      return new Worker(URL.createObjectURL(blob));
+  }
+}
 
 export const WsHOC = (Canvas) => ({
     isOn=true,
@@ -24,7 +24,7 @@ export const WsHOC = (Canvas) => ({
       
       useEffect(() => {
         let webworker
-        webworker = new Worker(new URL('./wsworker', import.meta.url))
+        webworker = new WebWorker(wsworker)
 
         webworker.addEventListener('message', ({data}) => {
           const {type, payload} = data
