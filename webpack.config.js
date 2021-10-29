@@ -33,15 +33,6 @@ const settings = {
   module: {
     rules: [
       {
-        test: /\.worker\.(js|ts)$/,
-        use: {
-          loader: 'worker-loader',
-          options: {
-            inline: 'fallback'
-          }
-        }
-      },
-      {
         test: /\.(js|jsx|ts|tsx)$/,
         use: 'babel-loader',
         exclude: /node_modules/
