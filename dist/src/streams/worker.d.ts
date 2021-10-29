@@ -1,2 +1,2 @@
-declare let ws: any;
-declare const streamStart: (packet: any, url: any) => void;
+declare const _default: () => void;
+export default _default;
