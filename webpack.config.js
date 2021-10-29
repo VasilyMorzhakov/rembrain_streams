@@ -1,4 +1,5 @@
 const path = require('path')
+const WorkerPlugin = require('worker-plugin')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const htmlWebpackPlugin = new HtmlWebpackPlugin({
@@ -11,10 +12,8 @@ const mode = process.env.NODE_ENV
 const output = {
   filename: 'index.js',
   path: path.resolve('dist'),
-  library: {
-    name: 'rembrain_streams',
-    type: 'umd'
-  },
+  library: 'rembrain_streams',
+  libraryTarget: 'umd',
   globalObject: 'this'
 }
 const devServer = {
@@ -31,7 +30,7 @@ const settings = {
   ],
   devtool: 'inline-source-map',
   mode,
-  plugins: [],
+  plugins: [new WorkerPlugin()],
   module: {
     rules: [
       {

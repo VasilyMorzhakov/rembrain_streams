@@ -15,7 +15,7 @@ export const WsHOC = (Canvas) => ({
       
       useEffect(() => {
         let webworker
-        webworker = new Worker(new URL('worker.ts', import.meta.url))
+        webworker = new Worker("./worker.ts", {type:"module"})
 
         webworker.addEventListener('message', ({data}) => {
           const {type, payload} = data
