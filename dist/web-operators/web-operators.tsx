@@ -1,4 +1,5 @@
 import { OperatorCanvas } from "./operator-canvas";
 import { OperatorDebug } from "./operator-debug";
-export { OperatorCanvas };
-export { OperatorDebug };
+
+export { OperatorCanvas }
+export { OperatorDebug }

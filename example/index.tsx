@@ -22,8 +22,8 @@ const TestApp = () => {
 
     useEffect(() => {
         fetch("https://monitor-dev.rembrain.ai/login", {method:"POST", body: JSON.stringify({
-            username: "",
-            password: ""
+            username: "test",
+            password: "1322"
           })}).then((data) => {
               data.json().then((resp) => {
                   setToken(resp.access_token)

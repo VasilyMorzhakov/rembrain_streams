@@ -12,17 +12,22 @@
   "scripts": {
     "build": "NODE_ENV=production webpack",
     "build:test": "NODE_ENV=development webpack",
-    "start": "NODE_ENV=development webpack-dev-server"
+    "start": "NODE_ENV=development webpack-dev-server",
+    "transpile": "babel src -d dist --copy-files"
   },
   "keywords": [],
   "dependencies": {
-    "babel-core": "^7.0.0-bridge.0",
+    "babel-core": "^6.26.3",
     "buffer": "^6.0.3",
     "canvas": "2.7.0",
     "canvas-fit": "^1.5.0",
     "image-js": "^0.31.4",
     "rxjs": "^7.1.0",
     "sass": "^1.43.4"
+  },
+  "peerDependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
     "@types/canvas-fit": "^1.5.1",
@@ -32,6 +37,10 @@
     "@types/react-dom": "^16.9.7",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
+    "babel-cli": "^6.26.0",
+    "babel-loader": "7.1.4",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
     "cross-env": "^7.0.2",
     "css-loader": "^6.5.0",
     "eslint": "^6.8.0",

@@ -31,6 +31,11 @@ const settings = {
   module: {
     rules: [
       {
+        test: /\.(js|jsx|ts|tsx)$/,
+        use: 'babel-loader',
+        exclude: /node_modules/
+      },
+      {
         test: /\.node$/,
         loader: 'node-loader'
       },
@@ -54,8 +59,8 @@ const settings = {
 if (mode === 'production') {
   settings.output = output
 } else {
-  settings.plugins = plugins
   settings.devServer = devServer
+  settings.plugins = plugins
 }
 
 module.exports = settings
