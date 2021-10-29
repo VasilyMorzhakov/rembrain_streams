@@ -1,13 +1,4 @@
 import React, { useState, useEffect } from "react"
-//import Worker from "worker-loader";
-
-//class WebWorker {
-//  constructor(worker) {
-//      const code = worker.toString();
-//      const blob = new Blob(['('+code+')()']);
-//      return new Worker(URL.createObjectURL(blob));
-//  }
-//}
 
 export const WsHOC = (Canvas) => ({
     isOn=true,
@@ -28,7 +19,6 @@ export const WsHOC = (Canvas) => ({
 
         webworker.addEventListener('message', ({data}) => {
           const {type, payload} = data
-          console.log("it's updated")
           switch (type) {
             case "image":
               const newImg = new Image()
