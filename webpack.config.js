@@ -16,7 +16,6 @@ const output = {
     type: 'umd'
   }
 }
-const plugins = [htmlWebpackPlugin]
 const devServer = {
   port: 9000
 }
@@ -31,12 +30,9 @@ const settings = {
   ],
   devtool: 'inline-source-map',
   mode,
+  plugins: [],
   module: {
     rules: [
-      {
-        test: /\.worker\.(js|ts)$/i,
-        loader: 'worker-loader'
-      },
       {
         test: /\.(js|jsx|ts|tsx)$/,
         use: 'babel-loader',
@@ -82,7 +78,7 @@ if (mode === 'production') {
   settings.output = output
 } else {
   settings.devServer = devServer
-  settings.plugins = plugins
+  settings.plugins.push(htmlWebpackPlugin)
 }
 
 module.exports = settings
