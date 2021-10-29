@@ -14,7 +14,8 @@ const output = {
   library: {
     name: 'rembrain_streams',
     type: 'umd'
-  }
+  },
+  globalObject: 'this'
 }
 const devServer = {
   port: 9000
