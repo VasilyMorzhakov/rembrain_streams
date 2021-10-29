@@ -22,19 +22,22 @@ const devServer = {
 }
 
 const settings = {
-  entry: path.join(
-    __dirname,
-    mode === 'development' ? 'example/index.tsx' : 'src/index.tsx'
-  ),
+  entry: [
+    '@babel/polyfill',
+    path.join(
+      __dirname,
+      mode === 'development' ? 'example/index.tsx' : 'src/index.tsx'
+    )
+  ],
   devtool: 'inline-source-map',
   mode,
   module: {
     rules: [
-      /*{
+      {
         test: /\.(js|jsx|ts|tsx)$/,
         use: 'babel-loader',
         exclude: /node_modules/
-      },*/
+      },
       {
         test: /\.node$/,
         loader: 'node-loader'

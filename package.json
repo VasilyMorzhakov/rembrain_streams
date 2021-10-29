@@ -17,6 +17,7 @@
   },
   "keywords": [],
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
     "babel-core": "^6.26.3",
     "buffer": "^6.0.3",
     "canvas": "2.7.0",
