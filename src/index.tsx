@@ -1,3 +1,5 @@
+import "@babel/polyfill";
+
 import ReactRgbStream from './streams/ReactRgbStream'
 import ReactResponsiveRgbStream from './streams/ReactResponsiveRgbStream'
 
