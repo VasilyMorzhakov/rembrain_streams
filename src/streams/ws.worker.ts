@@ -1,4 +1,4 @@
-let ws = null
+/*let ws = null
 
 const streamStart = (packet, url) => {
   if (ws) {
@@ -87,4 +87,8 @@ onmessage = ({ data }) => {
       }
       return
   }
+}
+*/
+onmessage = () => {
+  postMessage('WEBWORKER ALIVE')
 }
