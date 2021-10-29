@@ -31,11 +31,6 @@ const settings = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx|ts|tsx)$/,
-        use: 'babel-loader',
-        exclude: /node_modules/
-      },
-      {
         test: /\.node$/,
         loader: 'node-loader'
       },
@@ -50,6 +45,21 @@ const settings = {
         use: ['style-loader', 'css-loader', 'sass-loader']
       }
     ]
+  },
+  externals: {
+    // Use external version of React
+    react: {
+      commonjs: 'react',
+      commonjs2: 'react',
+      amd: 'react',
+      root: 'React'
+    },
+    'react-dom': {
+      commonjs: 'react-dom',
+      commonjs2: 'react-dom',
+      amd: 'react-dom',
+      root: 'ReactDOM'
+    }
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.scss']
