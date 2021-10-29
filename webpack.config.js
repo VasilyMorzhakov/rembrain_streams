@@ -35,7 +35,10 @@ const settings = {
       {
         test: /\.worker\.(js|ts)$/,
         use: {
-          loader: 'worker-loader'
+          loader: 'worker-loader',
+          options: {
+            inline: 'fallback'
+          }
         }
       },
       {
