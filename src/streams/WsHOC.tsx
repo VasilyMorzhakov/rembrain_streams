@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import Worker from "./worker.js";
+//import Worker from "worker-loader";
 
 //class WebWorker {
 //  constructor(worker) {
@@ -24,7 +24,7 @@ export const WsHOC = (Canvas) => ({
       
       useEffect(() => {
         let webworker
-        webworker = new Worker()
+        webworker = new Worker("worker.js")
 
         webworker.addEventListener('message', ({data}) => {
           const {type, payload} = data
