@@ -6,10 +6,16 @@ const wsWorkerCode = () => {
       ws.onopen = () => {
         ws.send(packet)
       }
-      ws.onmessage = async (ev) => {
+      ws.onmessage = (ev) => {
         const { data } = ev
-        const dataType = new Uint8Array(await data.slice(0, 1).arrayBuffer())[0]
-        postMessage(`Data type is ${dataType}`)
+        data
+          .slice(0, 1)
+          .arrayBuffer()
+          .then((resp) => {
+            const dataType = new Uint8Array(resp)[0]
+            postMessage(`Data type is ${dataType}`)
+          })
+
         /*
         if (typeof data === 'object') {
           const dataType = new Uint8Array(
