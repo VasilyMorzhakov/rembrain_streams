@@ -53,8 +53,10 @@ const wsWorkerCode = () => {
       }
       ws.onclose = (ev) => {
         if (ev.reason !== 'stay down') {
-          ws = new WebSocket(url)
-          streamStart(packet, url)
+          setTimeout(() => {
+            ws = new WebSocket(url)
+            streamStart(packet, url)
+          }, 5000)
         } else {
           postMessage({ type: 'image', payload: null })
         }
