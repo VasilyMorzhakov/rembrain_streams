@@ -33,10 +33,16 @@ const settings = {
   module: {
     rules: [
       {
+        test: /\ws.worker.ts?$/,
+        use: 'workerize-loader'
+      },
+      {
         test: /\.(js|jsx|ts|tsx)$/,
         use: 'babel-loader',
+
         exclude: /node_modules/
       },
+
       {
         test: /\.node$/,
         loader: 'node-loader'

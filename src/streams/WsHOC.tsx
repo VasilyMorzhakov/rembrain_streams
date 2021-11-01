@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react"
+//@ts-ignore
+import worker from 'workerize-loader!./ws.worker'
+
 
 export const WsHOC = (Canvas) => ({
     isOn=true,
@@ -15,7 +18,7 @@ export const WsHOC = (Canvas) => ({
       
       useEffect(() => {
         let webworker
-        webworker = new Worker(new URL("ws.worker.ts", import.meta.url))
+        webworker = worker()
 
         webworker.addEventListener('message', ({data}) => {
           const {type, payload} = data
