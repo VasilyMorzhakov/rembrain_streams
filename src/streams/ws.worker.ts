@@ -20,29 +20,28 @@ const wsWorkerCode = () => {
                   .arrayBuffer()
                   .then((response) => {
                     const lengths = new Uint32Array(response)
-                    const HEADER_END = dataType === 2 ? 13 : 9
-                    const imageBlob = data.slice(
-                      HEADER_END,
-                      HEADER_END + lengths[0]
-                    )
-                    imageBlob.arrayBuffer().then((val) => {
-                      const type = 'image/jpg'
-                      const uint8 = new Uint8Array(val)
-                      // Chrome thinks that uint8Array is too long to "String.fromCharCode" it,
-                      // so it's sliced, stringified and than concated back
-                      // It's kinda disgusting but it works
-                      let prebtoabuf = ''
-                      for (let i = 0; i < 5; i++) {
-                        let n = uint8.length / 5
-                        prebtoabuf += String.fromCharCode.apply(
-                          null,
-                          uint8.slice(n * i, n * (i + 1))
-                        )
-                      }
-                      const buf = btoa(prebtoabuf)
-                      const src = `data:${type};base64,` + buf
-                      postMessage({ type: 'image', payload: src })
-                    })
+                    const HEADER_END = dataType === 1 ? 13 : 9
+                    data
+                      .slice(HEADER_END, HEADER_END + lengths[0])
+                      .arrayBuffer()
+                      .then((val) => {
+                        const type = 'image/jpg'
+                        const uint8 = new Uint8Array(val)
+                        // Chrome thinks that uint8Array is too long to "String.fromCharCode" it,
+                        // so it's sliced, stringified and than concated back
+                        // It's kinda disgusting but it works
+                        let prebtoabuf = ''
+                        for (let i = 0; i < 5; i++) {
+                          let n = uint8.length / 5
+                          prebtoabuf += String.fromCharCode.apply(
+                            null,
+                            uint8.slice(n * i, n * (i + 1))
+                          )
+                        }
+                        const buf = btoa(prebtoabuf)
+                        const src = `data:${type};base64,` + buf
+                        postMessage({ type: 'image', payload: src })
+                      })
                   })
               } else {
                 postMessage(`Websocket received object: ${data}`)
