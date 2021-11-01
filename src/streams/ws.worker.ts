@@ -89,7 +89,16 @@ onmessage = ({ data }) => {
   }
 }
 */
-
-this.onmessage = () => {
-  postMessage('WEBWORKER ALIVE')
+const wsWorkerCode = () => {
+  self.onmessage = () => {
+    postMessage('WEBWORKER ALIVE')
+  }
 }
+
+let code = wsWorkerCode.toString()
+code = code.substring(code.indexOf('{') + 1, code.lastIndexOf('}'))
+
+const blob = new Blob([code], { type: 'application/javascript' })
+const worker_script = URL.createObjectURL(blob)
+
+module.exports = worker_script
