@@ -1,8 +1,10 @@
-import { Subject, ReplaySubject, Observable } from 'rxjs'
+import { ReplaySubject, Observable } from 'rxjs'
 import { RobotImageData, RobotState, RobotData } from './entities'
 import { Image } from 'image-js'
 import { Buffer } from 'buffer/'
 import { IOperatorProps } from './entities'
+//@ts-ignore
+import worker_script from '../streams/ws.worker'
 
 export interface IImageReceiver {
   imageSubject: Observable<RobotImageData>
@@ -14,7 +16,8 @@ export interface IImageReceiver {
 }
 
 export class WebSocketImageReceiver implements IImageReceiver {
-  dataWebsocket: WebSocket
+  //dataWebsocket: WebSocket
+  wsWorker: Worker
   stateWebsocket: WebSocket
   dataURL: string
   robotName: string
@@ -30,11 +33,14 @@ export class WebSocketImageReceiver implements IImageReceiver {
   }
 
   openDataWebsocket() {
-    this.dataWebsocket = new WebSocket(this.dataURL)
-    this.dataWebsocket.onopen = this.onDataOpen
-    this.dataWebsocket.onclose = this.onDataClosed
-    this.dataWebsocket.onerror = this.onDataError
-    this.dataWebsocket.onmessage = this.onDataMessage
+    this.wsWorker = new Worker(worker_script)
+    this.wsWorker.onmessage = this.onWorkerMessage
+    this.sendDataInitPacket()
+    //this.dataWebsocket = new WebSocket(this.dataURL)
+    //this.dataWebsocket.onopen = this.onDataOpen
+    //this.dataWebsocket.onclose = this.onDataClosed
+    //this.dataWebsocket.onerror = this.onDataError
+    //this.dataWebsocket.onmessage = this.onDataMessage
   }
 
   sendDataInitPacket() {
@@ -45,29 +51,112 @@ export class WebSocketImageReceiver implements IImageReceiver {
       accessToken: this.accessToken
     }
     // console.log("Sending", controlPacket);
-    this.dataWebsocket.send(JSON.stringify(controlPacket))
+    //this.dataWebsocket.send(JSON.stringify(controlPacket))
+    this.wsWorker.postMessage({
+      type: 'open',
+      payload: JSON.stringify(controlPacket),
+      url: this.dataURL,
+      outputWanted: 'all'
+    })
   }
 
   imageSubject = new ReplaySubject<RobotImageData>(1)
   depthSubject = new ReplaySubject<Image>(1)
   dataSubject = new ReplaySubject<RobotData>(1)
 
-  onDataOpen = (ev: Event) => {
-    console.log('Data Websocket Opened', ev)
-    this.sendDataInitPacket()
+  onWorkerMessage = (ev: any) => {
+    const { data } = ev
+
+    const { type, payload } = data
+    switch (type) {
+      case 'data':
+        const [image, depth, status] = payload
+        Image.load(depth).then((depthResp) => {
+          depthResp && this.depthSubject.next(depthResp)
+        })
+        this.imageSubject.next({ data: Buffer.from(image), type: 'image/jpg' })
+        status && this.dataSubject.next(JSON.parse(status))
+        break
+      case 'error':
+        console.log('Data Websocket Error', payload)
+        break
+
+      default:
+        console.log(data)
+    }
   }
 
-  onDataClosed = (ev: CloseEvent) => {
-    console.log('Data Websocket Closed', ev)
+  //onDataOpen = (ev: Event) => {
+  //  console.log('Data Websocket Opened', ev)
+  //  this.sendDataInitPacket()
+  //}
+
+  //onDataClosed = (ev: CloseEvent) => {
+  //  console.log('Data Websocket Closed', ev)
+  //  console.log('Trying to open the websocket again')
+  //  this.openDataWebsocket()
+  //}
+
+  //onDataError = (ev: Event) => {
+  //  console.log('Data Websocket Error', ev)
+  //}
+
+  stateSubject = new ReplaySubject<RobotState>(1)
+
+  openStateWebsocket() {
+    this.stateWebsocket = new WebSocket(this.dataURL)
+    this.stateWebsocket.onopen = this.onStateOpen
+    this.stateWebsocket.onclose = this.onStateClosed
+    this.stateWebsocket.onerror = this.onStateError
+    this.stateWebsocket.onmessage = this.onStateMessage
+  }
+
+  sendStateInitPacket() {
+    let controlPacket = {
+      command: 'pull',
+      exchange: `state`,
+      robot_name: this.robotName,
+      accessToken: this.accessToken
+    }
+    this.stateWebsocket.send(JSON.stringify(controlPacket))
+  }
+
+  onStateClosed = (ev: CloseEvent) => {
+    console.log('State Websocket Closed', ev)
     console.log('Trying to open the websocket again')
-    this.openDataWebsocket()
+    this.openStateWebsocket()
   }
 
-  onDataError = (ev: Event) => {
-    console.log('Data Websocket Error', ev)
+  onStateOpen = (ev: Event) => {
+    console.log('State Websocket Opened', ev)
+    this.sendStateInitPacket()
   }
 
-  onDataMessage = (ev: any) => {
+  onStateError = (ev: Event) => {
+    console.log('State Websocket Error', ev)
+  }
+
+  onStateMessage = (ev: any) => {
+    this.unpackState(ev.data)
+  }
+
+  unpackState(data: Blob | string) {
+    if (typeof data === 'string') {
+      console.error('Error unpacking robot state:', data)
+      return
+    }
+    data.text().then((res) => this.stateSubject.next(JSON.parse(res)))
+  }
+
+  public shutdown() {
+    //this.dataWebsocket.onclose = null
+    this.stateWebsocket.onclose = null
+    //this.dataWebsocket.close()
+    this.stateWebsocket.close()
+  }
+}
+/*
+onDataMessage = (ev: any) => {
     this.unpackData(ev.data)
   }
 
@@ -137,58 +226,4 @@ export class WebSocketImageReceiver implements IImageReceiver {
       console.log(`Data type ${dataType} isn't JPG+PNG(1)`)
     }
   }
-
-  stateSubject = new ReplaySubject<RobotState>(1)
-
-  openStateWebsocket() {
-    this.stateWebsocket = new WebSocket(this.dataURL)
-    this.stateWebsocket.onopen = this.onStateOpen
-    this.stateWebsocket.onclose = this.onStateClosed
-    this.stateWebsocket.onerror = this.onStateError
-    this.stateWebsocket.onmessage = this.onStateMessage
-  }
-
-  sendStateInitPacket() {
-    let controlPacket = {
-      command: 'pull',
-      exchange: `state`,
-      robot_name: this.robotName,
-      accessToken: this.accessToken
-    }
-    this.stateWebsocket.send(JSON.stringify(controlPacket))
-  }
-
-  onStateClosed = (ev: CloseEvent) => {
-    console.log('State Websocket Closed', ev)
-    console.log('Trying to open the websocket again')
-    this.openStateWebsocket()
-  }
-
-  onStateOpen = (ev: Event) => {
-    console.log('State Websocket Opened', ev)
-    this.sendStateInitPacket()
-  }
-
-  onStateError = (ev: Event) => {
-    console.log('State Websocket Error', ev)
-  }
-
-  onStateMessage = (ev: any) => {
-    this.unpackState(ev.data)
-  }
-
-  unpackState(data: Blob | string) {
-    if (typeof data === 'string') {
-      console.error('Error unpacking robot state:', data)
-      return
-    }
-    data.text().then((res) => this.stateSubject.next(JSON.parse(res)))
-  }
-
-  public shutdown() {
-    this.dataWebsocket.onclose = null
-    this.stateWebsocket.onclose = null
-    this.dataWebsocket.close()
-    this.stateWebsocket.close()
-  }
-}
+*/

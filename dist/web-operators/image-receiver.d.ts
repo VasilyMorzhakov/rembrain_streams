@@ -10,7 +10,7 @@ export interface IImageReceiver {
     shutdown(): void;
 }
 export declare class WebSocketImageReceiver implements IImageReceiver {
-    dataWebsocket: WebSocket;
+    wsWorker: Worker;
     stateWebsocket: WebSocket;
     dataURL: string;
     robotName: string;
@@ -21,11 +21,7 @@ export declare class WebSocketImageReceiver implements IImageReceiver {
     imageSubject: any;
     depthSubject: any;
     dataSubject: any;
-    onDataOpen: (ev: Event) => void;
-    onDataClosed: (ev: CloseEvent) => void;
-    onDataError: (ev: Event) => void;
-    onDataMessage: (ev: any) => void;
-    unpackData(data: Blob | string): Promise<void>;
+    onWorkerMessage: (ev: any) => void;
     stateSubject: any;
     openStateWebsocket(): void;
     sendStateInitPacket(): void;

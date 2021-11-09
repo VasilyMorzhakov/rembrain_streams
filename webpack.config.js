@@ -74,10 +74,8 @@ const settings = {
     extensions: ['.tsx', '.ts', '.js', '.scss']
   }
 }
-
-if (mode === 'production') {
-  settings.output = output
-} else {
+settings.output = output
+if (mode !== 'production') {
   settings.devServer = devServer
   settings.plugins.push(htmlWebpackPlugin)
 }

@@ -58,7 +58,7 @@ export const WsHOC = (Canvas) => ({
               accessToken: token,
               robot_name: robotName
             }
-            wsworker.postMessage({type:"open", payload: JSON.stringify(controlPacket), url: websocketURL})
+            wsworker.postMessage({type:"open", payload: JSON.stringify(controlPacket), url: websocketURL, outputWanted:"image_only"})
           } else {
             wsworker.postMessage({type:"close"})
           }
