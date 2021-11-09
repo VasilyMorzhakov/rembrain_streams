@@ -24,7 +24,8 @@ const ReactResponsiveRgbStream = ({
     const canvas = canvasRef.current
     if (canvas) {
       const ctx = canvas.getContext('2d')
-      ctx && ctx.drawImage(image, 0, 0, canvas.width, canvas.height)
+      
+      ctx && ctx.drawImage(image, 1, 1, canvas.width-2, canvas.height-2)
     }
   }
 

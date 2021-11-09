@@ -25,7 +25,7 @@ const ReactRgbStream = ({
     if (canvas) {
       const context = canvas.getContext('2d')
       if (context) {
-        context.clearRect(0, 0, canvas.width, canvas.height)
+        context.clearRect(1, 1, canvas.width-2, canvas.height-2)
         context.fillStyle = '#d3d3d3'
         context.textAlign = 'center'
         context.font = '5em Arial'
