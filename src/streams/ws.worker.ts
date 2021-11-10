@@ -1,6 +1,27 @@
 const wsWorkerCode = () => {
   let ws = null
 
+  const getImageData = (data) => {
+    return data
+      .slice(0, 1)
+      .arrayBuffer()
+      .then((resp) => {
+        const dataType = new Uint8Array(resp)[0]
+        if (dataType === 1 || dataType === 2) {
+          return data
+            .slice(1, 13)
+            .arrayBuffer()
+            .then((response) => {
+              const lengths = new Uint32Array(response)
+              const HEADER_END = dataType === 1 ? 13 : 9
+              return data
+                .slice(HEADER_END, HEADER_END + lengths[0])
+                .arrayBuffer()
+            })
+        }
+      })
+  }
+
   const streamStart = (packet, url, type) => {
     if (ws) {
       ws.onopen = () => {
@@ -45,53 +66,38 @@ const wsWorkerCode = () => {
                     })
                   })
               } else {
-                postMessage(
-                  `Wrong data type, 1 expected, but ${dataType} received`
-                )
+                getImageData(data).then((val) => {
+                  postMessage({
+                    type: 'data',
+                    payload: [val, null, null]
+                  })
+                })
               }
             })
 
           ////
         } else if (type === 'image_only') {
           try {
-            data
-              .slice(0, 1)
-              .arrayBuffer()
-              .then((resp) => {
-                const dataType = new Uint8Array(resp)[0]
-                if (dataType === 1 || dataType === 2) {
-                  data
-                    .slice(1, 13)
-                    .arrayBuffer()
-                    .then((response) => {
-                      const lengths = new Uint32Array(response)
-                      const HEADER_END = dataType === 1 ? 13 : 9
-                      data
-                        .slice(HEADER_END, HEADER_END + lengths[0])
-                        .arrayBuffer()
-                        .then((val) => {
-                          const type = 'image/jpg'
-                          const uint8 = new Uint8Array(val)
-                          // Chrome thinks that uint8Array is too long to "String.fromCharCode" it,
-                          // so it's sliced, stringified and than concated back
-                          // It's kinda disgusting but it works
-                          let prebtoabuf = ''
-                          for (let i = 0; i < 5; i++) {
-                            let n = uint8.length / 5
-                            prebtoabuf += String.fromCharCode.apply(
-                              null,
-                              uint8.slice(n * i, n * (i + 1))
-                            )
-                          }
-                          const buf = btoa(prebtoabuf)
-                          const src = `data:${type};base64,` + buf
-                          postMessage({ type: 'image', payload: src })
-                        })
-                    })
-                } else {
-                  postMessage(`Websocket received object: ${data}`)
-                }
+            getImageData(data).then((val) => {
+              const type = 'image/jpg'
+              const uint8 = new Uint8Array(val)
+              // Chrome thinks that uint8Array is too long to "String.fromCharCode" it,
+              // so it's sliced, stringified and than concated back
+              // It's kinda disgusting but it works
+              let prebtoabuf = ''
+              for (let i = 0; i < 5; i++) {
+                let n = uint8.length / 5
+                prebtoabuf += String.fromCharCode.apply(
+                  null,
+                  uint8.slice(n * i, n * (i + 1))
+                )
+              }
+              const buf = btoa(prebtoabuf)
+              postMessage({
+                type: 'image',
+                payload: `data:${type};base64,` + buf
               })
+            })
           } catch {
             postMessage(`Websocket received message: ${data}`)
           }
