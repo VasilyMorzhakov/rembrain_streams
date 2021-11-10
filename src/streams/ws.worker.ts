@@ -29,7 +29,7 @@ const wsWorkerCode = () => {
       }
       ws.onmessage = (ev) => {
         const { data } = ev
-        if (typeof data === 'object') {
+        try {
           if (type === 'all') {
             data
               .slice(0, 1)
@@ -97,7 +97,7 @@ const wsWorkerCode = () => {
               })
             })
           }
-        } else {
+        } catch (err) {
           postMessage(`Websocket received message: ${data}`)
         }
       }
