@@ -29,55 +29,53 @@ const wsWorkerCode = () => {
       }
       ws.onmessage = (ev) => {
         const { data } = ev
-        if (type === 'all') {
-          data
-            .slice(0, 1)
-            .arrayBuffer()
-            .then((arrbuff) => {
-              const dataType = new Uint8Array(arrbuff)[0]
-              if (dataType === 1) {
-                const HEADER_END = 13
-                data
-                  .slice(1, HEADER_END)
-                  .arrayBuffer()
-                  .then((lengthbuff) => {
-                    const lengths = new Uint32Array(lengthbuff)
-                    Promise.all([
-                      data
-                        .slice(HEADER_END, HEADER_END + lengths[0])
-                        .arrayBuffer(),
-                      data
-                        .slice(
-                          HEADER_END + lengths[0],
-                          HEADER_END + lengths[0] + lengths[1]
-                        )
-                        .arrayBuffer(),
-                      data
-                        .slice(
-                          HEADER_END + lengths[0] + lengths[1],
-                          HEADER_END + lengths[0] + lengths[1] + lengths[2]
-                        )
-                        .text()
-                    ]).then((resp) => {
-                      postMessage({
-                        type: 'data',
-                        payload: resp
+        if (typeof data === 'object') {
+          if (type === 'all') {
+            data
+              .slice(0, 1)
+              .arrayBuffer()
+              .then((arrbuff) => {
+                const dataType = new Uint8Array(arrbuff)[0]
+                if (dataType === 1) {
+                  const HEADER_END = 13
+                  data
+                    .slice(1, HEADER_END)
+                    .arrayBuffer()
+                    .then((lengthbuff) => {
+                      const lengths = new Uint32Array(lengthbuff)
+                      Promise.all([
+                        data
+                          .slice(HEADER_END, HEADER_END + lengths[0])
+                          .arrayBuffer(),
+                        data
+                          .slice(
+                            HEADER_END + lengths[0],
+                            HEADER_END + lengths[0] + lengths[1]
+                          )
+                          .arrayBuffer(),
+                        data
+                          .slice(
+                            HEADER_END + lengths[0] + lengths[1],
+                            HEADER_END + lengths[0] + lengths[1] + lengths[2]
+                          )
+                          .text()
+                      ]).then((resp) => {
+                        postMessage({
+                          type: 'data',
+                          payload: resp
+                        })
                       })
                     })
+                } else {
+                  getImageData(data).then((val) => {
+                    postMessage({
+                      type: 'data',
+                      payload: [val, null, null]
+                    })
                   })
-              } else {
-                getImageData(data).then((val) => {
-                  postMessage({
-                    type: 'data',
-                    payload: [val, null, null]
-                  })
-                })
-              }
-            })
-
-          ////
-        } else if (type === 'image_only') {
-          try {
+                }
+              })
+          } else if (type === 'image_only') {
             getImageData(data).then((val) => {
               const type = 'image/jpg'
               const uint8 = new Uint8Array(val)
@@ -98,9 +96,9 @@ const wsWorkerCode = () => {
                 payload: `data:${type};base64,` + buf
               })
             })
-          } catch {
-            postMessage(`Websocket received message: ${data}`)
           }
+        } else {
+          postMessage(`Websocket received message: ${data}`)
         }
       }
       ws.onclose = (ev) => {

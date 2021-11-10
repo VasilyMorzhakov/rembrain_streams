@@ -16,7 +16,6 @@ export interface IImageReceiver {
 }
 
 export class WebSocketImageReceiver implements IImageReceiver {
-  //dataWebsocket: WebSocket
   wsWorker: Worker
   stateWebsocket: WebSocket
   dataURL: string
@@ -36,11 +35,6 @@ export class WebSocketImageReceiver implements IImageReceiver {
     this.wsWorker = new Worker(worker_script)
     this.wsWorker.onmessage = this.onWorkerMessage
     this.sendDataInitPacket()
-    //this.dataWebsocket = new WebSocket(this.dataURL)
-    //this.dataWebsocket.onopen = this.onDataOpen
-    //this.dataWebsocket.onclose = this.onDataClosed
-    //this.dataWebsocket.onerror = this.onDataError
-    //this.dataWebsocket.onmessage = this.onDataMessage
   }
 
   sendDataInitPacket() {
@@ -50,8 +44,6 @@ export class WebSocketImageReceiver implements IImageReceiver {
       robot_name: this.robotName,
       accessToken: this.accessToken
     }
-    // console.log("Sending", controlPacket);
-    //this.dataWebsocket.send(JSON.stringify(controlPacket))
     this.wsWorker.postMessage({
       type: 'open',
       payload: JSON.stringify(controlPacket),
@@ -85,21 +77,6 @@ export class WebSocketImageReceiver implements IImageReceiver {
         console.log(data)
     }
   }
-
-  //onDataOpen = (ev: Event) => {
-  //  console.log('Data Websocket Opened', ev)
-  //  this.sendDataInitPacket()
-  //}
-
-  //onDataClosed = (ev: CloseEvent) => {
-  //  console.log('Data Websocket Closed', ev)
-  //  console.log('Trying to open the websocket again')
-  //  this.openDataWebsocket()
-  //}
-
-  //onDataError = (ev: Event) => {
-  //  console.log('Data Websocket Error', ev)
-  //}
 
   stateSubject = new ReplaySubject<RobotState>(1)
 
@@ -142,16 +119,16 @@ export class WebSocketImageReceiver implements IImageReceiver {
 
   unpackState(data: Blob | string) {
     if (typeof data === 'string') {
-      console.error('Error unpacking robot state:', data)
+      console.log('State socket received message:', data)
       return
     }
     data.text().then((res) => this.stateSubject.next(JSON.parse(res)))
   }
 
   public shutdown() {
-    //this.dataWebsocket.onclose = null
+    this.wsWorker.postMessage({ type: 'close' })
+    this.wsWorker.terminate()
     this.stateWebsocket.onclose = null
-    //this.dataWebsocket.close()
     this.stateWebsocket.close()
   }
 }
