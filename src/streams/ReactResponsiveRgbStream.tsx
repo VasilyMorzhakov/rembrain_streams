@@ -39,7 +39,7 @@ const ReactResponsiveRgbStream = ({
       if (canvas) {
         fit(canvas)
         setDrawing(true)
-        if (!image.src) {
+        if (!image) {
           drawPlaceholder()
         }
       }
