@@ -13,7 +13,7 @@ export const WsHOC = (Canvas) => ({
     ...props
   }) => {
     
-    const [image, setImage] = useState(new Image())
+    const [image, setImage] = useState(null)
     const [depth,setDepth] = useState(null)
     const [status, setStatus] = useState(null)
 
@@ -32,16 +32,15 @@ export const WsHOC = (Canvas) => ({
               setDepth(depth)
               setStatus(status)
             case "image":
-              const newImg = new Image()
               if (payload) {
+                const newImg = new Image()
                 newImg.src = payload
                 newImg.onload = () => {
                   setImage(newImg)
                 }
               } else {
-                setImage(newImg)
+                setImage(null)
               }
-              
               return
             case "error":
               handleError(payload)

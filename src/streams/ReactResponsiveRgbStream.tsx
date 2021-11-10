@@ -21,11 +21,13 @@ const ReactResponsiveRgbStream = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   
   const draw = () => {
-    const canvas = canvasRef.current
-    if (canvas) {
-      const ctx = canvas.getContext('2d')
-      
-      ctx && ctx.drawImage(image, 1, 1, canvas.width-2, canvas.height-2)
+    if (image) {
+      const canvas = canvasRef.current
+      if (canvas) {
+        const ctx = canvas.getContext('2d')
+        
+        ctx && ctx.drawImage(image, 1, 1, canvas.width-2, canvas.height-2)
+      }  
     }
   }
 
@@ -78,9 +80,10 @@ const ReactResponsiveRgbStream = ({
   }, [])
 
   useEffect(() => {
-    draw()
-    if (!image.src) {
+    if (!image) {
       drawPlaceholder()
+    } else {
+      draw()
     }
   }, [image])
 
