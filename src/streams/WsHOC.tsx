@@ -9,10 +9,14 @@ export const WsHOC = (Canvas) => ({
     robotName,
     exchange="rgbjpeg",
     handleError=(error:any) => {console.log({error})},
+    canDownload=false,
     ...props
   }) => {
     
     const [image, setImage] = useState(new Image())
+    const [depth,setDepth] = useState(null)
+    const [status, setStatus] = useState(null)
+
     const [wsworker,setWorker] = useState(null)
       
       useEffect(() => {
@@ -22,6 +26,11 @@ export const WsHOC = (Canvas) => ({
         webworker.addEventListener('message', ({data}) => {
           const {type, payload} = data
           switch (type) {
+            case"data":
+              const [image,depth,status] = payload
+              setImage(image)
+              setDepth(depth)
+              setStatus(status)
             case "image":
               const newImg = new Image()
               if (payload) {
@@ -58,7 +67,7 @@ export const WsHOC = (Canvas) => ({
               accessToken: token,
               robot_name: robotName
             }
-            wsworker.postMessage({type:"open", payload: JSON.stringify(controlPacket), url: websocketURL, outputWanted:"image_only"})
+            wsworker.postMessage({type:"open", payload: JSON.stringify(controlPacket), url: websocketURL, outputWanted:canDownload?"all":"image_only"})
           } else {
             wsworker.postMessage({type:"close"})
           }
@@ -66,5 +75,5 @@ export const WsHOC = (Canvas) => ({
         }  
       }, [robotName, exchange, token, isOn, wsworker])
     
-    return <Canvas image={image} {...props}/>    
+    return <Canvas image={image} depth={depth} status={status} {...props}/>    
 }
