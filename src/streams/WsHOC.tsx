@@ -14,8 +14,7 @@ export const WsHOC = (Canvas) => ({
   }) => {
     
     const [image, setImage] = useState(null)
-    const [depth,setDepth] = useState(null)
-    const [status, setStatus] = useState(null)
+    const [data, setData] = useState(null)
 
     const [wsworker,setWorker] = useState(null)
       
@@ -27,10 +26,7 @@ export const WsHOC = (Canvas) => ({
           const {type, payload} = data
           switch (type) {
             case"data":
-              const [image,depth,status] = payload
-              setImage(image)
-              setDepth(depth)
-              setStatus(status)
+              setData(payload)
             case "image":
               if (payload) {
                 const newImg = new Image()
@@ -74,5 +70,5 @@ export const WsHOC = (Canvas) => ({
         }  
       }, [robotName, exchange, token, isOn, wsworker])
     
-    return <Canvas image={image} depth={depth} status={status} {...props}/>    
+    return <Canvas image={image} data={data} {...props}/>    
 }
