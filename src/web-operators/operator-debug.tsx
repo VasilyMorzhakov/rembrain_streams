@@ -185,7 +185,7 @@ export class OperatorDebug extends React.Component<IOperatorProps, IOperatorStat
     }
     
     finishCalibration() {
-        this.sendOp("calibartion/tag_calibration");
+        this.sendOp("calibration/tag_calibration");
         this.sendOp("ask_for_idle");
         this.resetTagState();
         this.setState({isCalibrating: false});
