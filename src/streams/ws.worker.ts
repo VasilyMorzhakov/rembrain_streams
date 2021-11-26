@@ -83,8 +83,8 @@ const wsWorkerCode = () => {
               // so it's sliced, stringified and than concated back
               // It's kinda disgusting but it works
               let prebtoabuf = ''
-              for (let i = 0; i < 5; i++) {
-                let n = uint8.length / 5
+              for (let i = 0; i < 10; i++) {
+                let n = uint8.length / 10
                 prebtoabuf += String.fromCharCode.apply(
                   null,
                   uint8.slice(n * i, n * (i + 1))
