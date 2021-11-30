@@ -13,19 +13,14 @@ const props = {
 
 const TestApp = () => {
     const [token, setToken] = useState(null)
-    //const [props, setProps] = useState({
-    //    robotName:"aivero_robot1", dataWSUrl:"wss://monitor-dev.rembrain.ai:5443",
-    //    accessToken:""
-    //})
 
     useEffect(() => {
         fetch("https://monitor-dev.rembrain.ai/login", {method:"POST", body: JSON.stringify({
-            username: "test",
-            password: "1322"
+            username: "",
+            password: ""
           })}).then((data) => {
               data.json().then((resp) => {
                   setToken(resp.access_token)
-                  //setProps({...props, accessToken:resp.access_token})
               })
               
           })
