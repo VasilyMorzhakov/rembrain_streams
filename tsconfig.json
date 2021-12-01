@@ -3,7 +3,13 @@
     "outDir": "./dist",
     "module": "esnext",
     "target": "ES2017",
-    "lib": ["ES6", "DOM", "ES2016", "ES2017", "WebWorker"],
+    "lib": [
+      "ES6",
+      "DOM",
+      "ES2016",
+      "ES2017",
+      "WebWorker"
+    ],
     "sourceMap": true,
     "allowJs": true,
     "jsx": "react",
@@ -12,10 +18,24 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
+    "noImplicitAny": false,
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedParameters": true,
     "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": false
   },
-  "include": ["src", "test"],
-    "exclude": ["node_modules", "rollup.*.js", "dist"]
+  "include": [
+    "src",
+    "test"
+  ],
+  "exclude": [
+    "node_modules",
+    "rollup.*.js",
+    "dist"
+  ]
 }

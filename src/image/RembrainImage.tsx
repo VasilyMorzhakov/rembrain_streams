@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from 'react'
 
 export const RembrainImage = ({ token, url, width, height, alt="Image", onLoad=()=>{}, onError=()=>{} }:

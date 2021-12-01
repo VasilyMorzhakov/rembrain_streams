@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { OperatorCanvas, OperatorDebug, ReactResponsiveRgbStream, ReactRgbStream } from "../src";
@@ -15,15 +16,14 @@ const TestApp = () => {
     const [token, setToken] = useState(null)
 
     useEffect(() => {
-        fetch("https://monitor-dev.rembrain.ai/login", {method:"POST", body: JSON.stringify({
-            username: "",
-            password: ""
-          })}).then((data) => {
-              data.json().then((resp) => {
-                  setToken(resp.access_token)
-              })
-              
-          })
+        const data = {username: "test",
+        password: "1322"}
+
+        axios.post("https://monitor-dev.rembrain.ai/login", data ).then((resp) => {
+            setToken(resp.data.access_token)
+        })
+        
+        
     },[])
 
     return( 

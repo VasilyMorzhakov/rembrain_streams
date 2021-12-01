@@ -1,5 +1,5 @@
+// @ts-nocheck
 import React, { useState, useEffect } from "react"
-//@ts-ignore
 import worker_script from './ws.worker';
 
 export const WsHOC = (Canvas) => ({
@@ -31,11 +31,14 @@ export const WsHOC = (Canvas) => ({
               if (payload) {
                 const newImg = new Image(100,100)
                 newImg.src = payload
-                newImg.onload = () => {
-                  setImage(newImg)
-                }
+                setImage(newImg)
+                //newImg.onload = () => {
+                //  setImage(newImg)
+                //  
+                //}
               } else {
                 setImage(null)
+                
               }
               return
             case "error":

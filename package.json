@@ -13,12 +13,18 @@
     "build": "NODE_ENV=production webpack",
     "build:test": "NODE_ENV=development webpack",
     "start": "NODE_ENV=development webpack-dev-server",
-    "transpile": "babel src -d dist --copy-files"
+    "transpile": "babel src -d dist --copy-files",
+    "test": "react-scripts test --testPathIgnorePatterns=.*e2e.test.js"
   },
   "keywords": [],
+  "peerDependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
-    "@babel/runtime": "^7.15.4",    
+    "@babel/runtime": "^7.15.4",
+    "axios": "^0.24.0",
     "buffer": "^6.0.3",
     "canvas": "2.7.0",
     "canvas-fit": "^1.5.0",
@@ -27,11 +33,6 @@
     "rxjs": "^7.1.0",
     "sass": "^1.43.4"
   },
-  "peerDependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
-  },
-  
   "devDependencies": {
     "@babel/core": "^7.15.8",
     "@babel/plugin-transform-runtime": "^7.15.8",
@@ -43,7 +44,7 @@
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
     "babel-core": "^7.0.0-bridge.0",
-    "babel-jest": "^27.3.1",
+    "babel-jest": "^27.4.0",
     "babel-loader": "7.1.4",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",

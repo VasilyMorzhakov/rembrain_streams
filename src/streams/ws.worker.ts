@@ -1,3 +1,5 @@
+// @ts-nocheck
+// @ts-ignore
 const wsWorkerCode = () => {
   let ws = null
 
@@ -79,6 +81,7 @@ const wsWorkerCode = () => {
             getImageData(data).then((val) => {
               const type = 'image/jpg'
               const uint8 = new Uint8Array(val)
+
               // Chrome thinks that uint8Array is too long to "String.fromCharCode" it,
               // so it's sliced, stringified and than concated back
               // It's kinda disgusting but it works

@@ -1,9 +1,9 @@
-import { IOperatorProps, Point, Rectangle, RobotData } from './entities'
+// @ts-nocheck
+import { IOperatorProps } from './entities'
 import { OperatorCommand } from './commands/command-base'
 
 export interface INetworkOperator {
   enqueueCommand(command: OperatorCommand): void
-
   shutdown(): void
 }
 

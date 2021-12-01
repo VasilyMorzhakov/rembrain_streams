@@ -1,4 +1,4 @@
-import { stat } from "fs";
+// @ts-nocheck
 import * as React from "react";
 import { Subscription } from "rxjs";
 import { CommandBase, CommandSettings } from "./commands/command-base";

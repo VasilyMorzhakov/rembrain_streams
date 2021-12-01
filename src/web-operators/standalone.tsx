@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import ReactDOM from "react-dom";
 import { SetCommandOperatorValue } from "./commands/command-base";

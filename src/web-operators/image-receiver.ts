@@ -1,9 +1,9 @@
+// @ts-nocheck
 import { ReplaySubject, Observable } from 'rxjs'
 import { RobotImageData, RobotState, RobotData } from './entities'
 import { Image } from 'image-js'
 import { Buffer } from 'buffer/'
 import { IOperatorProps } from './entities'
-//@ts-ignore
 import worker_script from '../streams/ws.worker'
 
 export interface IImageReceiver {

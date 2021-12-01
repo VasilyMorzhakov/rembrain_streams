@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { RobotData } from '../entities'
 
 export interface OperatorCommand {
