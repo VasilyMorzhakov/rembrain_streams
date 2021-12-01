@@ -31,7 +31,6 @@ export const WsHOC = (Canvas) => ({
               setData(payload)
             case "image":
               if (payload) {
-                const newImg = new Image(100,100)
                 newImg.src = payload
               } else {
                 setImage(null)
