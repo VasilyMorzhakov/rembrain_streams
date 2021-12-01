@@ -16,8 +16,8 @@ const TestApp = () => {
     const [token, setToken] = useState(null)
 
     useEffect(() => {
-        const data = {username: "test",
-        password: "1322"}
+        const data = {username: "",
+        password: ""}
 
         axios.post("https://monitor-dev.rembrain.ai/login", data ).then((resp) => {
             setToken(resp.data.access_token)
