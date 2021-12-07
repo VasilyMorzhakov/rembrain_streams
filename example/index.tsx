@@ -4,11 +4,13 @@ import ReactDOM from 'react-dom';
 import { OperatorCanvas, OperatorDebug, ReactResponsiveRgbStream, ReactRgbStream } from "../src";
 
 const props = {
+    height:500,
+    width:500,
     minWidth: 400,
     maxWidth: 800,
     aspectRatio: 16/9,
-    websocketURL: "wss://monitor-dev.rembrain.ai:5443",
-    robotName: "aivero_robot1",
+    websocketURL: "wss://monitor.rembrain.ai:5443",
+    robotName: "aivero_xarm2",
     exchange: "camera0"
 }
 
@@ -19,7 +21,7 @@ const TestApp = () => {
         const data = {username: "",
         password: ""}
 
-        axios.post("https://monitor-dev.rembrain.ai/login", data ).then((resp) => {
+        axios.post("https://monitor.rembrain.ai/login", data ).then((resp) => {
             setToken(resp.data.access_token)
         })
         
@@ -29,7 +31,7 @@ const TestApp = () => {
     return( 
         <div>
             <div>
-                {token && <ReactResponsiveRgbStream token={token} {...props}/>}
+                {token && <ReactRgbStream token={token} {...props}/>}
             </div>
         </div>
     )

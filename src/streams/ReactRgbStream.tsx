@@ -2,24 +2,26 @@
 import React, { useEffect, useRef } from 'react'
 import { WsHOC } from './WsHOC'
 
+let newImg = new Image(100,100)
+
 const ReactRgbStream = ({
   posX = 0,
   posY = 0,
   width,
   height,
   placeholderText = 'No Image',
-  image = new Image(),
+  image,
 }: any) => {
   const canvasRef = useRef<HTMLCanvasElement | null> (null)
 
-  const canvasDraw = () => {
-    if (image) {
+  const draw = () => {
+    
       const canvas = canvasRef.current
       if (canvas) {
         const context = canvas.getContext('2d')
-        context && context.drawImage(image, posX, posY, width, height)
+        context && context.drawImage(newImg, posX, posY, width, height)
       }
-    }
+    
   }  
 
   const drawPlaceholder = () => {
@@ -44,13 +46,18 @@ const ReactRgbStream = ({
   }
 
   useEffect(() => {
-    canvasDraw()
-    if (!image){
-      drawPlaceholder()
+    if(image) {
+      newImg.src = image
     } else {
-      canvasDraw()
+      drawPlaceholder()
     }
   }, [image])
+
+  useEffect(() => {
+    newImg.onload = () => {
+      draw()
+    }
+  },[])
 
   return <canvas ref={canvasRef} width={width} height={height} />
 }

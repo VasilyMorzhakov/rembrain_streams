@@ -17,10 +17,11 @@
     "test": "react-scripts test --testPathIgnorePatterns=.*e2e.test.js"
   },
   "keywords": [],
-  
-  "dependencies": {
+  "peerDependencies": {
     "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "dependencies": {
     "@babel/polyfill": "^7.12.1",
     "@babel/runtime": "^7.15.4",
     "axios": "^0.24.0",

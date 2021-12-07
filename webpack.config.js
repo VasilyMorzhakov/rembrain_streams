@@ -54,7 +54,7 @@ const settings = {
         use: ['style-loader', 'css-loader', 'sass-loader']
       }
     ]
-  } /*,
+  },
   externals: {
     // Use external version of React
     react: {
@@ -69,7 +69,7 @@ const settings = {
       amd: 'react-dom',
       root: 'ReactDOM'
     }
-  }*/,
+  },
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.scss']
   }

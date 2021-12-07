@@ -4,6 +4,7 @@ import fit from 'canvas-fit'
 import { WsHOC } from './WsHOC'
 
 let resizeTimeout:any
+let newImg = new Image(100,100)
 
 const ReactResponsiveRgbStream = ({
   maxWidth,
@@ -23,14 +24,11 @@ const ReactResponsiveRgbStream = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   
   const draw = () => {
-    if (image) {
-      const canvas = canvasRef.current
-      if (canvas) {
-        const ctx = canvas.getContext('2d')
-        
-        ctx && ctx.drawImage(image, 1, 1, canvas.width-2, canvas.height-2)
-      }  
-    }
+    const canvas = canvasRef.current
+    if (canvas) {
+      const ctx = canvas.getContext('2d')
+      ctx && ctx.drawImage(newImg, 1, 1, canvas.width-2, canvas.height-2)
+    }  
   }
 
   const handleResize = () => {
@@ -82,12 +80,18 @@ const ReactResponsiveRgbStream = ({
   }, [])
 
   useEffect(() => {
-    if (!image) {
-      drawPlaceholder()
+    if(image) {
+      newImg.src = image
     } else {
-      draw()
+      drawPlaceholder()
     }
   }, [image])
+
+  useEffect(() => {
+    newImg.onload = () => {
+      draw()
+    }
+  },[])
 
   return (
     <div

@@ -2,8 +2,6 @@
 import React, { useState, useEffect } from "react"
 import worker_script from './ws.worker';
 
-let newImg = new Image(100,100)
-
 export const WsHOC = (Canvas) => ({
     isOn=true,
     token,
@@ -29,19 +27,20 @@ export const WsHOC = (Canvas) => ({
           switch (type) {
             case"data":
               setData(payload)
+              break
             case "image":
               if (payload) {
-                newImg.src = payload
+                setImage(payload)
               } else {
                 setImage(null)
               }
-              return
+              break
             case "error":
               handleError(payload)
-              return
+              break
             default:
               console.log(data)
-              return
+              break
           }
         })
         setWorker(webworker)
@@ -67,16 +66,6 @@ export const WsHOC = (Canvas) => ({
           
         }  
       }, [robotName, exchange, token, isOn, wsworker])
-
-      useEffect(() => {
-        newImg.onload = () => {
-          setImage(newImg)
-          
-        }
-        return () => {
-          newImg = new Image(100,100)
-        }
-      },[])
     
     return <Canvas image={image} data={data} {...props}/>    
 }
