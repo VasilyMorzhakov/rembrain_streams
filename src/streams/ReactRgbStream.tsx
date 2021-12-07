@@ -2,8 +2,6 @@
 import React, { useEffect, useRef } from 'react'
 import { WsHOC } from './WsHOC'
 
-let newImg = new Image(100,100)
-
 const ReactRgbStream = ({
   posX = 0,
   posY = 0,
@@ -13,6 +11,7 @@ const ReactRgbStream = ({
   image,
 }: any) => {
   const canvasRef = useRef<HTMLCanvasElement | null> (null)
+  const [newImg, setNewImg] = useState(new Image(100,100))
 
   const draw = () => {
     
@@ -56,6 +55,9 @@ const ReactRgbStream = ({
   useEffect(() => {
     newImg.onload = () => {
       draw()
+    }
+    return () => {
+      setNewImg(new Image(100,100))
     }
   },[])
 
