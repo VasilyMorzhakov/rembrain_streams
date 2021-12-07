@@ -19,7 +19,7 @@ const ReactResponsiveRgbStream = ({
   image: any,
 }) => {
   const [drawing, setDrawing] = useState(false)
-  const [newImg, setNewImg] = useState(new Image(100,100))
+  const newImg = useRef(new Image(100,100))
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   
@@ -27,7 +27,7 @@ const ReactResponsiveRgbStream = ({
     const canvas = canvasRef.current
     if (canvas) {
       const ctx = canvas.getContext('2d')
-      ctx && ctx.drawImage(newImg, 1, 1, canvas.width-2, canvas.height-2)
+      ctx && ctx.drawImage(newImg.current, 1, 1, canvas.width-2, canvas.height-2)
     }  
   }
 
@@ -81,18 +81,15 @@ const ReactResponsiveRgbStream = ({
 
   useEffect(() => {
     if(image) {
-      newImg.src = image
+      newImg.current.src = image
     } else {
       drawPlaceholder()
     }
   }, [image])
 
   useEffect(() => {
-    newImg.onload = () => {
+    newImg.current.onload = () => {
       draw()
-    }
-    return () => {
-      setNewImg(new Image(100,100))
     }
   },[])
 

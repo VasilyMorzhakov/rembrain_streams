@@ -11,14 +11,14 @@ const ReactRgbStream = ({
   image,
 }: any) => {
   const canvasRef = useRef<HTMLCanvasElement | null> (null)
-  const [newImg, setNewImg] = useState(new Image(100,100))
+  const newImg = useRef(new Image(100,100))
 
   const draw = () => {
     
       const canvas = canvasRef.current
       if (canvas) {
         const context = canvas.getContext('2d')
-        context && context.drawImage(newImg, posX, posY, width, height)
+        context && context.drawImage(newImg.current, posX, posY, width, height)
       }
     
   }  
@@ -46,14 +46,14 @@ const ReactRgbStream = ({
 
   useEffect(() => {
     if(image) {
-      newImg.src = image
+      newImg.current.src = image
     } else {
       drawPlaceholder()
     }
   }, [image])
 
   useEffect(() => {
-    newImg.onload = () => {
+    newImg.current.onload = () => {
       draw()
     }
     return () => {
