@@ -56,9 +56,6 @@ const ReactRgbStream = ({
     newImg.current.onload = () => {
       draw()
     }
-    return () => {
-      setNewImg(new Image(100,100))
-    }
   },[])
 
   return <canvas ref={canvasRef} width={width} height={height} />
