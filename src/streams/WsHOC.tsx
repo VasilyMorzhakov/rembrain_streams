@@ -56,7 +56,7 @@ export const WsHOC = (Canvas) => ({
             let controlPacket = {
               command: 'pull',
               exchange: exchange,
-              accessToken: token,
+              access_token: token,
               robot_name: robotName
             }
             wsworker.postMessage({type:"open", payload: JSON.stringify(controlPacket), url: websocketURL, outputWanted:canDownload?"all":"image_only"})

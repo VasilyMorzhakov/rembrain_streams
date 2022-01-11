@@ -12,7 +12,7 @@ type Message = {
   exchange: string
   robot_name: string
   message: OperatorCommand
-  accessToken: string
+  access_token: string
 }
 
 export class NetworkOperator implements INetworkOperator {
@@ -34,7 +34,7 @@ export class NetworkOperator implements INetworkOperator {
       exchange: `commands`,
       robot_name: this.settings.robotName,
       message: command,
-      accessToken: this.settings.accessToken
+      access_token: this.settings.accessToken
     }
     console.log({ messageObj })
     console.log('Enqueuing command:', command)

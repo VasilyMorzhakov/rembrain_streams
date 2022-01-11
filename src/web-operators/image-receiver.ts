@@ -42,7 +42,7 @@ export class WebSocketImageReceiver implements IImageReceiver {
       command: 'pull',
       exchange: `camera0`,
       robot_name: this.robotName,
-      accessToken: this.accessToken
+      access_token: this.accessToken
     }
     this.wsWorker.postMessage({
       type: 'open',
@@ -93,7 +93,7 @@ export class WebSocketImageReceiver implements IImageReceiver {
       command: 'pull',
       exchange: `state`,
       robot_name: this.robotName,
-      accessToken: this.accessToken
+      access_token: this.accessToken
     }
     this.stateWebsocket.send(JSON.stringify(controlPacket))
   }
