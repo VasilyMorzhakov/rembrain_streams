@@ -385,6 +385,7 @@ export class OperatorDebug extends React.Component<IOperatorProps, IOperatorStat
                     <div className="debug-operator-info-container">
                         <span>{`FPS: ${this.state.fps.toFixed(2)}`}</span>
                         <span>{`State: ${this.state.state_machine}`}</span>
+                        <span className={`arm-state-${this.state && this.state.arm_state === "ready" ?"green":"red"}`} >{`Arm state: ${this.state.arm_state}`}</span>
                     </div>
                 </div>
                 <div>
