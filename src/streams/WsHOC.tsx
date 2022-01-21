@@ -31,7 +31,7 @@ export const WsHOC = (Canvas) => ({
             case "image":
               if (payload) {
                 setImage(payload)
-              } else {
+              } else if (exchange !== "camera1") {
                 setImage(null)
               }
               break
