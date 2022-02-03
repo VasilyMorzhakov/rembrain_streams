@@ -73,6 +73,7 @@ const ReactResponsiveRgbStream = ({
       setDrawing(true)
       window.addEventListener('resize', handleResize, false)
     }
+    handleResize()
     return () => {
       window.removeEventListener('resize', handleResize, false)
     }
