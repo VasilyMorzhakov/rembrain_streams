@@ -36,8 +36,8 @@ const ReactResponsiveRgbStream = ({
             newImg.current,
             0,
             0,
-            canvas.width,
-            canvas.height
+            canvas.width - 2,
+            canvas.height - 2
           )
         }
       }
@@ -91,7 +91,7 @@ const ReactResponsiveRgbStream = ({
       if (drawing) {
         setTimeout(() => {
           setResizeImage('')
-        }, 200)
+        }, 300)
       } else {
         setResizeImage(canvasRef.current.toDataURL())
       }
@@ -114,7 +114,7 @@ const ReactResponsiveRgbStream = ({
   }, [placeholderText])
 
   return (
-    imageExists ? <div
+    <div
       style={{
         aspectRatio: aspectRatio.toString(),
         maxWidth,
@@ -123,27 +123,14 @@ const ReactResponsiveRgbStream = ({
         margin: 0,
         position: 'relative'
       }}
-    >
+    >{imageExists ? <>
       <canvas style={drawing ? {} : { display: 'none' }} ref={canvasRef} />
       <img
-        style={resizeImage ? {
+        style={resizeImage ? {} : { display: 'none' }}
 
-        } : { display: 'none' }}
-        width="100%"
-        height="100%"
         src={resizeImage}
-      />
-    </div> : <div
-      style={{
-        aspectRatio: aspectRatio.toString(),
-        maxWidth,
-        minWidth,
-        padding: 0,
-        margin: 0,
-        position: 'relative'
-      }}
-    ><img width="100%" height="100%" src={placeholderImage} /></div>
-
+      /></> : <><img src={placeholderImage} /></>}
+    </div>
   )
 }
 
