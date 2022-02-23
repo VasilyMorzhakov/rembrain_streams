@@ -95,7 +95,6 @@ const ReactResponsiveRgbStream = ({
       if (drawing) {
         setTimeout(() => {
           setResizeImage('')
-          fit(canvas)
         }, 300)
       } else {
         setResizeImage(newImg.current.src)
