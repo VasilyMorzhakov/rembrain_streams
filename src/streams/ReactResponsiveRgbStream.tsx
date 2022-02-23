@@ -22,7 +22,7 @@ const ReactResponsiveRgbStream = ({
   const [resizeImage, setResizeImage] = useState('')
   const [placeholderImage, setPlaceholderImage] = useState('')
   let resizeTimeout: any
-
+  const divRef = useRef<HTMLDivElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
   const draw = () => {
@@ -115,6 +115,7 @@ const ReactResponsiveRgbStream = ({
 
   return (
     <div
+      ref={divRef}
       style={{
         aspectRatio: aspectRatio.toString(),
         maxWidth,
@@ -126,10 +127,13 @@ const ReactResponsiveRgbStream = ({
     >{imageExists ? <>
       <canvas style={drawing ? {} : { display: 'none' }} ref={canvasRef} />
       <img
+        width={divRef.current.getOffsetWidth()}
+        height={divRef.current.getOffsetHeight()}
         style={resizeImage ? {} : { display: 'none' }}
 
         src={resizeImage}
-      /></> : <><img src={placeholderImage} /></>}
+      /></> : <><img width={divRef.current.getOffsetWidth()}
+        height={divRef.current.getOffsetHeight()} src={placeholderImage} /></>}
     </div>
   )
 }
