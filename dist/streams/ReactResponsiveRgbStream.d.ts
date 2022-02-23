@@ -1,4 +1,5 @@
 /// <reference types="react" />
+import "./ReactResp.scss";
 declare const _default: ({ isOn, token, websocketURL, robotName, exchange, handleError, canDownload, ...props }: {
     [x: string]: any;
     isOn?: boolean | undefined;
