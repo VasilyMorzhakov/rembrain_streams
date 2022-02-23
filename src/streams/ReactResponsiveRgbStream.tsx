@@ -114,7 +114,7 @@ const ReactResponsiveRgbStream = ({
   }, [placeholderText])
 
   return (
-    <div
+    imageExists ? <div
       style={{
         aspectRatio: aspectRatio.toString(),
         maxWidth,
@@ -124,17 +124,26 @@ const ReactResponsiveRgbStream = ({
         position: 'relative'
       }}
     >
-      {imageExists ?
-        <>
-          <canvas style={drawing ? {} : { display: 'none' }} ref={canvasRef} />
-          <img
-            style={resizeImage ? {} : { display: 'none' }}
-            width="100%"
-            height="100%"
-            src={resizeImage}
-          />
-        </> : <img width="99%" height="99%" src={placeholderImage} />}
-    </div>
+      <canvas style={drawing ? {} : { display: 'none' }} ref={canvasRef} />
+      <img
+        style={resizeImage ? {
+
+        } : { display: 'none' }}
+        width="100%"
+        height="100%"
+        src={resizeImage}
+      />
+    </div> : <div
+      style={{
+        aspectRatio: aspectRatio.toString(),
+        maxWidth,
+        minWidth,
+        padding: 0,
+        margin: 0,
+        position: 'relative'
+      }}
+    ><img width="100%" height="100%" src={placeholderImage} /></div>
+
   )
 }
 
