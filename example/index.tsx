@@ -19,8 +19,8 @@ const TestApp = () => {
 
     useEffect(() => {
         const data = {
-            username: "test",
-            password: "1322"
+            username: "",
+            password: ""
         }
 
         axios.post("https://monitor.rembrain.ai/login", data).then((resp) => {

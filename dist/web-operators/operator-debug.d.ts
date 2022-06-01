@@ -46,7 +46,9 @@ export declare class OperatorDebug extends React.Component<IOperatorProps, IOper
     detectCalibrationTags(): void;
     tagClicked(tag: string): void;
     renderTagButtons(): JSX.Element;
+    renderPosition(): JSX.Element;
     renderJoints(): JSX.Element | undefined;
+    changePosition(key: any, value: any): void;
     moveJoint(jointNum: number, degrees: number): void;
     radianToDegrees: (rad: number) => number;
     degreesToRadian: (deg: number) => number;
