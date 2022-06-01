@@ -147,4 +147,14 @@
     flex-direction: row;
     justify-content: space-around;
   }
+  .position-controls {
+    display: flex;
+    flex-direction: row;
+  }
+  .position-controls button {
+    width: 50px;
+  }
+  .position-controls div {
+    width: 35px;
+  }
 }

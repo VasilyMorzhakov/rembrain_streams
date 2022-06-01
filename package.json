@@ -1,6 +1,6 @@
 {
   "name": "rembrain_streams",
-  "version": "1.3.20",
+  "version": "1.3.22",
   "description": "Rembrain React stream components",
   "author": "",
   "license": "",
@@ -31,7 +31,9 @@
     "core-js": "3.19.0",
     "image-js": "^0.31.4",
     "rxjs": "^7.1.0",
-    "sass": "^1.43.4"
+    "sass": "^1.43.4",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",

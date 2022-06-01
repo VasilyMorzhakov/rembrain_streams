@@ -4,40 +4,42 @@ import ReactDOM from 'react-dom';
 import { OperatorCanvas, OperatorDebug, ReactResponsiveRgbStream, ReactRgbStream } from "../src";
 
 const props = {
-    height:500,
-    width:500,
+    height: 500,
+    width: 500,
     minWidth: 400,
     maxWidth: 800,
-    aspectRatio: 16/9,
+    aspectRatio: 16 / 9,
     websocketURL: "wss://monitor.rembrain.ai:5443",
     robotName: "aivero_xarm2",
     exchange: "camera0"
 }
 
 const TestApp = () => {
-    const [token, setToken] = useState(null)
+    const [token, setToken] = useState('')
 
     useEffect(() => {
-        const data = {username: "",
-        password: ""}
+        const data = {
+            username: "test",
+            password: "1322"
+        }
 
-        axios.post("https://monitor.rembrain.ai/login", data ).then((resp) => {
+        axios.post("https://monitor.rembrain.ai/login", data).then((resp) => {
             setToken(resp.data.access_token)
         })
-        
-        
-    },[])
 
-    return( 
+
+    }, [])
+
+    return (
         <div>
             <div>
-                {token && <ReactRgbStream token={token} {...props}/>}
+                {token && <OperatorDebug accessToken={token} dataWSUrl="wss://monitor.rembrain.ai:5443" robotName='aivero_xarm2' />}
             </div>
         </div>
     )
 }
 
 ReactDOM.render(
-    <TestApp/>,
+    <TestApp />,
     document.getElementById('root-debug')
 );
